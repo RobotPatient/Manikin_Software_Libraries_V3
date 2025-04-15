@@ -5,6 +5,7 @@ extern "C"
 {
 #endif
 #include "fake_i2c_functions.h"
+#include "fake_timer_functions.h"
 
 #define MANIKIN_I2C_HAL_INIT(i2c_inst, baud) i2c_hal_init(i2c_inst, baud)
 

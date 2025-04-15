@@ -50,6 +50,10 @@ extern "C"
      *            MANIKIN_STATUS_ERR_NULL_PARAM: sample_timer_ctx_t is null
      */
     manikin_status_t sample_timer_deinit(sample_timer_ctx_t *timer_inst);
+
+    manikin_status_t sample_timer_irq_handler(sample_timer_ctx_t   *timer_inst,
+                                              manikin_sensor_ctx_t *sensor_ctx);
+
 #ifdef __cplusplus
 }
 #endif

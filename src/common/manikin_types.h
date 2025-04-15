@@ -13,6 +13,8 @@ extern "C"
         MANIKIN_STATUS_OK = 0,
         MANIKIN_STATUS_ERR_NULL_PARAM,
         MANIKIN_STATUS_ERR_INVALID_I2C_BAUD,
+        MANIKIN_STATUS_ERR_INVALID_TIMER_SAMPLE_RATE,
+        MANIKIN_STATUS_ERR_INVALID_BUFFER_SIZE,
         MANIKIN_STATUS_ERR_WRITE_FAIL,
         MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL,
         MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL,
@@ -27,6 +29,32 @@ extern "C"
         MANIKIN_I2C_SPEED_400KHz = 400000,
         MANIKIN_I2C_SPEED_1MHz   = 1000000,
     } manikin_i2c_speed_t;
+
+    typedef struct
+    {
+        manikin_i2c_inst_t i2c;
+        uint8_t            i2c_addr;
+    } manikin_sensor_ctx_t;
+
+    typedef enum
+        : uint8_t
+    {
+        MANIKIN_SENSOR_REG_TYPE_WRITE = 0,
+        MANIKIN_SENSOR_REG_TYPE_READ  = 1,
+    } manikin_sensor_reg_type_t;
+
+    typedef struct
+    {
+        uint16_t                  reg;
+        uint16_t                  val;
+        manikin_sensor_reg_type_t opcode;
+    } manikin_sensor_reg_t;
+
+    typedef struct
+    {
+        const manikin_sensor_reg_t *reg;
+        uint8_t                     len;
+    } manikin_sensor_reg_seq_t;
 
 #ifdef __cplusplus
 }

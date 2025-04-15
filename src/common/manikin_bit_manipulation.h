@@ -1,10 +1,9 @@
 #ifndef MANIKIN_BIT_MANIPULATION_H
 #define MANIKIN_BIT_MANIPULATION_H
-/* Extern c for compiling with c++*/
 #ifdef __cplusplus
 extern "C"
 {
-#endif /* __cplusplus */
+#endif
 
 #define BITMASK_COMPARE(NUM, MASK) (NUM & MASK)
 #define BIT_IS_SET(VAL, BIT_NUM)   ((VAL >> BIT_NUM) & 1)
@@ -20,5 +19,5 @@ extern "C"
 
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif
 #endif /* MANIKIN_BIT_MANIPULATION_H */

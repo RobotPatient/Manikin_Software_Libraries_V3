@@ -3,13 +3,11 @@
 #include "sample_timer/sample_timer.h"
 #include "fake_timer_functions.h"
 
-TEST_CASE("basic_functionality", "![init_param]")
+TEST_CASE("test", "![init_param]")
 {
 }
 
-TEST_CASE("basic_functionality", "![register_node]")
-{
-}
+
 
 int
 main (int argc, char *argv[])
