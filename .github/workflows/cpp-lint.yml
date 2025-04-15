@@ -13,9 +13,4 @@ jobs:
         uses: DoozyX/clang-format-lint-action@v0.20
         with:
           clangFormatVersion: 18
-          source: "src"
-      - name: Clang Formatter test-code
-        uses: DoozyX/clang-format-lint-action@v0.20
-        with:
-          clangFormatVersion: 18
-          source: "test"
+          source: "./src ./tests"
