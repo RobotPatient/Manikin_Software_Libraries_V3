@@ -10,12 +10,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Clang Formatter source-code
-        uses: DoozyX/clang-format-lint-action@v0.18.1
+        uses: DoozyX/clang-format-lint-action@v0.20
         with:
-          clangFormatVersion: 14
+          clangFormatVersion: 18
           source: "src"
       - name: Clang Formatter test-code
-        uses: DoozyX/clang-format-lint-action@v0.18.1
+        uses: DoozyX/clang-format-lint-action@v0.20
         with:
-          clangFormatVersion: 14
+          clangFormatVersion: 18
           source: "test"
