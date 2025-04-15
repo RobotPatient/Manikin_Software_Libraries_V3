@@ -1,4 +1,4 @@
-name: Code Compiles (x86_64)
+name: Test run (x86_64)
 on:
   push:
     branches: ["main"]
@@ -25,3 +25,5 @@ jobs:
       - name: Build
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build
+      - name: Test
+        run: cd ${{github.workspace}}/build && ctest

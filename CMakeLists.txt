@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(manikin_software_libraries C CXX)
 
-option(MANIKIN_SOFTWARE_BUILD_TESTS "Enable building tests" YES)
+option(MANIKIN_SOFTWARE_BUILD_TESTS "Enable building tests" OFF)
 
 add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
                             ${CMAKE_CURRENT_LIST_DIR}/src/sample_timer/sample_timer.c
@@ -18,6 +18,7 @@ endif()
 
 
 if(MANIKIN_SOFTWARE_BUILD_TESTS)
+  enable_testing()
   add_subdirectory(tests)
 else()
 
