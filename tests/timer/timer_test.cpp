@@ -7,8 +7,6 @@ TEST_CASE("test", "![init_param]")
 {
 }
 
-
-
 int
 main (int argc, char *argv[])
 {
