@@ -48,8 +48,7 @@ const manikin_sensor_reg_t init_regs[]
         { VL6180X_REG_READOUT_AVERAGING_SAMPLE_PERIOD, 0x30, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { VL6180X_REG_SYSALS_ANALOGUE_GAIN, 0x40, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { VL6180X_REG_FIRMWARE_RESULT_SCALER, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        { VL6180X_REG_SYSRANGE_START, 0x03 },
-        MANIKIN_SENSOR_REG_TYPE_WRITE };
+        { VL6180X_REG_SYSRANGE_START, 0x03, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
 const manikin_sensor_reg_t read_regs[]
     = { { VL6180X_REG_RESULT_RANGE_VAL, 0x00, MANIKIN_SENSOR_REG_TYPE_READ } };
@@ -57,11 +56,26 @@ const manikin_sensor_reg_seq_t read_reg_seq
     = { read_regs, (sizeof(read_reg_seq) / sizeof(manikin_sensor_reg_t)) };
 
 manikin_status_t
-init_vl6180x_sensor (manikin_sensor_ctx_t *sensor_ctx)
+check_params (manikin_sensor_ctx_t *sensor_ctx)
 {
+    if (sensor_ctx == NULL)
+    {
+        return MANIKIN_STATUS_ERR_NULL_PARAM;
+    }
     if (sensor_ctx->i2c == NULL)
     {
         return MANIKIN_STATUS_ERR_NULL_PARAM;
+    }
+    return MANIKIN_STATUS_OK;
+}
+
+manikin_status_t
+vl6180x_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
+{
+    manikin_status_t status = check_params(sensor_ctx);
+    if (status != MANIKIN_STATUS_OK)
+    {
+        return status;
     }
 
     uint8_t data = 0;
@@ -82,8 +96,13 @@ init_vl6180x_sensor (manikin_sensor_ctx_t *sensor_ctx)
 }
 
 uint8_t
-read_vl6180x_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
+vl6180x_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 {
+    manikin_status_t status = check_params(sensor_ctx);
+    if (status != MANIKIN_STATUS_OK)
+    {
+        return status;
+    }
     read_buf[0]
         = manikin_i2c_read_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_RESULT_RANGE_VAL);
     if (read_buf[0] == 0)
@@ -97,9 +116,14 @@ read_vl6180x_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 }
 
 manikin_status_t
-deinit_vl6180x_sensor (manikin_sensor_ctx_t *sensor_ctx)
+vl6180x_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = manikin_i2c_write_reg(
+    manikin_status_t status = check_params(sensor_ctx);
+    if (status != MANIKIN_STATUS_OK)
+    {
+        return status;
+    }
+    status = manikin_i2c_write_reg(
         sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_SYSRANGE_START, 0x00);
     if (status != MANIKIN_STATUS_OK)
     {

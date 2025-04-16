@@ -57,7 +57,7 @@ manikin_i2c_check_device_address (manikin_i2c_inst_t i2c_inst, const uint8_t i2c
     {
         return MANIKIN_STATUS_ERR_NULL_PARAM;
     }
-    return MANIKIN_I2C_HAL_DEVICE_ACKNOWLEDGE(i2c_inst, i2c_addr);
+    return MANIKIN_I2C_HAL_DEVICE_ACKNOWLEDGE(i2c_inst, i2c_addr << 1);
 }
 
 manikin_status_t

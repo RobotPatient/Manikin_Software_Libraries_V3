@@ -37,7 +37,6 @@ extern "C"
     } manikin_sensor_ctx_t;
 
     typedef enum
-        : uint8_t
     {
         MANIKIN_SENSOR_REG_TYPE_WRITE = 0,
         MANIKIN_SENSOR_REG_TYPE_READ  = 1,
