@@ -3,7 +3,7 @@
 #include "sample_timer/sample_timer.h"
 #include "fake_timer_functions.h"
 
-TEST_CASE("test", "![init_param]")
+TEST_CASE("Manikin_timer_init", "![init_param]")
 {
 }
 

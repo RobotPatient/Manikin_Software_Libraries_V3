@@ -16,10 +16,11 @@ extern "C"
         MANIKIN_STATUS_ERR_INVALID_TIMER_SAMPLE_RATE,
         MANIKIN_STATUS_ERR_INVALID_BUFFER_SIZE,
         MANIKIN_STATUS_ERR_WRITE_FAIL,
+        MANIKIN_STATUS_ERR_READ_FAIL,
         MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL,
         MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL,
         MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL,
-        MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG
+        MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG,
     } manikin_status_t;
 
     typedef enum
@@ -55,7 +56,35 @@ extern "C"
         uint8_t                     len;
     } manikin_sensor_reg_seq_t;
 
+
+    typedef union
+    {
+        struct
+        {
+            float    pressure;
+            uint16_t temperature;
+        } sdp810;
+
+        struct
+        {
+            uint8_t distance;
+        } vl6180;
+
+        struct
+        {
+            uint16_t right_up;
+            uint16_t left_up;
+            uint16_t left_down;
+            uint16_t mid_mid;
+            uint16_t mid_left;
+            uint16_t mid_right;
+            uint16_t lower;
+            uint16_t right_down;
+        };
+        uint8_t bytes[16];
+    } manikin_sensor_sample_t;
+
 #ifdef __cplusplus
 }
 #endif
-#endif
+#endif /* MANIKIN_TYPES_H */

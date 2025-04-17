@@ -1,10 +1,9 @@
-#ifndef SDP810_H
-#define SDP810_H
+#ifndef BMM350_H
+#define BMM350_H
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
 #include "common/manikin_types.h"
 
     /**
@@ -16,11 +15,10 @@ extern "C"
      *          connection, e.g.)
      *         MANIKIN_STATUS_ERR_NULL_PARAM on invalid i2c handle
      */
-    manikin_status_t sdp810_init_sensor(manikin_sensor_ctx_t *sensor_ctx);
+    manikin_status_t bmm350_init_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
     /**
-     * @brief Read the sensor, which should read 6-bytes of data (first four bytes are 32-bit float
-     * diff pressure (mBar), next two bytes temperature (degrees Celsius))
+     * @brief Read the sensor, which should read 16-bytes of data (8-channels, 2 bytes each)
      * @param sensor_ctx Ptr to struct containing all settings for sensor, such as i2c instance &
      * address
      * @param read_buf Ptr to read-buffer which is used for storing the samples
@@ -28,7 +26,7 @@ extern "C"
      *         MANIKIN_STATUS_READ_FAIL on failure while reading,
      *         MANIKIN_STATUS_WRITE_FAIL on failure while writing.
      */
-    manikin_status_t sdp810_read_sensor(manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf);
+    manikin_status_t bmm350_read_sensor(manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf);
 
     /**
      * @brief Deinitialize the sensor, which disables continuous sampling mode.
@@ -38,9 +36,9 @@ extern "C"
      *         MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL on unable to set registers (due to lost
      * connection, e.g.) MANIKIN_STATUS_ERR_NULL_PARAM on invalid i2c handle
      */
-    manikin_status_t sdp810_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
+    manikin_status_t bmm350_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* SDP810_H */
+#endif /* BMM350_H */

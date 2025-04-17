@@ -2,6 +2,8 @@
 #include <manikin_software_conf.h>
 #include <manikin_platform.h>
 
+#define HASH_SAMPLE_TIMER 0x33472A3F
+
 manikin_status_t
 sample_timer_init (sample_timer_ctx_t *timer_inst)
 {

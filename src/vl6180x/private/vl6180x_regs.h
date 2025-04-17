@@ -4,7 +4,6 @@
 extern "C"
 {
 #endif
-#include "stdint.h"
 
 #define VL6180X_REG_IDENTIFICATION_MODEL_ID              0x0000
 #define VL6180X_REG_IDENTIFICATION_MODEL_REV_MAJOR       0x0001

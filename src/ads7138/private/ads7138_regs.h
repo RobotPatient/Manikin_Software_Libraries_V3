@@ -1,0 +1,25 @@
+#ifndef ADS7138_REGS_H
+#define ADS7138_REGS_H
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+    #define ADS7138_READ_BUF_SIZE 16 /* 2 bytes per channel, 8 channels */
+    #define ADS7138_REG_SYSTEM_STATUS 0x00
+    #define ADS7138_REG_GENERAL_CFG 0x01
+    #define ADS7138_REG_PIN_CFG 0x05
+    #define ADS7138_REG_SEQUENCE_CFG 0x10
+    #define ADS7138_REG_AUTO_SEQUENCE_CH_SEL 0x12
+
+    #define ADS7138_REG_SYSTEM_STATUS_RSVD_BIT (7)
+
+    #define ADS7138_OPCODE_SINGLE_READ 0b00010000
+    #define ADS7138_OPCODE_SINGLE_WRITE 0b00010000
+    #define ADS7138_OPCODE_SET_BIT 0b00011000
+    #define ADS7138_OPCODE_CLEAR_BIT 0b00100000
+    #define ADS7138_OPCODE_CONTINUOUS_READ 0b00110000
+    #define ADS7138_OPCODE_CONTINUOUS_WRITE 0b00101000
+#ifdef __cplusplus
+}
+#endif
+#endif /* ADS7138_REGS_H */

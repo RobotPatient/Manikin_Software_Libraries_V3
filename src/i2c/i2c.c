@@ -1,6 +1,9 @@
 #include "i2c.h"
-#include "common/manikin_bit_manipulation.h"
 #include "manikin_platform.h"
+#include "error_handler/error_handler.h"
+#include "common/manikin_bit_manipulation.h"
+
+#define HASH_I2C 0xA0DF31CA
 
 manikin_status_t
 validate_baud (const manikin_i2c_speed_t baud)
@@ -24,28 +27,16 @@ validate_baud (const manikin_i2c_speed_t baud)
 manikin_status_t
 manikin_i2c_init (manikin_i2c_inst_t i2c_inst, const manikin_i2c_speed_t i2c_baud)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
 
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     manikin_status_t status = validate_baud(i2c_baud);
-    if (status != MANIKIN_STATUS_OK)
-    {
-        return status;
-    }
+    MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     status = MANIKIN_I2C_HAL_INIT(i2c_inst, i2c_baud);
-    if (status != MANIKIN_STATUS_OK)
-    {
-        return status;
-    }
+    MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     status = MANIKIN_I2C_HAL_ERROR_FLAG_CHECK(i2c_inst);
-    if (status != MANIKIN_STATUS_OK)
-    {
-        return status;
-    }
+    MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     return MANIKIN_STATUS_OK;
 }
@@ -53,10 +44,7 @@ manikin_i2c_init (manikin_i2c_inst_t i2c_inst, const manikin_i2c_speed_t i2c_bau
 uint8_t
 manikin_i2c_check_device_address (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     return MANIKIN_I2C_HAL_DEVICE_ACKNOWLEDGE(i2c_inst, i2c_addr << 1);
 }
 
@@ -66,10 +54,8 @@ manikin_i2c_write_reg (manikin_i2c_inst_t i2c_inst,
                        const uint16_t     reg,
                        const uint8_t      data)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[3];
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
@@ -78,10 +64,7 @@ manikin_i2c_write_reg (manikin_i2c_inst_t i2c_inst,
     {
         return MANIKIN_STATUS_ERR_WRITE_FAIL;
     }
-    else
-    {
-        return MANIKIN_STATUS_OK;
-    }
+    return MANIKIN_STATUS_OK;
 }
 
 manikin_status_t
@@ -90,10 +73,7 @@ manikin_i2c_write_reg16 (manikin_i2c_inst_t i2c_inst,
                          const uint16_t     reg,
                          const uint16_t     data)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[4];
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
@@ -104,19 +84,13 @@ manikin_i2c_write_reg16 (manikin_i2c_inst_t i2c_inst,
     {
         return MANIKIN_STATUS_ERR_WRITE_FAIL;
     }
-    else
-    {
         return MANIKIN_STATUS_OK;
-    }
 }
 
 uint8_t
 manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
     uint8_t res;
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
@@ -135,10 +109,7 @@ manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const
 uint16_t
 manikin_i2c_read_reg16 (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
     uint8_t res[2];
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
@@ -160,10 +131,7 @@ manikin_i2c_read_bytes (manikin_i2c_inst_t i2c_inst,
                         uint8_t           *data,
                         const size_t       len)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     return MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, data, len);
 }
 
@@ -173,19 +141,13 @@ manikin_i2c_write_bytes (manikin_i2c_inst_t i2c_inst,
                          const uint8_t     *data,
                          const size_t       len)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     return MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, data, len);
 }
 
 manikin_status_t
 manikin_i2c_deinit (manikin_i2c_inst_t i2c_inst)
 {
-    if (i2c_inst == NULL)
-    {
-        return MANIKIN_STATUS_ERR_NULL_PARAM;
-    }
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     return MANIKIN_I2C_HAL_DEINIT(i2c_inst);
 }

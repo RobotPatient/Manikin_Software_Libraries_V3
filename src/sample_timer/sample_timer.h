@@ -51,8 +51,14 @@ extern "C"
      */
     manikin_status_t sample_timer_deinit(sample_timer_ctx_t *timer_inst);
 
+    /**
+     *
+     * @param timer_inst
+     * @param read_status
+     * @return
+     */
     manikin_status_t sample_timer_irq_handler(sample_timer_ctx_t   *timer_inst,
-                                              manikin_sensor_ctx_t *sensor_ctx);
+                                              manikin_status_t      read_status);
 
 #ifdef __cplusplus
 }

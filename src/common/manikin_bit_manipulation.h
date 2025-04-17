@@ -15,6 +15,9 @@ extern "C"
 #define GET_LOWER_8_BITS_OF_SHORT(x) BITMASK_COMPARE(x, 0xFF)
 #define GET_UPPER_8_BITS_OF_SHORT(x) BITMASK_COMPARE((x >> 8), 0xFF)
 
+#define GET_LOWER_16_BITS_OF_LONG(x) BITMASK_COMPARE((x >> 16), 0xFFFF)
+#define GET_UPPER_16_BITS_OF_LONG(x) BITMASK_COMPARE((x >> 16), 0xFFFF)
+
 #define CONSTRUCT_SHORT_FROM_BYTES(upper, lower) ((upper << 8) | lower);
 
 #ifdef __cplusplus
