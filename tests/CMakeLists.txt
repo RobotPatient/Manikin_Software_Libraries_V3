@@ -21,7 +21,7 @@ FetchContent_MakeAvailable(fff)
 add_library(hal_mock ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_i2c_functions.c
         ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_timer_functions.c)
 target_include_directories(hal_mock PUBLIC test_stubs/mocks
-                                           test_stubs/conf)
+        test_stubs/conf)
 target_link_libraries(hal_mock fff)
 target_compile_definitions(hal_mock PUBLIC "FFF_GENERATE")
 
