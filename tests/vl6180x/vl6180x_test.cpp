@@ -33,10 +33,12 @@ custom_read_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, uint8_t *bytes, s
                 cur_reg = 0;
                 /* Signal that sensor is ready */
                 bytes[0] = 1;
+                break;
             }
             default: {
                 cur_reg = 0;
                 bytes[0] = 200;
+                break;
             }
         }
     }
