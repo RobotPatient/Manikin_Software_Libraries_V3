@@ -56,7 +56,6 @@ extern "C"
         uint8_t                     len;
     } manikin_sensor_reg_seq_t;
 
-
     typedef union
     {
         struct
@@ -80,7 +79,7 @@ extern "C"
             uint16_t mid_right;
             uint16_t lower;
             uint16_t right_down;
-        };
+        } ads7138;
         uint8_t bytes[16];
     } manikin_sensor_sample_t;
 

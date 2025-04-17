@@ -31,9 +31,15 @@ extern "C"
 
 #define MANIKIN_TIMER_HAL_DEINIT(timer_inst, freq) timer_hal_deinit(timer_inst)
 
-#define MANIKIN_CRIT_ERROR_HANDLER(hash, line) {printf("Critical error occured in file: %d, line_num: %d\n", hash, line);}
+#define MANIKIN_CRIT_ERROR_HANDLER(hash, line)                                    \
+    {                                                                             \
+        printf("Critical error occured in file: %d, line_num: %d\n", hash, line); \
+    }
 
-#define MANIKIN_NON_CRIT_ERROR_HANDLER(hash, line) {printf("Non_critical error occured in file: %d, line_num: %d\n", hash, line);}
+#define MANIKIN_NON_CRIT_ERROR_HANDLER(hash, line)                                    \
+    {                                                                                 \
+        printf("Non_critical error occured in file: %d, line_num: %d\n", hash, line); \
+    }
 #ifdef __cplusplus
 }
 #endif

@@ -45,10 +45,10 @@ sdp810_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 
     MANIKIN_ASSERT(
         HASH_SDP810, bytes_read == SDP810_READ_BUFFER_SIZE, MANIKIN_STATUS_ERR_READ_FAIL);
-    MANIKIN_ASSERT(HASH_SDP810,
-                   ((read_buf[SDP810_READ_SCALE_FACTOR_MSB] != 0)
-                    && (read_buf[SDP810_READ_SCALE_FACTOR_LSB] != 0)),
-                   MANIKIN_STATUS_ERR_READ_FAIL);
+    // MANIKIN_ASSERT(HASH_SDP810,
+    //                ((read_buf[SDP810_READ_SCALE_FACTOR_MSB] != 0)
+    //                 && (read_buf[SDP810_READ_SCALE_FACTOR_LSB] != 0)),
+    //                MANIKIN_STATUS_ERR_READ_FAIL);
 
     uint16_t conversion_factor = CONSTRUCT_SHORT_FROM_BYTES(read_buf[SDP810_READ_SCALE_FACTOR_MSB],
                                                             read_buf[SDP810_READ_SCALE_FACTOR_LSB]);

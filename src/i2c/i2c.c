@@ -84,7 +84,7 @@ manikin_i2c_write_reg16 (manikin_i2c_inst_t i2c_inst,
     {
         return MANIKIN_STATUS_ERR_WRITE_FAIL;
     }
-        return MANIKIN_STATUS_OK;
+    return MANIKIN_STATUS_OK;
 }
 
 uint8_t

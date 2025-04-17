@@ -14,19 +14,19 @@ extern "C"
             return retval;                                \
         }                                                 \
     } while (0)
-#define MANIKIN_NON_CRIT_ASSERT(FILE_HASH, cond, retval)  \
-    do                                                    \
-    {                                                     \
-        if (!(cond))                                      \
-        {                                                 \
+#define MANIKIN_NON_CRIT_ASSERT(FILE_HASH, cond, retval)      \
+    do                                                        \
+    {                                                         \
+        if (!(cond))                                          \
+        {                                                     \
             manikin_non_critical_assert(FILE_HASH, __LINE__); \
-            return retval;                                \
-        }                                                 \
+            return retval;                                    \
+        }                                                     \
     } while (0)
 
-   void manikin_critical_assert(int file_crc32, int line);
+    void manikin_critical_assert(int file_crc32, int line);
 
-   void manikin_non_critical_assert(int file_crc32, int line);
+    void manikin_non_critical_assert(int file_crc32, int line);
 #ifdef __cplusplus
 }
 #endif

@@ -105,8 +105,8 @@ TEST_CASE("vl6180x_deinit_sensor handles null context", "[vl6180x]")
 TEST_CASE("vl6180x_deinit_sensor succeeds with valid context", "[vl6180x]")
 {
     reset_mocks();
-    dummy_ctx.i2c      = &handle;
-    dummy_ctx.i2c_addr = 0x29;
+    dummy_ctx.i2c                        = &handle;
+    dummy_ctx.i2c_addr                   = 0x29;
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
     i2c_hal_read_bytes_fake.custom_fake  = custom_read_func;
     REQUIRE(vl6180x_deinit_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
