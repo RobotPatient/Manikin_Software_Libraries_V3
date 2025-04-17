@@ -39,6 +39,10 @@ add_executable(test_sdp810 ${CMAKE_CURRENT_LIST_DIR}/sdp810/test_sdp810.cpp)
 target_link_libraries(test_sdp810 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_sdp810)
 
+add_executable(test_ads7138 ${CMAKE_CURRENT_LIST_DIR}/ads7138/ads7138_test.cpp)
+target_link_libraries(test_ads7138 ${PROJECT_NAME} Catch2 fff hal_mock)
+catch_discover_tests(test_ads7138)
+
 add_executable(test_timer ${CMAKE_CURRENT_LIST_DIR}/timer/timer_test.cpp)
 
 target_link_libraries(test_timer ${PROJECT_NAME} Catch2 fff)
