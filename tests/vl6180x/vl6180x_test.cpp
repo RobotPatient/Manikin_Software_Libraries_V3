@@ -36,6 +36,7 @@ custom_read_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, uint8_t *bytes, s
             }
             default: {
                 cur_reg = 0;
+                bytes[0] = 200;
             }
         }
     }
