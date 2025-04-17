@@ -89,7 +89,7 @@ vl6180x_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     MANIKIN_ASSERT(HASH_VL6180X, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     read_buf[0]
         = manikin_i2c_read_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_RESULT_RANGE_VAL);
-    MANIKIN_ASSERT(HASH_VL6180X, (read_buf[0] == 0), MANIKIN_STATUS_ERR_READ_FAIL);
+    MANIKIN_ASSERT(HASH_VL6180X, (read_buf[0] != 0), MANIKIN_STATUS_ERR_READ_FAIL);
     return MANIKIN_STATUS_OK;
 }
 
