@@ -26,4 +26,4 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build
       - name: Test
-        run: cd ${{github.workspace}}/build && ctest
+        run: cd ${{github.workspace}}/build && ctest --rerun-failed --output-on-failure
