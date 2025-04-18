@@ -10,6 +10,7 @@ extern "C"
 
     typedef uint8_t *manikin_timer_inst_t;
 
+    typedef uint8_t *manikin_watchdog_inst_t;
 #ifdef __cplusplus
 }
 #endif

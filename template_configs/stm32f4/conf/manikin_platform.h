@@ -20,6 +20,8 @@ extern "C"
 #define MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr, data, len) \
     i2c_hal_write_bytes(i2c_inst, i2c_addr, data, len)
 
+#define MANIKIN_I2C_BUS_RESET(i2c_inst) i2c_hal_bus_reset(i2c_inst)
+
 #define MANIKIN_I2C_HAL_DEINIT(i2c_inst) i2c_hal_deinit(i2c_inst)
 
 #define MANIKIN_TIMER_HAL_INIT(timer_inst, freq) timer_hal_init(timer_inst, freq)
