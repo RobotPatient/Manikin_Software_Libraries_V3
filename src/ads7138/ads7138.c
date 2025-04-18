@@ -27,7 +27,7 @@ const manikin_sensor_reg_t init_regs[] = {
 };
 
 manikin_status_t
-check_params (const manikin_sensor_ctx_t *sensor_ctx)
+ads7138_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_ADS7138, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_ADS7138, (sensor_ctx->i2c != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
@@ -37,7 +37,7 @@ check_params (const manikin_sensor_ctx_t *sensor_ctx)
 manikin_status_t
 ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
 
     const uint8_t data
@@ -48,7 +48,7 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     MANIKIN_NON_CRIT_ASSERT(HASH_ADS7138,
                             BIT_IS_SET(data, ADS7138_REG_SYSTEM_STATUS_RSVD_BIT),
                             MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
-
+    sensor_ctx->needs_reinit = 0;
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         manikin_i2c_write_reg(
@@ -57,43 +57,44 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     return MANIKIN_STATUS_OK;
 }
 
-void
-convert_to_12_bit_range (uint8_t *data)
-{
-    for (uint8_t i = 0; i < 16; i++)
-    {
-        data[i] = data[i] << 4;
-        i++;
-        data[i] = data[i] >> 4;
-    }
-}
-
 manikin_status_t
 ads7138_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 {
     MANIKIN_ASSERT(HASH_ADS7138, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
+    if (sensor_ctx->needs_reinit)
+    {
+        ads7138_init_sensor(sensor_ctx);
+    }
     status = manikin_i2c_write_reg(sensor_ctx->i2c,
                                    sensor_ctx->i2c_addr,
                                    ADS7138_REG(ADS7138_REG_SEQUENCE_CFG, ADS7138_OP_SET_BIT),
                                    ADS7138_REG_SEQ_START_BIT);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
-    size_t bytes_read = manikin_i2c_read_bytes(
-        sensor_ctx->i2c, sensor_ctx->i2c_addr, read_buf, ADS7138_READ_BUF_SIZE);
+    uint8_t raw_buf[ADS7138_READ_BUF_SIZE];
+    size_t  bytes_read = manikin_i2c_read_bytes(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, raw_buf, ADS7138_READ_BUF_SIZE);
     status = manikin_i2c_write_reg(sensor_ctx->i2c,
                                    sensor_ctx->i2c_addr,
                                    ADS7138_REG(ADS7138_REG_SEQUENCE_CFG, ADS7138_OP_CLEAR_BIT),
                                    ADS7138_REG_SEQ_START_BIT);
     MANIKIN_ASSERT(HASH_ADS7138, bytes_read == ADS7138_READ_BUF_SIZE, MANIKIN_STATUS_ERR_READ_FAIL);
-    convert_to_12_bit_range(read_buf);
+
+    // Convert raw buffer into 12-bit values, store as 2-byte values into read_buf
+    for (int i = 0; i < 8; i++)
+    {
+        uint16_t val        = ((uint16_t)raw_buf[2 * i] << 4) | (raw_buf[2 * i + 1] >> 4);
+        read_buf[2 * i]     = (val >> 8) & 0xFF;
+        read_buf[2 * i + 1] = val & 0xFF;
+    }
     return status;
 }
 
 manikin_status_t
 ads7138_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
     status = manikin_i2c_write_reg(sensor_ctx->i2c,
                                    sensor_ctx->i2c_addr,

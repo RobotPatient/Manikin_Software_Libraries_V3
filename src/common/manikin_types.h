@@ -35,6 +35,7 @@ extern "C"
     {
         manikin_i2c_inst_t i2c;
         uint8_t            i2c_addr;
+        uint8_t            needs_reinit;
     } manikin_sensor_ctx_t;
 
     typedef enum
@@ -55,33 +56,6 @@ extern "C"
         const manikin_sensor_reg_t *reg;
         uint8_t                     len;
     } manikin_sensor_reg_seq_t;
-
-    typedef union
-    {
-        struct
-        {
-            float    pressure;
-            uint16_t temperature;
-        } sdp810;
-
-        struct
-        {
-            uint8_t distance;
-        } vl6180;
-
-        struct
-        {
-            uint16_t right_up;
-            uint16_t left_up;
-            uint16_t left_down;
-            uint16_t mid_mid;
-            uint16_t mid_left;
-            uint16_t mid_right;
-            uint16_t lower;
-            uint16_t right_down;
-        } ads7138;
-        uint8_t bytes[16];
-    } manikin_sensor_sample_t;
 
 #ifdef __cplusplus
 }

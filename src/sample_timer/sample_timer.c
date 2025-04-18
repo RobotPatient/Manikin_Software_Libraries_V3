@@ -11,20 +11,12 @@ manikin_status_t
 check_params (sample_timer_ctx_t *timer_inst)
 {
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
-    MANIKIN_ASSERT(
-        HASH_SAMPLE_TIMER, timer_inst->dest_buffer != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
+
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst->timer != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
-    MANIKIN_ASSERT(
-        HASH_SAMPLE_TIMER,
-        (timer_inst->dest_buffer_max_size > 1 && timer_inst->dest_buffer_max_size < SIZE_MAX),
-        MANIKIN_STATUS_ERR_INVALID_BUFFER_SIZE);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER,
                    (timer_inst->frequency <= 1000 && timer_inst->frequency > 1),
                    MANIKIN_STATUS_ERR_INVALID_TIMER_SAMPLE_RATE);
-
-    MANIKIN_ASSERT(HASH_SAMPLE_TIMER,
-                   (timer_inst->dest_buffer_max_size > 1),
-                   MANIKIN_STATUS_ERR_INVALID_BUFFER_SIZE);
+    return MANIKIN_STATUS_OK;
 }
 
 manikin_status_t
@@ -67,18 +59,29 @@ sample_timer_deinit (sample_timer_ctx_t *timer_inst)
 }
 
 manikin_status_t
-sample_timer_irq_handler (sample_timer_ctx_t *timer_inst,
-                          manikin_i2c_inst_t  i2c_inst,
-                          manikin_status_t    read_status)
+sample_timer_irq_handler (sample_timer_ctx_t   *timer_inst,
+                          manikin_sensor_ctx_t *sensor,
+                          manikin_status_t      read_status)
 {
     manikin_status_t status = check_params(timer_inst);
     if (read_status == MANIKIN_STATUS_ERR_READ_FAIL || read_status == MANIKIN_STATUS_ERR_WRITE_FAIL)
     {
         MANIKIN_WATCHDOG_HAL_KICK(timer_inst->watchdog);
-        MANIKIN_I2C_BUS_RESET(i2c_inst);
+        sensor->needs_reinit = 1;
+        MANIKIN_I2C_BUS_RESET(sensor->i2c);
+        if (timer_inst->fault_cnt < 2)
+        {
+            timer_inst->fault_cnt++;
+        }
+        else
+        {
+            MANIKIN_TIMER_HAL_DEINIT(timer_inst->timer);
+        }
     }
     else
     {
+        timer_inst->fault_cnt = 0;
         MANIKIN_WATCHDOG_HAL_KICK(timer_inst->watchdog);
     }
+    return status;
 }
