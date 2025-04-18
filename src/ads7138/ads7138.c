@@ -27,7 +27,7 @@ const manikin_sensor_reg_t init_regs[] = {
 };
 
 manikin_status_t
-check_params (manikin_sensor_ctx_t *sensor_ctx)
+check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_ADS7138, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_ADS7138, (sensor_ctx->i2c != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
