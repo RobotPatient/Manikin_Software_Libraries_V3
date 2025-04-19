@@ -33,10 +33,11 @@ extern "C"
 #define BMM350_MAG_TEMP_DATA_LEN  12
 
 /************************ Averaging macros **********************/
-#define BMM350_AVG_NO_AVG 0x0
-#define BMM350_AVG_2      0x1
-#define BMM350_AVG_4      0x2
-#define BMM350_AVG_8      0x3
+#define BMM350_AVG_SHIFT(x) (x << 4)
+#define BMM350_AVG_NO_AVG   0x0
+#define BMM350_AVG_2        0x1
+#define BMM350_AVG_4        0x2
+#define BMM350_AVG_8        0x3
 
 /******************************* ODR **************************/
 #define BMM350_ODR_400HZ    0x2
@@ -98,8 +99,11 @@ extern "C"
 #define BMM350_TMR_TST_HIZ_VTMR_VTMR_ON  0x0
 #define BMM350_TMR_TST_HIZ_VTMR_VTMR_HIZ 0x1
 
-#define BMM350_LSB_MASK 0x00FF
-#define BMM350_MSB_MASK 0xFF00
+#define BMM350_LSB_MASK  0x00FF
+#define BMM350_MSB_MASK  0xFF00
+#define BMM350_AXIS_EN_X 0x01
+#define BMM350_AXIS_EN_Y 0x02
+#define BMM350_AXIS_EN_Z 0x04
 
 /********************** Pad drive strength ************************/
 #define BMM350_PAD_DRIVE_WEAKEST   0

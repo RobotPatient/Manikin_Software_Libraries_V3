@@ -7,6 +7,7 @@ extern "C"
 #include <stdio.h>
 #include "fake_i2c_functions.h"
 #include "fake_timer_functions.h"
+#include "fake_watchdog_functions.h"
 
 #define MANIKIN_I2C_HAL_INIT(i2c_inst, baud) i2c_hal_init(i2c_inst, baud)
 
@@ -23,13 +24,21 @@ extern "C"
 
 #define MANIKIN_I2C_HAL_DEINIT(i2c_inst) i2c_hal_deinit(i2c_inst)
 
+#define MANIKIN_WATCHDOG_HAL_TIMER_INIT(watch_inst, timeout) watchdog_hal_init(watch_inst, timeout)
+
+#define MANIKIN_WATCHDOG_HAL_KICK(watch_inst) watchdog_hal_kick(watch_inst)
+
+#define MANIKIN_WATCHDOG_HAL_DEINIT(watch_inst) watchdog_hal_deinit(watch_inst)
+
+#define MANIKIN_I2C_BUS_RESET(i2c_inst) i2c_hal_bus_reset(i2c_inst)
+
 #define MANIKIN_TIMER_HAL_INIT(timer_inst, freq) timer_hal_init(timer_inst, freq)
 
 #define MANIKIN_TIMER_HAL_START(timer_inst) timer_hal_start(timer_inst);
 
 #define MANIKIN_TIMER_HAL_STOP(timer_inst) timer_hal_stop(timer_inst);
 
-#define MANIKIN_TIMER_HAL_DEINIT(timer_inst, freq) timer_hal_deinit(timer_inst)
+#define MANIKIN_TIMER_HAL_DEINIT(timer_inst) timer_hal_deinit(timer_inst)
 
 #define MANIKIN_CRIT_ERROR_HANDLER(hash, line)                                    \
     {                                                                             \

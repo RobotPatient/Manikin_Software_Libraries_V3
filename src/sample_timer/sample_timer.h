@@ -9,10 +9,10 @@ extern "C"
 
     typedef struct
     {
-        manikin_timer_inst_t timer;
-        uint16_t             frequency;
-        uint8_t             *dest_buffer;
-        size_t               dest_buffer_max_size;
+        manikin_timer_inst_t    timer;
+        manikin_watchdog_inst_t watchdog;
+        uint16_t                frequency;
+        uint8_t                 fault_cnt;
     } sample_timer_ctx_t;
 
     /**
@@ -57,8 +57,9 @@ extern "C"
      * @param read_status
      * @return
      */
-    manikin_status_t sample_timer_irq_handler(sample_timer_ctx_t *timer_inst,
-                                              manikin_status_t    read_status);
+    manikin_status_t sample_timer_irq_handler(sample_timer_ctx_t   *timer_inst,
+                                              manikin_sensor_ctx_t *sensor,
+                                              manikin_status_t      read_status);
 
 #ifdef __cplusplus
 }

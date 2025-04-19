@@ -9,3 +9,5 @@ DEFINE_FAKE_VALUE_FUNC4(
 DEFINE_FAKE_VALUE_FUNC4(size_t, i2c_hal_read_bytes, manikin_i2c_inst_t, uint8_t, uint8_t *, size_t);
 DEFINE_FAKE_VALUE_FUNC1(uint32_t, i2c_hal_error_flag_check, manikin_i2c_inst_t);
 DEFINE_FAKE_VALUE_FUNC1(int, i2c_hal_deinit, manikin_i2c_inst_t);
+
+DEFINE_FAKE_VALUE_FUNC1(int, i2c_hal_bus_reset, manikin_i2c_inst_t);

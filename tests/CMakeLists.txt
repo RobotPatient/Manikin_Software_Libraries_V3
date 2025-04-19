@@ -21,7 +21,7 @@ FetchContent_MakeAvailable(fff)
 add_library(hal_mock ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_i2c_functions.c
         ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_timer_functions.c)
 target_include_directories(hal_mock PUBLIC test_stubs/mocks
-                                           test_stubs/conf)
+        test_stubs/conf)
 target_link_libraries(hal_mock fff)
 target_compile_definitions(hal_mock PUBLIC "FFF_GENERATE")
 
@@ -38,6 +38,14 @@ catch_discover_tests(test_vl6180)
 add_executable(test_sdp810 ${CMAKE_CURRENT_LIST_DIR}/sdp810/test_sdp810.cpp)
 target_link_libraries(test_sdp810 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_sdp810)
+
+add_executable(test_ads7138 ${CMAKE_CURRENT_LIST_DIR}/ads7138/ads7138_test.cpp)
+target_link_libraries(test_ads7138 ${PROJECT_NAME} Catch2 fff hal_mock)
+catch_discover_tests(test_ads7138)
+
+add_executable(test_bmm350 ${CMAKE_CURRENT_LIST_DIR}/bmm350/test_bmm350.cpp)
+target_link_libraries(test_bmm350 ${PROJECT_NAME} Catch2 fff hal_mock)
+catch_discover_tests(test_bmm350)
 
 add_executable(test_timer ${CMAKE_CURRENT_LIST_DIR}/timer/timer_test.cpp)
 
