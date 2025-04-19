@@ -16,4 +16,4 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif //FAKE_WATCHDOG_FUNCTIONS_H
+#endif /* FAKE_WATCHDOG_FUNCTIONS_H */
