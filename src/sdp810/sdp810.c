@@ -8,7 +8,7 @@
 
 #define HASH_SDP810 0x6BCF2C37
 
-const manikin_sensor_reg_t init_regs[]
+const manikin_sensor_reg_t SDP810_init_regs[]
     = { { SDP810_REG_CONT_MASS_FLOW, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
 manikin_status_t
@@ -25,10 +25,10 @@ sdp810_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     manikin_status_t status = sdp810_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_SDP810, (status == MANIKIN_STATUS_OK), status);
     sensor_ctx->needs_reinit = 0;
-    for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
+    for (size_t i = 0; i < sizeof(SDP810_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, init_regs[i].reg, init_regs[i].val);
+            sensor_ctx->i2c, sensor_ctx->i2c_addr, SDP810_init_regs[i].reg, SDP810_init_regs[i].val);
     }
     return MANIKIN_STATUS_OK;
 }

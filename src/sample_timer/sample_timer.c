@@ -7,6 +7,13 @@
 
 #define HASH_SAMPLE_TIMER 0x33472A3F
 
+enum sample_timer_state
+{
+    SAMPLE_TIMER_STATE_SAMPLING,
+    SAMPLE_TIMER_STATE_BUS_RECOVERY,
+    SAMPLE_TIMER_STATE_BUS_RESET
+};
+
 manikin_status_t
 check_params (sample_timer_ctx_t *timer_inst)
 {
@@ -59,28 +66,59 @@ sample_timer_deinit (sample_timer_ctx_t *timer_inst)
 }
 
 manikin_status_t
-sample_timer_irq_handler (sample_timer_ctx_t   *timer_inst,
-                          manikin_sensor_ctx_t *sensor,
-                          manikin_status_t      read_status)
+sample_timer_end_cb_handler (sample_timer_ctx_t   *timer_inst,
+                             manikin_sensor_ctx_t *sensor,
+                             manikin_status_t      read_status)
 {
     manikin_status_t status = check_params(timer_inst);
     if (read_status == MANIKIN_STATUS_ERR_READ_FAIL || read_status == MANIKIN_STATUS_ERR_WRITE_FAIL)
     {
         MANIKIN_WATCHDOG_HAL_KICK(timer_inst->watchdog);
-        sensor->needs_reinit = 1;
-        MANIKIN_I2C_BUS_RESET(sensor->i2c);
-        if (timer_inst->fault_cnt < 2)
+        if (timer_inst->state == SAMPLE_TIMER_STATE_SAMPLING)
         {
-            timer_inst->fault_cnt++;
+            MANIKIN_I2C_HAL_DEINIT(sensor->i2c);
+            MANIKIN_I2C_BUS_RESET(sensor->i2c);
+            timer_inst->state = SAMPLE_TIMER_STATE_BUS_RESET;
         }
-        else
-        {
-            MANIKIN_TIMER_HAL_DEINIT(timer_inst->timer);
-        }
+        MANIKIN_TIMER_HAL_STOP(timer_inst->timer);
+        MANIKIN_TIMER_HAL_INIT(timer_inst->timer, 1);
+        MANIKIN_TIMER_HAL_START(timer_inst->timer);
+        return MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
     }
     else
     {
-        timer_inst->fault_cnt = 0;
+        MANIKIN_WATCHDOG_HAL_KICK(timer_inst->watchdog);
+    }
+    return status;
+}
+manikin_status_t
+sample_timer_start_cb_handler (sample_timer_ctx_t *timer_inst, manikin_sensor_ctx_t *sensor)
+{
+    manikin_status_t status = check_params(timer_inst);
+    if (timer_inst->state == SAMPLE_TIMER_STATE_BUS_RESET)
+    {
+        MANIKIN_I2C_BUS_RECOVER();
+        uint32_t baud = MANIKIN_I2C_GET_BAUD(sensor->i2c);
+        MANIKIN_I2C_HAL_INIT(sensor->i2c, baud);
+        sensor->needs_reinit = 1;
+        timer_inst->state    = SAMPLE_TIMER_STATE_BUS_RECOVERY;
+        status               = MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
+    }
+    else if (timer_inst->state == SAMPLE_TIMER_STATE_BUS_RECOVERY)
+    {
+        MANIKIN_TIMER_HAL_STOP(timer_inst->timer);
+        MANIKIN_TIMER_HAL_INIT(timer_inst->timer, timer_inst->frequency);
+        MANIKIN_TIMER_HAL_START(timer_inst->timer);
+        status            = MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
+        timer_inst->state = SAMPLE_TIMER_STATE_SAMPLING;
+    }
+    else
+    {
+        status = MANIKIN_I2C_HAL_ERROR_FLAG_CHECK(sensor->i2c);
+        if(status != MANIKIN_STATUS_OK) {
+            return MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
+        }
+        timer_inst->state = SAMPLE_TIMER_STATE_SAMPLING;
         MANIKIN_WATCHDOG_HAL_KICK(timer_inst->watchdog);
     }
     return status;

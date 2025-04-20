@@ -54,7 +54,7 @@ const manikin_sensor_reg_t init_regs[]
         { VL6180X_REG_SYSRANGE_START, 0x03, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
 manikin_status_t
-check_params (manikin_sensor_ctx_t *sensor_ctx)
+vl6180x_check_params (manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_VL6180X, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_VL6180X, (sensor_ctx->i2c != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
@@ -64,13 +64,13 @@ check_params (manikin_sensor_ctx_t *sensor_ctx)
 manikin_status_t
 vl6180x_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = vl6180x_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
-
+    sensor_ctx->needs_reinit = 0;
     uint8_t data = 0;
-    data         = manikin_i2c_read_reg(
-        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_SYSTEM_FRESH_OUT_OF_RESET);
-
+    status  = manikin_i2c_read_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_SYSTEM_FRESH_OUT_OF_RESET, &data);
+    MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
     MANIKIN_NON_CRIT_ASSERT(HASH_VL6180X, (data == 1), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
 
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
@@ -84,11 +84,18 @@ vl6180x_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 manikin_status_t
 vl6180x_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = vl6180x_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
+    if(sensor_ctx->needs_reinit == 1) {
+        sensor_ctx->needs_reinit = 0;
+        status = vl6180x_init_sensor(sensor_ctx);
+        MANIKIN_ASSERT(HASH_VL6180X, status == MANIKIN_STATUS_OK, status);
+        return MANIKIN_STATUS_OK;
+    }
     MANIKIN_ASSERT(HASH_VL6180X, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    read_buf[0]
-        = manikin_i2c_read_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_RESULT_RANGE_VAL);
+    status
+        = manikin_i2c_read_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_RESULT_RANGE_VAL, read_buf);
+    MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
     MANIKIN_ASSERT(HASH_VL6180X, (read_buf[0] != 0), MANIKIN_STATUS_ERR_READ_FAIL);
     return MANIKIN_STATUS_OK;
 }
@@ -96,7 +103,7 @@ vl6180x_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 manikin_status_t
 vl6180x_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = vl6180x_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
     status = manikin_i2c_write_reg(
         sensor_ctx->i2c, sensor_ctx->i2c_addr, VL6180X_REG_SYSRANGE_START, 0x00);

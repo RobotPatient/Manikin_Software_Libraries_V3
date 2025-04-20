@@ -35,9 +35,6 @@ manikin_i2c_init (manikin_i2c_inst_t i2c_inst, const manikin_i2c_speed_t i2c_bau
     status = MANIKIN_I2C_HAL_INIT(i2c_inst, i2c_baud);
     MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
-    status = MANIKIN_I2C_HAL_ERROR_FLAG_CHECK(i2c_inst);
-    MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
-
     return MANIKIN_STATUS_OK;
 }
 
@@ -87,42 +84,40 @@ manikin_i2c_write_reg16 (manikin_i2c_inst_t i2c_inst,
     return MANIKIN_STATUS_OK;
 }
 
-uint8_t
-manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
+manikin_status_t
+manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data)
 {
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
-    uint8_t res;
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
     if (MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, bytes, sizeof(bytes)) != sizeof(bytes))
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, &res, sizeof(res)) != sizeof(res))
+    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, data, 1) != 1)
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    return res;
+    return MANIKIN_STATUS_OK;
 }
 
-uint16_t
-manikin_i2c_read_reg16 (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
+manikin_status_t
+manikin_i2c_read_reg16 (manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data)
 {
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
-    uint8_t res[2];
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
     if (MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, bytes, sizeof(bytes)) != sizeof(bytes))
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, res, sizeof(res)) != sizeof(res))
+    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, data, 2) != 2)
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    return CONSTRUCT_SHORT_FROM_BYTES(res[0], res[1]);
+    return MANIKIN_STATUS_OK;
 }
 
 size_t

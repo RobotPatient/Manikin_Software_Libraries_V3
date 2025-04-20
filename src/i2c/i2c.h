@@ -62,7 +62,7 @@ extern "C"
      * @param reg      The register address to write
      * @return The data which was read from the register. (Register value)
      */
-    uint8_t manikin_i2c_read_reg(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg);
+    manikin_status_t manikin_i2c_read_reg(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data);
 
     /**
      * @brief Reads a short (16-bit) from a register of i2c-device
@@ -71,7 +71,7 @@ extern "C"
      * @param reg      The register address to write
      * @return The data which was read from the register. (Register value)
      */
-    uint16_t manikin_i2c_read_reg16(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg);
+    manikin_status_t manikin_i2c_read_reg16(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data);
 
     /**
      * @brief Reads multiple bytes from an i2c-device

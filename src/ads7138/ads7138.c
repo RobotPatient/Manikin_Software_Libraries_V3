@@ -7,7 +7,7 @@
 
 #define HASH_ADS7138 0x157F34F4
 
-const manikin_sensor_reg_t init_regs[] = {
+const manikin_sensor_reg_t ads7138_init_regs[] = {
     /* All channels are configured as analog input*/
     { ADS7138_REG(ADS7138_REG_PIN_CFG, ADS7138_OP_SET_BIT),
       ADS7138_REG_ALL_PINS_ANALOG_INP_BIT,
@@ -39,20 +39,20 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
-
-    const uint8_t data
-        = manikin_i2c_read_reg(sensor_ctx->i2c,
+    uint8_t data;
+    status = manikin_i2c_read_reg(sensor_ctx->i2c,
                                sensor_ctx->i2c_addr,
-                               ADS7138_REG(ADS7138_REG_SYSTEM_STATUS, ADS7138_OP_SINGLE_READ));
+                               ADS7138_REG(ADS7138_REG_SYSTEM_STATUS, ADS7138_OP_SINGLE_READ), &data);
+    MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
 
     MANIKIN_NON_CRIT_ASSERT(HASH_ADS7138,
                             BIT_IS_SET(data, ADS7138_REG_SYSTEM_STATUS_RSVD_BIT),
                             MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
     sensor_ctx->needs_reinit = 0;
-    for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
+    for (size_t i = 0; i < sizeof(ads7138_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, init_regs[i].reg, init_regs[i].val);
+            sensor_ctx->i2c, sensor_ctx->i2c_addr, ads7138_init_regs[i].reg, ads7138_init_regs[i].val);
     }
     return MANIKIN_STATUS_OK;
 }
