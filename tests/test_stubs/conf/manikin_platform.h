@@ -8,6 +8,7 @@ extern "C"
 #include "fake_i2c_functions.h"
 #include "fake_timer_functions.h"
 #include "fake_watchdog_functions.h"
+#include "fake_spi_functions.h"
 
 #define MANIKIN_I2C_HAL_INIT(i2c_inst, baud) i2c_hal_init(i2c_inst, baud)
 
@@ -23,6 +24,17 @@ extern "C"
     i2c_hal_write_bytes(i2c_inst, i2c_addr, data, len)
 
 #define MANIKIN_I2C_HAL_DEINIT(i2c_inst) i2c_hal_deinit(i2c_inst)
+
+
+#define MANIKIN_SPI_HAL_INIT(spi_inst, baud) spi_hal_init(spi_inst, baud)
+
+#define MANIKIN_SPI_HAL_WRITE_BYTES(spi_inst, data, len) spi_hal_write_bytes(spi_inst, data, len)
+
+#define MANIKIN_SPI_HAL_READ_BYTES(spi_inst, data, len) spi_hal_read_bytes(spi_inst, data, len)
+
+#define MANIKIN_SPI_HAL_SET_CS(spi_cs, state) spi_hal_set_cs(spi_cs, state)
+
+#define MANIKIN_SPI_HAL_DEINIT(spi_inst) spi_hal_deinit(spi_inst)
 
 #define MANIKIN_WATCHDOG_HAL_TIMER_INIT(watch_inst, timeout) watchdog_hal_init(watch_inst, timeout)
 
