@@ -1,4 +1,9 @@
 #ifndef W25QXX128_REGS_H
 #define W25QXX128_REGS_H
 
+#define W25QXX_REG_JEDEC                  0x9F
+#define W25QXX_RESP_MANUFACTURER_ID       0xEF /* Winbond */
+#define W25QXX_RESP_MANUFACTURER_MEM_TYPE 0x40 /* NOR */
+#define W25QXX_RESP_MANUFACTURER_MEM_SIZE 0x18 /* 128 Mbit = 16 MB */
+
 #endif /* W25QXX128_REGS_H */
