@@ -18,7 +18,6 @@ manikin_status_t
 sample_timer_check_params (sample_timer_ctx_t *timer_inst)
 {
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
-
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst->timer != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER,
                    (timer_inst->frequency <= 1000 && timer_inst->frequency >= 1),
@@ -31,7 +30,8 @@ sample_timer_init (sample_timer_ctx_t *timer_inst)
 {
     manikin_status_t status = sample_timer_check_params(timer_inst);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, (status == MANIKIN_STATUS_OK), status);
-    status = MANIKIN_TIMER_HAL_INIT(timer_inst->timer, timer_inst->frequency);
+    status            = MANIKIN_TIMER_HAL_INIT(timer_inst->timer, timer_inst->frequency);
+    timer_inst->state = SAMPLE_TIMER_STATE_SAMPLING;
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, (status == MANIKIN_STATUS_OK), status);
     /* Initialize watchdog with window of 2*sample-freq */
     status = MANIKIN_WATCHDOG_HAL_TIMER_INIT(timer_inst->watchdog, timer_inst->frequency / 2);
@@ -62,6 +62,8 @@ sample_timer_deinit (sample_timer_ctx_t *timer_inst)
     manikin_status_t status = sample_timer_check_params(timer_inst);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, (status == MANIKIN_STATUS_OK), status);
     status = MANIKIN_TIMER_HAL_DEINIT(timer_inst->timer);
+    MANIKIN_ASSERT(HASH_SAMPLE_TIMER, (status == MANIKIN_STATUS_OK), status);
+    status = MANIKIN_WATCHDOG_HAL_DEINIT(timer_inst->watchdog);
     return status;
 }
 

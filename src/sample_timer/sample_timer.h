@@ -52,18 +52,29 @@ extern "C"
     manikin_status_t sample_timer_deinit(sample_timer_ctx_t *timer_inst);
 
     /**
-     * @brief This method should be called when a sample was processed (outside ISR-context!)
+     * @brief This method should be called before a sample process effort (outside ISR-context!)
      *        It does the following things:
      *        - Reset the watchdog
      *        - Handle Error Conditions (by resetting the I2C-bus or device)
      * @param timer_inst Struct handle to sample_timer_ctx_t which contains the settings for the
      * timer peripheral
-     * @param read_status The status received from the sensor_read() function
+     * @param sensor The sensor instance which should be sampled
      * @return MANIKIN_STATUS_OK: No error occured when resetting peripheral
      */
     manikin_status_t sample_timer_start_cb_handler(sample_timer_ctx_t   *timer_inst,
                                                    manikin_sensor_ctx_t *sensor);
 
+    /**
+     * @brief This method should be called after a sample process effort (outside ISR-context!)
+     *        It does the following things:
+     *        - Reset the watchdog
+     *        - Handle Error Conditions (by resetting the I2C-bus or device)
+     * @param timer_inst Struct handle to sample_timer_ctx_t which contains the settings for the
+     * timer peripheral
+     * @param sensor The sensor instance which has been sampled
+     * @param read_status The status received from the sensor_read() function
+     * @return MANIKIN_STATUS_OK: No error occured when resetting peripheral
+     */
     manikin_status_t sample_timer_end_cb_handler(sample_timer_ctx_t   *timer_inst,
                                                  manikin_sensor_ctx_t *sensor,
                                                  manikin_status_t      read_status);
