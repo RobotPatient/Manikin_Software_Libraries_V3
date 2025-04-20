@@ -1,4 +1,4 @@
 #ifndef W25QXX128_REGS_H
 #define W25QXX128_REGS_H
 
-#endif //W25QXX128_REGS_H
+#endif /* W25QXX128_REGS_H */
