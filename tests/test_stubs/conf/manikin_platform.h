@@ -25,7 +25,6 @@ extern "C"
 
 #define MANIKIN_I2C_HAL_DEINIT(i2c_inst) i2c_hal_deinit(i2c_inst)
 
-
 #define MANIKIN_SPI_HAL_INIT(spi_inst, baud) spi_hal_init(spi_inst, baud)
 
 #define MANIKIN_SPI_HAL_WRITE_BYTES(spi_inst, data, len) spi_hal_write_bytes(spi_inst, data, len)

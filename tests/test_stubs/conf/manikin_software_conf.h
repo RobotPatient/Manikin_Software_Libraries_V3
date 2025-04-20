@@ -19,7 +19,7 @@ extern "C"
     {
         uint8_t port;
         uint8_t pin;
-    }manikin_spi_cs_t;
+    } manikin_spi_cs_t;
 
     typedef uint8_t *manikin_spi_inst_t;
 

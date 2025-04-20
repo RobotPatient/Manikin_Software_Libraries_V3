@@ -83,7 +83,7 @@ extern "C"
      * @brief Reads multiple bytes from an i2c-device
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @param i2c_addr The address of the I2C device
-     * @param data     An pointer to the buffer to save the data to
+     * @param data     A pointer to the buffer to save the data to
      * @param len      The number of bytes to read from i2c-device
      * @return The number of bytes read from the i2c-device
      */
@@ -96,7 +96,7 @@ extern "C"
      * @brief Write multiple bytes to an i2c-device
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @param i2c_addr The address of the I2C device
-     * @param data     An pointer to the buffer to read the data from
+     * @param data     A pointer to the buffer to read the data from
      * @param len      The number of bytes to send to the i2c-device
      * @return The number of bytes written to the i2c-device
      */
@@ -106,7 +106,7 @@ extern "C"
                                    size_t             len);
 
     /**
-     * @brief Denitializes the I2C peripheral of the Manikin System
+     * @brief Deinitializes the I2C peripheral of the Manikin System
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @return    MANIKIN_STATUS_OK: No error occurred while configuring peripheral
      *            MANIKIN_STATUS_ERR_NULL_PARAM: I2C_inst is null
