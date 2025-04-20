@@ -24,7 +24,9 @@ extern "C"
     DECLARE_FAKE_VALUE_FUNC1(int, i2c_hal_deinit, manikin_i2c_inst_t);
 
     DECLARE_FAKE_VALUE_FUNC1(int, i2c_hal_bus_reset, manikin_i2c_inst_t);
+    DECLARE_FAKE_VALUE_FUNC1(int, i2c_hal_bus_recover, manikin_i2c_inst_t);
 
+    DECLARE_FAKE_VALUE_FUNC1(uint32_t, i2c_hal_get_baud, manikin_i2c_inst_t);
 #ifdef __cplusplus
 }
 #endif

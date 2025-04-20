@@ -27,8 +27,10 @@ sdp810_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     sensor_ctx->needs_reinit = 0;
     for (size_t i = 0; i < sizeof(SDP810_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, SDP810_init_regs[i].reg, SDP810_init_regs[i].val);
+        manikin_i2c_write_reg(sensor_ctx->i2c,
+                              sensor_ctx->i2c_addr,
+                              SDP810_init_regs[i].reg,
+                              SDP810_init_regs[i].val);
     }
     return MANIKIN_STATUS_OK;
 }

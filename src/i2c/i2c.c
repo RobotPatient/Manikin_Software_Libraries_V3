@@ -6,7 +6,7 @@
 #define HASH_I2C 0xA0DF31CA
 
 manikin_status_t
-validate_baud (const manikin_i2c_speed_t baud)
+manikin_i2c_validate_baud (const manikin_i2c_speed_t baud)
 {
     manikin_status_t status;
     switch (baud)
@@ -29,7 +29,7 @@ manikin_i2c_init (manikin_i2c_inst_t i2c_inst, const manikin_i2c_speed_t i2c_bau
 {
 
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    manikin_status_t status = validate_baud(i2c_baud);
+    manikin_status_t status = manikin_i2c_validate_baud(i2c_baud);
     MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     status = MANIKIN_I2C_HAL_INIT(i2c_inst, i2c_baud);

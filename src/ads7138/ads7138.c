@@ -39,20 +39,24 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
+    sensor_ctx->needs_reinit = 0;
     uint8_t data;
     status = manikin_i2c_read_reg(sensor_ctx->i2c,
-                               sensor_ctx->i2c_addr,
-                               ADS7138_REG(ADS7138_REG_SYSTEM_STATUS, ADS7138_OP_SINGLE_READ), &data);
+                                  sensor_ctx->i2c_addr,
+                                  ADS7138_REG(ADS7138_REG_SYSTEM_STATUS, ADS7138_OP_SINGLE_READ),
+                                  &data);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
 
     MANIKIN_NON_CRIT_ASSERT(HASH_ADS7138,
                             BIT_IS_SET(data, ADS7138_REG_SYSTEM_STATUS_RSVD_BIT),
                             MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
-    sensor_ctx->needs_reinit = 0;
+
     for (size_t i = 0; i < sizeof(ads7138_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, ads7138_init_regs[i].reg, ads7138_init_regs[i].val);
+        manikin_i2c_write_reg(sensor_ctx->i2c,
+                              sensor_ctx->i2c_addr,
+                              ads7138_init_regs[i].reg,
+                              ads7138_init_regs[i].val);
     }
     return MANIKIN_STATUS_OK;
 }
@@ -63,10 +67,12 @@ ads7138_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     MANIKIN_ASSERT(HASH_ADS7138, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
+
     if (sensor_ctx->needs_reinit)
     {
         ads7138_init_sensor(sensor_ctx);
     }
+
     status = manikin_i2c_write_reg(sensor_ctx->i2c,
                                    sensor_ctx->i2c_addr,
                                    ADS7138_REG(ADS7138_REG_SEQUENCE_CFG, ADS7138_OP_SET_BIT),

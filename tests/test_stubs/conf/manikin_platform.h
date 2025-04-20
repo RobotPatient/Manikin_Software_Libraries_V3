@@ -32,6 +32,10 @@ extern "C"
 
 #define MANIKIN_I2C_BUS_RESET(i2c_inst) i2c_hal_bus_reset(i2c_inst)
 
+#define MANIKIN_I2C_BUS_RECOVER(i2c_inst) i2c_hal_bus_recover(i2c_inst)
+
+#define MANIKIN_I2C_GET_BAUD(i2c_inst) i2c_hal_get_baud(i2c_inst)
+
 #define MANIKIN_TIMER_HAL_INIT(timer_inst, freq) timer_hal_init(timer_inst, freq)
 
 #define MANIKIN_TIMER_HAL_START(timer_inst) timer_hal_start(timer_inst);

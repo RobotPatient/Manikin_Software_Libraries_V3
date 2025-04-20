@@ -10,7 +10,7 @@
 const manikin_sensor_reg_t init_regs[] = { { 0x00, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
 manikin_status_t
-check_params (const manikin_sensor_ctx_t *sensor_ctx)
+bhi360_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_BHI360, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_BHI360, (sensor_ctx->i2c != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
@@ -20,8 +20,10 @@ check_params (const manikin_sensor_ctx_t *sensor_ctx)
 manikin_status_t
 bhi360_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
-    manikin_status_t status = check_params(sensor_ctx);
+    manikin_status_t status = bhi360_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BHI360, (status == MANIKIN_STATUS_OK), status);
+
+    sensor_ctx->needs_reinit = 0;
 
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
@@ -34,11 +36,20 @@ bhi360_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 manikin_status_t
 bhi360_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 {
+    manikin_status_t status = bhi360_check_params(sensor_ctx);
+    MANIKIN_ASSERT(HASH_BHI360, (status == MANIKIN_STATUS_OK), status);
+
+    if (sensor_ctx->needs_reinit)
+    {
+        bhi360_init_sensor(sensor_ctx);
+    }
     return MANIKIN_STATUS_OK;
 }
 
 manikin_status_t
 bhi360_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
+    manikin_status_t status = bhi360_check_params(sensor_ctx);
+    MANIKIN_ASSERT(HASH_BHI360, (status == MANIKIN_STATUS_OK), status);
     return MANIKIN_STATUS_OK;
 }

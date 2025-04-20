@@ -37,7 +37,7 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
-
+    sensor_ctx->needs_reinit = 0;
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         manikin_i2c_write_reg(
@@ -52,7 +52,10 @@ bmm350_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     MANIKIN_ASSERT(HASH_BMM350, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     manikin_status_t status = check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
-
+    if (sensor_ctx->needs_reinit)
+    {
+        bmm350_init_sensor(sensor_ctx);
+    }
     status
         = manikin_i2c_write_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, BMM350_REG_MAG_X_LSB, 0x00);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);

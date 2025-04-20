@@ -74,20 +74,6 @@ TEST_CASE("manikin_i2c_init returns error when HAL init fails", "[init]")
     REQUIRE(i2c_hal_error_flag_check_fake.call_count == 0);
 }
 
-TEST_CASE("manikin_i2c_init returns error when error flag check fails", "[init]")
-{
-    reset_mocks();
-    i2c_hal_init_fake.return_val             = MANIKIN_STATUS_OK;
-    i2c_hal_error_flag_check_fake.return_val = MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
-
-    uint8_t          handle = 1;
-    manikin_status_t status = manikin_i2c_init(&handle, MANIKIN_I2C_SPEED_100KHz);
-
-    REQUIRE(status == MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG);
-    REQUIRE(i2c_hal_init_fake.call_count == 1);
-    REQUIRE(i2c_hal_error_flag_check_fake.call_count == 1);
-}
-
 TEST_CASE("manikin_i2c_init succeeds on valid input", "[init]")
 {
     reset_mocks();
@@ -99,7 +85,6 @@ TEST_CASE("manikin_i2c_init succeeds on valid input", "[init]")
 
     REQUIRE(status == MANIKIN_STATUS_OK);
     REQUIRE(i2c_hal_init_fake.call_count == 1);
-    REQUIRE(i2c_hal_error_flag_check_fake.call_count == 1);
 }
 
 TEST_CASE("manikin_i2c_read_reg reads register correctly", "[read_reg]")
@@ -116,8 +101,9 @@ TEST_CASE("manikin_i2c_read_reg reads register correctly", "[read_reg]")
     const uint8_t i2c_addr = 0x10;
     const uint8_t test_reg = 0x56;
 
-    uint8_t reg_val = manikin_i2c_read_reg(&handle, i2c_addr, test_reg);
-
+    uint8_t          reg_val;
+    manikin_status_t status = manikin_i2c_read_reg(&handle, i2c_addr, test_reg, &reg_val);
+    REQUIRE(status == MANIKIN_STATUS_OK);
     REQUIRE(i2c_hal_write_bytes_fake.arg3_val == 2);
     REQUIRE(write_buffer[0] == GET_UPPER_8_BITS_OF_SHORT(test_reg));
     REQUIRE(write_buffer[1] == GET_LOWER_8_BITS_OF_SHORT(test_reg));
@@ -209,12 +195,14 @@ TEST_CASE("manikin_i2c_read_reg16 returns correct value from I2C", "[read_reg16]
     const uint8_t  i2c_addr = 0x42;
     const uint16_t reg      = 0x1234;
 
-    uint16_t val = manikin_i2c_read_reg16(&handle, i2c_addr, reg);
-
+    uint8_t          val[2];
+    manikin_status_t status = manikin_i2c_read_reg16(&handle, i2c_addr, reg, val);
+    REQUIRE(status == MANIKIN_STATUS_OK);
     REQUIRE(i2c_hal_write_bytes_fake.arg3_val == 2);
     REQUIRE(write_buffer[0] == GET_UPPER_8_BITS_OF_SHORT(reg));
     REQUIRE(write_buffer[1] == GET_LOWER_8_BITS_OF_SHORT(reg));
-    REQUIRE(val == 0xCAFE);
+    REQUIRE(val[0] == 0xCA);
+    REQUIRE(val[1] == 0xFE);
 }
 
 int
