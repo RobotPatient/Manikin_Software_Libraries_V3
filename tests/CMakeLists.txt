@@ -57,3 +57,7 @@ catch_discover_tests(test_timer)
 add_executable(test_spi ${CMAKE_CURRENT_LIST_DIR}/spi/test_spi.cpp)
 target_link_libraries(test_spi ${PROJECT_NAME} Catch2 fff)
 catch_discover_tests(test_spi)
+
+add_executable(test_w25qxx128 ${CMAKE_CURRENT_LIST_DIR}/w25qxx128/test_w25qxx.cpp)
+target_link_libraries(test_w25qxx128 ${PROJECT_NAME} Catch2 fff)
+catch_discover_tests(test_w25qxx128)

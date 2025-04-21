@@ -41,6 +41,8 @@ extern "C"
 
 #define MANIKIN_WATCHDOG_HAL_DEINIT(watch_inst) watchdog_hal_deinit(watch_inst)
 
+#define MANIKIN_HAL_GET_TICK() timer_hal_get_tick()
+
 #define MANIKIN_I2C_BUS_RESET(i2c_inst) i2c_hal_bus_reset(i2c_inst)
 
 #define MANIKIN_I2C_BUS_RECOVER() i2c_hal_bus_recover()

@@ -13,7 +13,7 @@ extern "C"
     DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_start, manikin_timer_inst_t);
     DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_stop, manikin_timer_inst_t);
     DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_deinit, manikin_timer_inst_t);
-
+    DECLARE_FAKE_VALUE_FUNC0(int, timer_hal_get_tick);
 #ifdef __cplusplus
 }
 #endif

@@ -6,6 +6,8 @@ extern "C"
 #endif
 #include <stdint.h>
 
+#define MANIKIN_SOFTWARE_MAX_TIMEOUT   1
+#define MANIKIN_FLASH_MAX_RETRIES      3
 #define MANIKIN_SOFTWARE_MIN_SPI_SPEED (10e6)
 #define MANIKIN_SOFTWARE_MAX_SPI_SPEED (50e6)
 
