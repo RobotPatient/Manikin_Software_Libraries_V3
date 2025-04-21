@@ -30,11 +30,11 @@ target_compile_definitions(hal_mock PUBLIC "FFF_GENERATE")
 
 target_link_libraries(${PROJECT_NAME} hal_mock)
 
-add_executable(test_i2c ${CMAKE_CURRENT_LIST_DIR}/i2c/i2c_test.cpp)
+add_executable(test_i2c ${CMAKE_CURRENT_LIST_DIR}/i2c/test_i2c.cpp)
 target_link_libraries(test_i2c ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_i2c)
 
-add_executable(test_vl6180 ${CMAKE_CURRENT_LIST_DIR}/vl6180x/vl6180x_test.cpp)
+add_executable(test_vl6180 ${CMAKE_CURRENT_LIST_DIR}/vl6180x/test_vl6180x.cpp)
 target_link_libraries(test_vl6180 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_vl6180)
 
@@ -42,7 +42,7 @@ add_executable(test_sdp810 ${CMAKE_CURRENT_LIST_DIR}/sdp810/test_sdp810.cpp)
 target_link_libraries(test_sdp810 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_sdp810)
 
-add_executable(test_ads7138 ${CMAKE_CURRENT_LIST_DIR}/ads7138/ads7138_test.cpp)
+add_executable(test_ads7138 ${CMAKE_CURRENT_LIST_DIR}/ads7138/test_ads7138.cpp)
 target_link_libraries(test_ads7138 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_ads7138)
 
@@ -50,7 +50,7 @@ add_executable(test_bmm350 ${CMAKE_CURRENT_LIST_DIR}/bmm350/test_bmm350.cpp)
 target_link_libraries(test_bmm350 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_bmm350)
 
-add_executable(test_timer ${CMAKE_CURRENT_LIST_DIR}/timer/timer_test.cpp)
+add_executable(test_timer ${CMAKE_CURRENT_LIST_DIR}/timer/test_timer.cpp)
 target_link_libraries(test_timer ${PROJECT_NAME} Catch2 fff)
 catch_discover_tests(test_timer)
 

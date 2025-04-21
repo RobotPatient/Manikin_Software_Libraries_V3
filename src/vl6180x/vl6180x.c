@@ -1,12 +1,36 @@
+/**
+ * @file            vl6180x.c
+ * @brief           Driver implementation for STM VL6180x ranging ToF sensor
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include "vl6180x.h"
 #include "i2c/i2c.h"
 #include "private/vl6180x_regs.h"
 #include "error_handler/error_handler.h"
 
-#define HASH_VL6180X 0xE1B0199E
+#define HASH_VL6180X 0xE1B0199Eu
 
-/* Some of these are undocumented private registers */
-const manikin_sensor_reg_t init_regs[]
+// NOTE: Some of these are undocumented private registers
+static const manikin_sensor_reg_t init_regs[]
     = { { 0x0207, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { 0x0208, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { 0x0096, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE },
@@ -53,7 +77,7 @@ const manikin_sensor_reg_t init_regs[]
         { VL6180X_REG_FIRMWARE_RESULT_SCALER, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { VL6180X_REG_SYSRANGE_START, 0x03, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
-manikin_status_t
+static manikin_status_t
 vl6180x_check_params (manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_VL6180X, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
@@ -75,8 +99,12 @@ vl6180x_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, init_regs[i].reg, init_regs[i].val);
+        // WARNING: Cast in line below.
+        // NOTE: Mask ensures only lower byte is written; cast enforces 8-bit width
+        manikin_i2c_write_reg(sensor_ctx->i2c,
+                              sensor_ctx->i2c_addr,
+                              init_regs[i].reg,
+                              (uint8_t)(init_regs[i].val & 0xFF));
     }
     return MANIKIN_STATUS_OK;
 }

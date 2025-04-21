@@ -1,3 +1,27 @@
+/**
+ * @file             test_w25qxx.cpp
+ * @brief           Test for Winbond W25QXX 128 Mbit SPI NOR flash chip driver
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include "catch2/catch_all.hpp"
 #include <catch2/catch_session.hpp>
 #include <w25qxx128/w25qxx128.h>
@@ -26,7 +50,7 @@ custom_spi_write (manikin_spi_inst_t inst, const uint8_t *data, size_t len)
     }
     if (data != NULL)
     {
-        if (data[0] == 0x01)
+        if (data[0] == 0x01u)
         {
             busy_reg_called = true;
         }
@@ -250,9 +274,9 @@ TEST_CASE("w25qxx_status handles invalid JEDEC ID correctly", "[status][invalid]
     reset_spi_mocks();
 
     uint8_t                  spi_handle;
-    manikin_spi_cs_t         cs_handle = { .port = 5, .pin = 1 };
+    manikin_spi_cs_t         cs_handle = { .port = 5u, .pin = 1u };
     manikin_spi_memory_ctx_t mem_ctx
-        = { .spi = &spi_handle, .spi_cs = cs_handle, .mem_size = 16000000, .fault_cnt = 0 };
+        = { .spi = &spi_handle, .spi_cs = cs_handle, .mem_size = 16000000u, .fault_cnt = 0u };
 
     // Simulate an invalid JEDEC ID
     spi_read_buffer.push_back(0xFF); // Invalid response
@@ -266,8 +290,8 @@ TEST_CASE("w25qxx_status handles invalid JEDEC ID correctly", "[status][invalid]
     REQUIRE(w25qxx_status(&mem_ctx)
             == MANIKIN_STATUS_ERR_READ_FAIL); // Expecting an error due to invalid ID
 
-    CHECK(spi_hal_read_bytes_fake.call_count == 1);
-    CHECK(spi_hal_write_bytes_fake.call_count == 1);
+    CHECK(spi_hal_read_bytes_fake.call_count == 1u);
+    CHECK(spi_hal_write_bytes_fake.call_count == 1u);
 }
 
 TEST_CASE("w25qxx_write handles SPI write timeout", "[write][timeout]")
@@ -279,7 +303,7 @@ TEST_CASE("w25qxx_write handles SPI write timeout", "[write][timeout]")
     manikin_spi_memory_ctx_t mem_ctx
         = { .spi = &spi_handle, .spi_cs = cs_handle, .mem_size = 16000000, .fault_cnt = 0 };
 
-    uint8_t  test_data[4] = { 1, 2, 3, 4 };
+    uint8_t  test_data[4] = { 1u, 2u, 3u, 4u };
     uint32_t addr         = 0;
 
     // Simulate a timeout during the SPI write operation
@@ -300,9 +324,9 @@ TEST_CASE("w25qxx_write handles invalid data during write", "[write][invalid_dat
     reset_spi_mocks();
 
     uint8_t                  spi_handle;
-    manikin_spi_cs_t         cs_handle = { .port = 5, .pin = 1 };
+    manikin_spi_cs_t         cs_handle = { .port = 5u, .pin = 1u };
     manikin_spi_memory_ctx_t mem_ctx
-        = { .spi = &spi_handle, .spi_cs = cs_handle, .mem_size = 16000000, .fault_cnt = 0 };
+        = { .spi = &spi_handle, .spi_cs = cs_handle, .mem_size = 16000000u, .fault_cnt = 0u };
 
     uint8_t *test_data = NULL; // Simulating invalid (NULL) data
     uint32_t addr      = 0;
@@ -321,11 +345,7 @@ TEST_CASE("w25qxx_write handles invalid data during write", "[write][invalid_dat
 int
 main (int argc, char *argv[])
 {
-    // your setup ...
-
     int result = Catch::Session().run(argc, argv);
-
-    // your clean-up...
 
     return result;
 }

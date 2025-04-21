@@ -1,13 +1,37 @@
+/**
+ * @file            bmm350.c
+ * @brief           Driver implementation for a BMM350 3-axis magnetometer
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include <bmm350/bmm350.h>
 #include "i2c/i2c.h"
 #include "private/bmm350_regs.h"
 #include "error_handler/error_handler.h"
 
-#define HASH_BMM350 0x10C9F1D2
+#define HASH_BMM350 0x10C9F1D2u
 
-const manikin_sensor_reg_t init_regs[] = {
+static const manikin_sensor_reg_t init_regs[] = {
     /* Set strong drive on all pins  */
-    { BMM350_REG_PAD_CTRL, 0x07, MANIKIN_SENSOR_REG_TYPE_WRITE },
+    { BMM350_REG_PAD_CTRL, 0x07u, MANIKIN_SENSOR_REG_TYPE_WRITE },
     /* Clear the sampling settings register first  */
     { BMM350_REG_PMU_CMD_AGGR_SET, 0, MANIKIN_SENSOR_REG_TYPE_WRITE },
     /* Set the sampling rate to 200Hz with 4 AVG samples */
@@ -24,7 +48,7 @@ const manikin_sensor_reg_t init_regs[] = {
     { BMM350_REG_PMU_CMD, (BMM350_PMU_CMD_NM), MANIKIN_SENSOR_REG_TYPE_WRITE },
 };
 
-manikin_status_t
+static manikin_status_t
 bmm350_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
     MANIKIN_ASSERT(HASH_BMM350, (sensor_ctx != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
@@ -40,8 +64,12 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     sensor_ctx->needs_reinit = 0;
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        manikin_i2c_write_reg(
-            sensor_ctx->i2c, sensor_ctx->i2c_addr, init_regs[i].reg, init_regs[i].val);
+        // WARNING: Cast in line below.
+        // NOTE: Mask ensures only lower byte is written; cast enforces 8-bit width
+        manikin_i2c_write_reg(sensor_ctx->i2c,
+                              sensor_ctx->i2c_addr,
+                              init_regs[i].reg,
+                              (uint8_t)(init_regs[i].val & 0xFF));
     }
     return MANIKIN_STATUS_OK;
 }

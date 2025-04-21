@@ -1,3 +1,27 @@
+/**
+ * @file             test_sdp810.cpp
+ * @brief           Test for Sensirion SDP810 Differential pressure sensor software module
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include "catch2/catch_all.hpp"
 #include <catch2/catch_session.hpp>
 #include "sdp810/sdp810.h"
@@ -5,11 +29,11 @@
 
 // Mocks or test doubles
 static uint8_t dummy_read_buf[4];
-uint8_t        handle = 1;
+static uint8_t handle = 1;
 // Fake sensor context
-manikin_sensor_ctx_t dummy_ctx;
+static manikin_sensor_ctx_t dummy_ctx;
 
-uint16_t cur_reg;
+static uint16_t cur_reg;
 
 size_t
 custom_write_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, const uint8_t *bytes, size_t len)

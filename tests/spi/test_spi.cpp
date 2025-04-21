@@ -1,3 +1,27 @@
+/**
+ * @file             test_spi.cpp
+ * @brief           Test for platform-agnostic spi wrapper module
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include "catch2/catch_all.hpp"
 #include "spi/spi.h"
 #include "manikin_software_conf.h"
@@ -40,22 +64,22 @@ TEST_CASE("spi_init returns error on HAL failure", "[init]")
     reset_spi_mocks();
     spi_hal_init_fake.return_val = MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL;
 
-    uint8_t inst = 1;
+    uint8_t inst = 1u;
 
     manikin_status_t status = manikin_spi_init(&inst, MANIKIN_SOFTWARE_MIN_SPI_SPEED);
     REQUIRE(status == MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL);
-    REQUIRE(spi_hal_init_fake.call_count == 1);
+    REQUIRE(spi_hal_init_fake.call_count == 1u);
 }
 
 TEST_CASE("spi_init succeeds", "[init]")
 {
     reset_spi_mocks();
     spi_hal_init_fake.return_val = MANIKIN_STATUS_OK;
-    uint8_t inst                 = 1;
+    uint8_t inst                 = 1u;
 
     manikin_status_t status = manikin_spi_init(&inst, MANIKIN_SOFTWARE_MIN_SPI_SPEED);
     REQUIRE(status == MANIKIN_STATUS_OK);
-    REQUIRE(spi_hal_init_fake.call_count == 1);
+    REQUIRE(spi_hal_init_fake.call_count == 1u);
 }
 
 TEST_CASE("spi_write writes correct data", "[write]")
@@ -63,13 +87,13 @@ TEST_CASE("spi_write writes correct data", "[write]")
     reset_spi_mocks();
 
     spi_hal_write_bytes_fake.custom_fake = custom_spi_write;
-    spi_hal_write_bytes_fake.return_val  = 3;
-    uint8_t inst                         = 1;
+    spi_hal_write_bytes_fake.return_val  = 3u;
+    uint8_t inst                         = 1u;
 
     uint8_t test_data[] = { 0xAA, 0xBB, 0xCC };
     size_t  written     = manikin_spi_write(&inst, test_data, sizeof(test_data));
 
-    REQUIRE(written == 3);
+    REQUIRE(written == 3u);
     REQUIRE(spi_write_buffer[0] == 0xAA);
     REQUIRE(spi_write_buffer[1] == 0xBB);
     REQUIRE(spi_write_buffer[2] == 0xCC);
