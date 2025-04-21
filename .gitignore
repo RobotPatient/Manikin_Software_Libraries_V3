@@ -61,4 +61,3 @@ cmake-build-*/
 # IDE folders
 .idea/
 .vscode/
-/docs/
