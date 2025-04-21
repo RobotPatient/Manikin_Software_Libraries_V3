@@ -10,19 +10,15 @@ extern "C"
 
     manikin_status_t w25qxx_status(manikin_spi_memory_ctx_t *mem_ctx);
 
-    manikin_memory_result_t w25qxx_ioctl(manikin_spi_memory_ctx_t *mem_ctx,
-                                         uint8_t                   cmd,
-                                         void                     *buff);
-
     manikin_memory_result_t w25qxx_write(manikin_spi_memory_ctx_t *mem_ctx,
-                                         const uint8_t            *data,
-                                         uint64_t                  lba,
+                                         uint8_t                  *data,
+                                         uint32_t                  lba,
                                          size_t                    len);
     manikin_memory_result_t w25qxx_read(manikin_spi_memory_ctx_t *mem_ctx,
                                         uint8_t                  *data,
-                                        uint64_t                  lba,
+                                        uint32_t                  lba,
                                         size_t                    len);
-
+    manikin_status_t w25qxx_erase_sector(manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number);
     manikin_status_t w25qxx_deinit(manikin_spi_memory_ctx_t *mem_ctx);
 
 #ifdef __cplusplus

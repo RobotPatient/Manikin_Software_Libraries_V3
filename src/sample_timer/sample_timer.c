@@ -80,7 +80,7 @@ manikin_status_t
 sample_timer_recover_i2c (manikin_sensor_ctx_t *sensor)
 {
     manikin_status_t status;
-    status              = MANIKIN_I2C_BUS_RECOVER(sensor->i2c);
+    status              = MANIKIN_I2C_BUS_RECOVER();
     const uint32_t baud = MANIKIN_I2C_GET_BAUD(sensor->i2c);
     status              = MANIKIN_I2C_HAL_INIT(sensor->i2c, baud);
     return status;

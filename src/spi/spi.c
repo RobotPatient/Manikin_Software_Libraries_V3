@@ -24,7 +24,7 @@ manikin_spi_start_transaction (manikin_spi_cs_t cs_pin)
 }
 
 size_t
-manikin_spi_write (manikin_spi_inst_t spi_inst, const uint8_t *data, size_t len)
+manikin_spi_write (manikin_spi_inst_t spi_inst, uint8_t *data, size_t len)
 {
     MANIKIN_ASSERT(SPI_HASH, spi_inst != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(SPI_HASH, data != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);

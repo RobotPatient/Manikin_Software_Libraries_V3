@@ -27,7 +27,7 @@ extern "C"
      * @param len      The number of bytes to write to spi-device
      * @return The number of bytes written to spi-device
      */
-    size_t manikin_spi_write(manikin_spi_inst_t spi_inst, const uint8_t *data, size_t len);
+    size_t manikin_spi_write(manikin_spi_inst_t spi_inst, uint8_t *data, size_t len);
 
     /**
      * @brief Reads multiple bytes from a spi-device
