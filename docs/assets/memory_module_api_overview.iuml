@@ -1,0 +1,44 @@
+@startuml
+title Flash Module - Public API Overview
+
+' --- Flash Module API Class ---
+class "<memory_module>" {
+  +manikin_status_t <memory_module>_init(manikin_spi_memory_ctx_t *mem_ctx)
+  +manikin_status_t <memory_module>_status(manikin_spi_memory_ctx_t *mem_ctx)
+  +manikin_memory_result_t <memory_module>_write(mem_ctx, data, addr, len)
+  +manikin_memory_result_t <memory_module>_read(mem_ctx, data, addr, len)
+  +manikin_memory_result_t <memory_module>_erase_sector(mem_ctx, sector_number)
+  +manikin_status_t <memory_module>_deinit(manikin_spi_memory_ctx_t *mem_ctx)
+}
+
+' --- Context Struct for SPI Flash Memory ---
+class manikin_spi_memory_ctx_t {
+  - manikin_spi_inst_t spi
+  - manikin_spi_cs_t spi_cs
+  - size_t mem_size
+  - uint8_t fault_cnt
+}
+
+' --- Return Types ---
+enum manikin_status_t {
+  MANIKIN_STATUS_OK
+  MANIKIN_STATUS_ERR_NULL_PARAM
+  MANIKIN_STATUS_ERR_INVALID_SPI_BAUD
+  ...
+}
+
+enum manikin_memory_result_t {
+  MANIKIN_MEMORY_RESULT_OK
+  MANIKIN_MEMORY_RESULT_ERROR
+  MANIKIN_MEMORY_RESULT_WRPRT
+  MANIKIN_MEMORY_RESULT_NOTRDY
+  MANIKIN_MEMORY_RESULT_PARERR
+}
+
+'<memory_module> depends on context and return types
+"<memory_module>" --> manikin_spi_memory_ctx_t : uses
+"<memory_module>" --> manikin_status_t : returns
+"<memory_module>" --> manikin_memory_result_t : returns
+
+@enduml
+

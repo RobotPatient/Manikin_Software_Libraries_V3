@@ -1,0 +1,33 @@
+@startuml
+title I2C Module - Public API Overview
+
+class manikin_i2c {
+  +manikin_status_t manikin_i2c_init(i2c_inst, i2c_baud)
+  +uint8_t manikin_i2c_check_device_address(i2c_inst, i2c_addr)
+  +manikin_status_t manikin_i2c_write_reg(i2c_inst, i2c_addr, reg, data)
+  +manikin_status_t manikin_i2c_write_reg16(i2c_inst, i2c_addr, reg, data)
+  +manikin_status_t manikin_i2c_read_reg(i2c_inst, i2c_addr, reg, *data)
+  +manikin_status_t manikin_i2c_read_reg16(i2c_inst, i2c_addr, reg, *data)
+  +size_t manikin_i2c_read_bytes(i2c_inst, i2c_addr, *data, len)
+  +size_t manikin_i2c_write_bytes(i2c_inst, i2c_addr, *data, len)
+  +manikin_status_t manikin_i2c_deinit(i2c_inst)
+}
+
+enum manikin_status_t {
+  MANIKIN_STATUS_OK
+  MANIKIN_STATUS_ERR_NULL_PARAM
+  MANIKIN_STATUS_ERR_INVALID_I2C_BAUD
+  ...
+}
+
+enum manikin_i2c_speed_t {
+  MANIKIN_I2C_SPEED_NONE
+  MANIKIN_I2C_SPEED_100KHz
+  MANIKIN_I2C_SPEED_400KHz
+  MANIKIN_I2C_SPEED_1MHz
+}
+
+manikin_i2c --> manikin_status_t : returns
+manikin_i2c --> manikin_i2c_speed_t : configures
+
+@enduml

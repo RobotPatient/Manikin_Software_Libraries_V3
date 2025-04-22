@@ -1,0 +1,37 @@
+@startuml
+title Flash Memory Module API Call Sequence
+
+actor "Application Code" as App
+participant "Flash Driver" as Flash
+
+== Initialization ==
+App -> Flash : <memory_chip>_init(mem_ctx)
+activate Flash
+Flash --> App : MANIKIN_STATUS_OK / error
+deactivate Flash
+
+== Write Operation ==
+App -> Flash : <memory_chip>_write(mem_ctx, data, addr, len)
+activate Flash
+Flash --> App : MANIKIN_MEMORY_RESULT_*
+deactivate Flash
+
+== Read Operation ==
+App -> Flash : <memory_chip>_read(mem_ctx, data, addr, len)
+activate Flash
+Flash --> App : MANIKIN_MEMORY_RESULT_*
+deactivate Flash
+
+== Sector Erase ==
+App -> Flash : <memory_chip>_erase_sector(mem_ctx, sector_number)
+activate Flash
+Flash --> App : MANIKIN_MEMORY_RESULT_*
+deactivate Flash
+
+== Optional: Deinitialization ==
+App -> Flash : <memory_chip>_deinit(mem_ctx)
+activate Flash
+Flash --> App : MANIKIN_STATUS_OK
+deactivate Flash
+
+@enduml
