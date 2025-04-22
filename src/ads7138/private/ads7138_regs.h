@@ -30,6 +30,7 @@ extern "C"
 #endif
 #define ADS7138_REG(reg, opcode)    (reg | opcode << 8u)
 #define ADS7138_READ_BUF_SIZE       16u // 2 bytes per channel, 8 channels
+#define ADS7138_NUMBER_OF_CHANNELS  8u
 #define ADS7138_REG_SYSTEM_STATUS   0x00u
 #define ADS7138_REG_GEN_CFG         0x01u
 #define ADS7138_REG_PIN_CFG         0x05u

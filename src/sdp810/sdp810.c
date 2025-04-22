@@ -23,6 +23,8 @@
  */
 
 #include "sdp810.h"
+
+#include "common/manikin_bit_manipulation.h"
 #include "i2c/i2c.h"
 #include "private/sdp810_regs.h"
 #include "error_handler/error_handler.h"
@@ -34,6 +36,12 @@
 static const manikin_sensor_reg_t SDP810_init_regs[]
     = { { SDP810_REG_CONT_MASS_FLOW, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param sensor_ctx The sensor settings ptr which should contain i2c bus details
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 sdp810_check_params (manikin_sensor_ctx_t *sensor_ctx)
 {
@@ -55,7 +63,7 @@ sdp810_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
         manikin_i2c_write_reg(sensor_ctx->i2c,
                               sensor_ctx->i2c_addr,
                               SDP810_init_regs[i].reg,
-                              (uint8_t)(SDP810_init_regs[i].val & 0xFF));
+                              GET_LOWER_8_BITS_OF_SHORT(SDP810_init_regs[i].val));
     }
     return MANIKIN_STATUS_OK;
 }

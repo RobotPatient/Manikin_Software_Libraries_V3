@@ -29,6 +29,12 @@
 
 #define HASH_I2C 0xA0DF31CAu
 
+/**
+ * @brief Internal function to check the baud parameter
+ * @param baud The baud-rate to check
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_INVALID_I2C_BAUD if invalid
+ */
 static manikin_status_t
 manikin_i2c_validate_baud (const manikin_i2c_speed_t baud)
 {

@@ -53,7 +53,6 @@ extern "C"
 
 /************************ Length macros ************************/
 #define BMM350_OTP_DATA_LENGTH    32u
-#define BMM350_READ_BUFFER_LENGTH 127u
 #define BMM350_MAG_TEMP_DATA_LEN  12u
 
 /************************ Averaging macros **********************/
@@ -87,6 +86,7 @@ extern "C"
 #define BMM350_PMU_CMD_NM_TC    0x09u
 
 #define BMM350_PMU_STATUS_0 0x0u
+#define BMM350_AGGR_CLR     0x0u
 
 #define BMM350_DISABLE 0x0u
 #define BMM350_ENABLE  0x1u
@@ -141,9 +141,11 @@ extern "C"
 /*! Register to set I2C address to HIGH */
 #define BMM350_I2C_ADSEL_SET_HIGH 0x15u
 
-#define BMM350_DUMMY_BYTES 2u
+#define BMM350_DUMMY_BYTES        2u
+#define BMM350_READ_BUFFER_LENGTH 14u
 
     /********************** Register Addresses ************************/
+#define BMM350_REG_SEL 0x00u
 
 #define BMM350_REG_CHIP_ID           0x00u
 #define BMM350_REG_REV_ID            0x01u

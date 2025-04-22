@@ -25,6 +25,7 @@
 #include "w25qxx128.h"
 
 #include "manikin_platform.h"
+#include "common/manikin_bit_manipulation.h"
 #include "error_handler/error_handler.h"
 #include "spi/spi.h"
 #include "private/w25qxx128_regs.h"
@@ -44,13 +45,13 @@ w25qxx_check_id (manikin_spi_memory_ctx_t *mem_ctx)
     MANIKIN_ASSERT(W25QXX_HASH, mem_ctx != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
     w25qxx_reg_write_buf[0] = W25QXX_REG_JEDEC;
     manikin_spi_start_transaction(mem_ctx->spi_cs);
-    manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 1);
+    manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_JEDEC_WR_SIZE);
     manikin_spi_read(mem_ctx->spi, w25qxx_reg_read_buf, W25QXX_REG_JEDEC_SIZE);
     manikin_spi_end_transaction(mem_ctx->spi_cs);
     MANIKIN_NON_CRIT_ASSERT(W25QXX_HASH,
-                            (w25qxx_reg_read_buf[0] == W25QXX_RESP_MANUFACTURER_ID
-                             && w25qxx_reg_read_buf[1] == W25QXX_RESP_MANUFACTURER_MEM_TYPE
-                             && w25qxx_reg_read_buf[2] == W25QXX_RESP_MANUFACTURER_MEM_SIZE),
+                            (w25qxx_reg_read_buf[W25QXX_MAN_ID_IDX] == W25QXX_RESP_MANUFACTURER_ID
+                             && w25qxx_reg_read_buf[W25QXX_MEM_TYPE_IDX] == W25QXX_RESP_MEM_TYPE
+                             && w25qxx_reg_read_buf[W25QXX_MEM_SIZE_IDX] == W25QXX_RESP_MEM_SIZE),
                             MANIKIN_STATUS_ERR_READ_FAIL);
     return MANIKIN_STATUS_OK;
 }
@@ -86,11 +87,14 @@ w25qxx_wait_while_busy (manikin_spi_memory_ctx_t *mem_ctx)
 
     do
     {
-        status                     = manikin_spi_start_transaction(mem_ctx->spi_cs);
-        const size_t bytes_written = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 1);
-        const size_t bytes_read    = manikin_spi_read(mem_ctx->spi, w25qxx_reg_read_buf, 1);
+        status = manikin_spi_start_transaction(mem_ctx->spi_cs);
+        const size_t bytes_written
+            = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_STATUS_SIZE);
+        const size_t bytes_read
+            = manikin_spi_read(mem_ctx->spi, w25qxx_reg_read_buf, W25QXX_REG_STATUS_SIZE);
         status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
-        if (status != MANIKIN_STATUS_OK || bytes_written != 1 || bytes_read != 1)
+        if (status != MANIKIN_STATUS_OK || bytes_written != W25QXX_REG_STATUS_SIZE
+            || bytes_read != W25QXX_REG_STATUS_SIZE)
         {
             status = MANIKIN_STATUS_ERR_READ_FAIL;
             break;
@@ -100,6 +104,26 @@ w25qxx_wait_while_busy (manikin_spi_memory_ctx_t *mem_ctx)
 
     manikin_spi_end_transaction(mem_ctx->spi_cs);
     return status;
+}
+
+static manikin_status_t
+w25qxx_set_address (manikin_spi_memory_ctx_t *mem_ctx, const uint8_t opcode, const uint32_t addr)
+{
+    w25qxx_reg_write_buf[0] = opcode;
+    w25qxx_reg_write_buf[1] = GET_LAST_8_BITS_OF_24B(addr);
+    w25qxx_reg_write_buf[2] = GET_UPPER_8_BITS_OF_24B(addr);
+    w25qxx_reg_write_buf[3] = GET_LOWER_8_BITS_OF_24B(addr);
+
+    manikin_status_t status = manikin_spi_start_transaction(mem_ctx->spi_cs);
+    size_t           bytes_written
+        = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_PAGE_PROGRAM_SIZE);
+
+    MANIKIN_NON_CRIT_ASSERT(
+        W25QXX_HASH,
+        ((status == MANIKIN_STATUS_OK) && (bytes_written == W25QXX_REG_PAGE_PROGRAM_SIZE)),
+        MANIKIN_STATUS_ERR_WRITE_FAIL);
+
+    return MANIKIN_STATUS_OK;
 }
 
 manikin_memory_result_t
@@ -133,22 +157,16 @@ w25qxx_write (manikin_spi_memory_ctx_t *mem_ctx, uint8_t *data, uint32_t addr, s
         manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 1);
         manikin_spi_end_transaction(mem_ctx->spi_cs);
 
-        w25qxx_reg_write_buf[0] = W25QXX_REG_PAGE_PROGRAM;
-        w25qxx_reg_write_buf[1] = (addr >> 16) & 0xFF;
-        w25qxx_reg_write_buf[2] = (addr >> 8) & 0xFF;
-        w25qxx_reg_write_buf[3] = addr & 0xFF;
+        manikin_status_t status = w25qxx_set_address(mem_ctx, W25QXX_REG_PAGE_PROGRAM, addr);
 
-        manikin_status_t status = manikin_spi_start_transaction(mem_ctx->spi_cs);
-        size_t           bytes_written
-            = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_PAGE_PROGRAM_SIZE);
-        if (bytes_written != W25QXX_REG_PAGE_PROGRAM_SIZE)
+        if (status != MANIKIN_STATUS_OK)
         {
             manikin_spi_end_transaction(mem_ctx->spi_cs);
             mem_ctx->fault_cnt++;
             return MANIKIN_MEMORY_RESULT_ERROR;
         }
 
-        bytes_written = manikin_spi_write(mem_ctx->spi, src, chunk);
+        size_t bytes_written = manikin_spi_write(mem_ctx->spi, src, chunk);
         status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
         if (status != MANIKIN_STATUS_OK || bytes_written != chunk)
         {
@@ -176,10 +194,13 @@ w25qxx_read (manikin_spi_memory_ctx_t *mem_ctx, uint8_t *data, uint32_t addr, si
     MANIKIN_ASSERT(W25QXX_HASH,
                    mem_ctx != NULL && data != NULL && len < W25QXX_FLASH_SIZE && len != 0,
                    MANIKIN_MEMORY_RESULT_PARERR);
+
     const uint8_t fault_cnt_not_exceeded = mem_ctx->fault_cnt < MANIKIN_FLASH_MAX_RETRIES;
     MANIKIN_ASSERT(W25QXX_HASH, fault_cnt_not_exceeded, MANIKIN_MEMORY_RESULT_NOTRDY);
+
     manikin_status_t status = w25qxx_check_id(mem_ctx);
     MANIKIN_ASSERT(W25QXX_HASH, status == MANIKIN_STATUS_OK, MANIKIN_MEMORY_RESULT_NOTRDY);
+
     addr             = addr * W25QXX_PAGE_SIZE;
     size_t remaining = len;
 
@@ -190,24 +211,20 @@ w25qxx_read (manikin_spi_memory_ctx_t *mem_ctx, uint8_t *data, uint32_t addr, si
         mem_ctx->fault_cnt++;
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
-    w25qxx_reg_write_buf[0] = W25QXX_REG_READ;
-    w25qxx_reg_write_buf[1] = (addr >> 16) & 0xFF;
-    w25qxx_reg_write_buf[2] = (addr >> 8) & 0xFF;
-    w25qxx_reg_write_buf[3] = addr & 0xFF;
 
-    size_t bytes_written
-        = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_READ_SIZE);
-    if (bytes_written != W25QXX_REG_READ_SIZE)
+    status |= w25qxx_set_address(mem_ctx, W25QXX_REG_READ, addr);
+    if (status != MANIKIN_STATUS_OK)
     {
         mem_ctx->fault_cnt++;
         manikin_spi_end_transaction(mem_ctx->spi_cs);
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
-    size_t time_start = MANIKIN_HAL_GET_TICK();
 
+    size_t time_start = MANIKIN_HAL_GET_TICK();
     // Worst case, flash runs at 10 MHz, with a very inefficient hal, it would take 1 cycle to
     // receive 1024 bytes
     size_t timeout_time = ((len / 1024) + 1) * MANIKIN_SOFTWARE_MAX_TIMEOUT;
+
     while (remaining > 0 && W25Q_NO_TIMEOUT_REACHED(time_start, timeout_time))
     {
         size_t chunk = remaining > W25QXX_PAGE_SIZE ? W25QXX_PAGE_SIZE : remaining;
@@ -240,27 +257,22 @@ w25qxx_erase_sector (manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number)
     const uint8_t fault_cnt_not_exceeded = mem_ctx->fault_cnt < MANIKIN_FLASH_MAX_RETRIES;
     MANIKIN_ASSERT(W25QXX_HASH, fault_cnt_not_exceeded, MANIKIN_MEMORY_RESULT_NOTRDY);
 
-    uint32_t addr            = sector_number * W25QXX_SECTOR_SIZE;
-    w25qxx_reg_write_buf[0]  = W25QXX_REG_WREN;
-    manikin_status_t status  = manikin_spi_start_transaction(mem_ctx->spi_cs);
-    size_t           written = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 1);
+    const uint32_t addr     = sector_number * W25QXX_SECTOR_SIZE;
+    w25qxx_reg_write_buf[0] = W25QXX_REG_WREN;
+    manikin_status_t status = manikin_spi_start_transaction(mem_ctx->spi_cs);
+    const size_t     written
+        = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_WREN_SIZE);
     status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
-    if (status != MANIKIN_STATUS_OK && written != 1)
+    if (status != MANIKIN_STATUS_OK && written != W25QXX_REG_WREN_SIZE)
     {
         manikin_spi_end_transaction(mem_ctx->spi_cs);
         mem_ctx->fault_cnt++;
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
 
-    w25qxx_reg_write_buf[0] = W25QXX_REG_SECTOR_ERASE;
-    w25qxx_reg_write_buf[1] = (addr >> 16) & 0xFF;
-    w25qxx_reg_write_buf[2] = (addr >> 8) & 0xFF;
-    w25qxx_reg_write_buf[3] = addr & 0xFF;
+    status |= w25qxx_set_address(mem_ctx, W25QXX_REG_SECTOR_ERASE, addr);
 
-    status  = manikin_spi_start_transaction(mem_ctx->spi_cs);
-    written = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_SECTOR_ERASE_SIZE);
-    status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
-    if (status != MANIKIN_STATUS_OK && written != W25QXX_REG_SECTOR_ERASE_SIZE)
+    if (status != MANIKIN_STATUS_OK)
     {
         manikin_spi_end_transaction(mem_ctx->spi_cs);
         mem_ctx->fault_cnt++;

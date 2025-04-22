@@ -32,6 +32,12 @@
 static const manikin_sensor_reg_t bhi360_init_regs[]
     = { { 0x00, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param sensor_ctx The sensor settings ptr which should contain i2c bus details
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 bhi360_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
@@ -46,6 +52,7 @@ bhi360_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     manikin_status_t status = bhi360_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BHI360, (status == MANIKIN_STATUS_OK), status);
 
+    // NOTE: needs_reinit is internal variable, which might be uninitialized when entered as param.
     sensor_ctx->needs_reinit = 0;
 
     for (size_t i = 0; i < sizeof(bhi360_init_regs) / sizeof(manikin_sensor_reg_t); i++)

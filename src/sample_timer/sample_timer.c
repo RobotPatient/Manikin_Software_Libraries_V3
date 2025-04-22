@@ -30,6 +30,7 @@
 #define HASH_SAMPLE_TIMER 0x33472A3Fu
 
 #define SAMPLE_TIMER_I2C_BUS_RESET_FREQ_HZ 1u
+#define SAMPLE_TIMER_I2C_BUS_MAX_FREQ_HZ   1000u
 
 enum sample_timer_state
 {
@@ -38,13 +39,20 @@ enum sample_timer_state
     SAMPLE_TIMER_STATE_BUS_RESET
 };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param timer_inst The timer settings ptr which should contain timer settings
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 sample_timer_check_params (sample_timer_ctx_t *timer_inst)
 {
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER, timer_inst->timer != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_SAMPLE_TIMER,
-                   (timer_inst->frequency <= 1000 && timer_inst->frequency >= 1),
+                   (timer_inst->frequency <= SAMPLE_TIMER_I2C_BUS_MAX_FREQ_HZ
+                    && timer_inst->frequency >= SAMPLE_TIMER_I2C_BUS_RESET_FREQ_HZ),
                    MANIKIN_STATUS_ERR_INVALID_TIMER_SAMPLE_RATE);
     return MANIKIN_STATUS_OK;
 }
@@ -161,14 +169,13 @@ sample_timer_end_cb_handler (sample_timer_ctx_t   *timer_inst,
                 // NOTE: Return error state to make sure the statemachine fully finishes
                 status = MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG;
             }
-            else
-            {
-                status = MANIKIN_STATUS_OK;
-            }
+            break;
+        }
+        case MANIKIN_STATUS_OK: {
             break;
         }
         default: {
-            status = read_status;
+            MANIKIN_NON_CRIT_ASSERT(HASH_SAMPLE_TIMER, status != MANIKIN_STATUS_OK, status);
         }
     }
     return status;

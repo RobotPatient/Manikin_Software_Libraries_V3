@@ -22,6 +22,8 @@
  * Author:          Victor Hogeweij
  */
 
+#include "common/manikin_bit_manipulation.h"
+
 #include <bmm350/bmm350.h>
 #include "i2c/i2c.h"
 #include "private/bmm350_regs.h"
@@ -31,9 +33,9 @@
 
 static const manikin_sensor_reg_t init_regs[] = {
     /* Set strong drive on all pins  */
-    { BMM350_REG_PAD_CTRL, 0x07u, MANIKIN_SENSOR_REG_TYPE_WRITE },
+    { BMM350_REG_PAD_CTRL, BMM350_PAD_DRIVE_STRONGEST, MANIKIN_SENSOR_REG_TYPE_WRITE },
     /* Clear the sampling settings register first  */
-    { BMM350_REG_PMU_CMD_AGGR_SET, 0, MANIKIN_SENSOR_REG_TYPE_WRITE },
+    { BMM350_REG_PMU_CMD_AGGR_SET, BMM350_AGGR_CLR, MANIKIN_SENSOR_REG_TYPE_WRITE },
     /* Set the sampling rate to 200Hz with 4 AVG samples */
     { BMM350_REG_PMU_CMD_AGGR_SET,
       (BMM350_AVG_SHIFT(BMM350_AVG_4) | BMM350_ODR_200HZ),
@@ -48,6 +50,12 @@ static const manikin_sensor_reg_t init_regs[] = {
     { BMM350_REG_PMU_CMD, (BMM350_PMU_CMD_NM), MANIKIN_SENSOR_REG_TYPE_WRITE },
 };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param sensor_ctx The sensor settings ptr which should contain i2c bus details
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 bmm350_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
@@ -61,15 +69,16 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = bmm350_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
+
+    // NOTE: needs_reinit is internal variable, which might be uninitialized when entered as param.
     sensor_ctx->needs_reinit = 0;
+
     for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        // WARNING: Cast in line below.
-        // NOTE: Mask ensures only lower byte is written; cast enforces 8-bit width
         manikin_i2c_write_reg(sensor_ctx->i2c,
                               sensor_ctx->i2c_addr,
                               init_regs[i].reg,
-                              (uint8_t)(init_regs[i].val & 0xFF));
+                              GET_LOWER_8_BITS_OF_SHORT(init_regs[i].val));
     }
     return MANIKIN_STATUS_OK;
 }
@@ -80,16 +89,20 @@ bmm350_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     MANIKIN_ASSERT(HASH_BMM350, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     manikin_status_t status = bmm350_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
+
     if (sensor_ctx->needs_reinit)
     {
         bmm350_init_sensor(sensor_ctx);
     }
-    status
-        = manikin_i2c_write_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, BMM350_REG_MAG_X_LSB, 0x00);
+
+    status = manikin_i2c_write_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, BMM350_REG_MAG_X_LSB, BMM350_REG_SEL);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
 
-    size_t bytes_read = manikin_i2c_read_bytes(sensor_ctx->i2c, sensor_ctx->i2c_addr, read_buf, 14);
-    MANIKIN_ASSERT(HASH_BMM350, (bytes_read == 14), MANIKIN_STATUS_ERR_READ_FAIL);
+    size_t bytes_read = manikin_i2c_read_bytes(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, read_buf, BMM350_READ_BUFFER_LENGTH);
+    MANIKIN_ASSERT(
+        HASH_BMM350, (bytes_read == BMM350_READ_BUFFER_LENGTH), MANIKIN_STATUS_ERR_READ_FAIL);
 
     return MANIKIN_STATUS_OK;
 }

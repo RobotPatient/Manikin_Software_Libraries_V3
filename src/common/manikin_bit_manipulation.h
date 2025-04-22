@@ -45,6 +45,18 @@ extern "C"
 #define GET_UPPER_8_BITS_OF_SHORT(x) (uint8_t)(BITMASK_COMPARE(((x) >> (8)), (0xFF)))
 
 // WARNING: Cast in line below
+// NOTE: Cast and Bitmask ensures result is 8-bit after masking
+#define GET_LOWER_8_BITS_OF_24B(x) (uint8_t)(BITMASK_COMPARE((x), (0xFF)))
+
+// WARNING: Cast in line below
+// NOTE: Cast and Bitmask ensures result is 8-bit after masking
+#define GET_UPPER_8_BITS_OF_24B(x) (uint8_t)(BITMASK_COMPARE(((x) >> (8)), (0xFF)))
+
+// WARNING: Cast in line below
+// NOTE: Cast and Bitmask ensures result is 8-bit after masking
+#define GET_LAST_8_BITS_OF_24B(x) (uint8_t)(BITMASK_COMPARE(((x) >> (16)), (0xFF)))
+
+// WARNING: Cast in line below
 // NOTE: Mask to extract lower 16 bits (no cast needed if used as int)
 #define GET_LOWER_16_BITS_OF_LONG(x) (uint16_t)(BITMASK_COMPARE(((x) >> (16)), (0xFFFF)))
 
@@ -54,7 +66,11 @@ extern "C"
 
 // WARNING: Cast in line below
 // NOTE: Combine two 8-bit values; cast ensures result is 16-bit
-#define CONSTRUCT_SHORT_FROM_BYTES(upper, lower) ((uint16_t)((upper) << (8)) | (lower));
+#define CONSTRUCT_SHORT_FROM_BYTES(upper, lower) ((uint16_t)((upper) << (8)) | (lower))
+
+// WARNING: Cast in line below
+// NOTE: Truncate 16-bit value to 12-bit; cast ensures result is within 16-bits
+#define TRUNCATE_TO_12B_VAL(byte0, byte1) ((uint16_t)(byte0) << 4) | ((byte1) >> 4)
 
 #ifdef __cplusplus
 }

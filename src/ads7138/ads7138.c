@@ -32,24 +32,30 @@
 #define HASH_ADS7138 0x157F34F4u
 
 static const manikin_sensor_reg_t ads7138_init_regs[] = {
-    /* All channels are configured as analog input*/
+    // All channels are configured as analog input
     { ADS7138_REG(ADS7138_REG_PIN_CFG, ADS7138_OP_SET_BIT),
       ADS7138_REG_ALL_PINS_ANALOG_INP_BIT,
       MANIKIN_SENSOR_REG_TYPE_WRITE },
-    /* Set cal bit */
+    // Set cal bit
     { ADS7138_REG(ADS7138_REG_GEN_CFG, ADS7138_OP_SET_BIT),
       ADS7138_REG_CAL_BIT,
       MANIKIN_SENSOR_REG_TYPE_WRITE },
-    /* Set all adc channels as inputs. enabled in scanning sequence. */
+    // Set all adc channels as inputs. enabled in scanning sequence.
     { ADS7138_REG(ADS7138_REG_AUTO_SEQ_CH_SEL, ADS7138_OP_SET_BIT),
       ADS7138_REG_AUTO_SEQ_ALL_CH_SEL,
       MANIKIN_SENSOR_REG_TYPE_WRITE },
-    /* Set Auto sequence mode on = 1. And 4th for sequence start. */
+    // Set Auto sequence mode on = 1. And 4th for sequence start.
     { ADS7138_REG(ADS7138_REG_SEQUENCE_CFG, ADS7138_OP_SET_BIT),
       ADS7138_REG_ENABLE_AUTO_SEQ,
       MANIKIN_SENSOR_REG_TYPE_WRITE }
 };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param sensor_ctx The sensor settings ptr which should contain i2c bus details
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 ads7138_check_params (const manikin_sensor_ctx_t *sensor_ctx)
 {
@@ -63,7 +69,10 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = ads7138_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
+
+    // NOTE: needs_reinit is internal variable, which might be uninitialized when entered as param.
     sensor_ctx->needs_reinit = 0;
+
     uint8_t data;
     status = manikin_i2c_read_reg(sensor_ctx->i2c,
                                   sensor_ctx->i2c_addr,
@@ -71,17 +80,17 @@ ads7138_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
                                   &data);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
 
+    // NOTE: If sensor is properly connected, the status RSVD bit should be 1
     MANIKIN_NON_CRIT_ASSERT(HASH_ADS7138,
                             BIT_IS_SET(data, ADS7138_REG_SYSTEM_STATUS_RSVD_BIT),
                             MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
 
     for (size_t i = 0; i < sizeof(ads7138_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
-        /* Mask ensures only lower byte is written; cast enforces 8-bit width */
         manikin_i2c_write_reg(sensor_ctx->i2c,
                               sensor_ctx->i2c_addr,
                               ads7138_init_regs[i].reg,
-                              (uint8_t)(ads7138_init_regs[i].val & 0xFF));
+                              GET_LOWER_8_BITS_OF_SHORT(ads7138_init_regs[i].val));
     }
     return MANIKIN_STATUS_OK;
 }
@@ -103,6 +112,7 @@ ads7138_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
                                    ADS7138_REG(ADS7138_REG_SEQUENCE_CFG, ADS7138_OP_SET_BIT),
                                    ADS7138_REG_SEQ_START_BIT);
     MANIKIN_ASSERT(HASH_ADS7138, (status == MANIKIN_STATUS_OK), status);
+
     uint8_t raw_buf[ADS7138_READ_BUF_SIZE];
     size_t  bytes_read = manikin_i2c_read_bytes(
         sensor_ctx->i2c, sensor_ctx->i2c_addr, raw_buf, ADS7138_READ_BUF_SIZE);
@@ -112,15 +122,12 @@ ads7138_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
                                    ADS7138_REG_SEQ_START_BIT);
     MANIKIN_ASSERT(HASH_ADS7138, bytes_read == ADS7138_READ_BUF_SIZE, MANIKIN_STATUS_ERR_READ_FAIL);
 
-    /* Convert raw buffer into 12-bit values, store as 2-byte values into read_buf */
-    for (int i = 0; i < 8; i++)
+    // Convert raw buffer into 12-bit values, store as 2-byte values into read_buf
+    for (uint8_t i = 0; i < ADS7138_NUMBER_OF_CHANNELS; i++)
     {
-        /* Cast to uint16_t ensures safe shift; raw_buf is 8-bit, so no overflow */
-        uint16_t val = ((uint16_t)raw_buf[2 * i] << 4) | (raw_buf[2 * i + 1] >> 4);
-        /* Store upper byte of val; cast ensures only lower 8 bits are written */
-        read_buf[2 * i] = (uint8_t)((val >> 8) & 0xFF);
-        /* Store lower byte of val; bitmask ensures safe truncation to 8-bit */
-        read_buf[2 * i + 1] = (uint8_t)(val & 0xFF);
+        const uint16_t val  = TRUNCATE_TO_12B_VAL(raw_buf[2 * i], raw_buf[2 * i + 1]);
+        read_buf[2 * i]     = GET_UPPER_8_BITS_OF_SHORT(val);
+        read_buf[2 * i + 1] = GET_LOWER_8_BITS_OF_SHORT(val);
     }
     return status;
 }

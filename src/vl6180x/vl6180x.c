@@ -23,6 +23,8 @@
  */
 
 #include "vl6180x.h"
+
+#include "common/manikin_bit_manipulation.h"
 #include "i2c/i2c.h"
 #include "private/vl6180x_regs.h"
 #include "error_handler/error_handler.h"
@@ -30,7 +32,7 @@
 #define HASH_VL6180X 0xE1B0199Eu
 
 // NOTE: Some of these are undocumented private registers
-static const manikin_sensor_reg_t init_regs[]
+static const manikin_sensor_reg_t vl6180x_init_regs[]
     = { { 0x0207, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { 0x0208, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { 0x0096, 0x00, MANIKIN_SENSOR_REG_TYPE_WRITE },
@@ -77,6 +79,12 @@ static const manikin_sensor_reg_t init_regs[]
         { VL6180X_REG_FIRMWARE_RESULT_SCALER, 0x01, MANIKIN_SENSOR_REG_TYPE_WRITE },
         { VL6180X_REG_SYSRANGE_START, 0x03, MANIKIN_SENSOR_REG_TYPE_WRITE } };
 
+/**
+ * @brief Internal function to check the parameters entered into function
+ * @param sensor_ctx The sensor settings ptr which should contain i2c bus details
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_NULL_PARAM if invalid
+ */
 static manikin_status_t
 vl6180x_check_params (manikin_sensor_ctx_t *sensor_ctx)
 {
@@ -97,14 +105,14 @@ vl6180x_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     MANIKIN_ASSERT(HASH_VL6180X, (status == MANIKIN_STATUS_OK), status);
     MANIKIN_NON_CRIT_ASSERT(HASH_VL6180X, (data == 1), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
 
-    for (size_t i = 0; i < sizeof(init_regs) / sizeof(manikin_sensor_reg_t); i++)
+    for (size_t i = 0; i < sizeof(vl6180x_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         // WARNING: Cast in line below.
         // NOTE: Mask ensures only lower byte is written; cast enforces 8-bit width
         manikin_i2c_write_reg(sensor_ctx->i2c,
                               sensor_ctx->i2c_addr,
-                              init_regs[i].reg,
-                              (uint8_t)(init_regs[i].val & 0xFF));
+                              vl6180x_init_regs[i].reg,
+                              GET_LOWER_8_BITS_OF_SHORT(vl6180x_init_regs[i].val));
     }
     return MANIKIN_STATUS_OK;
 }
