@@ -9,38 +9,4 @@
         }
     }
 
-    package "Common Types" {
-        enum manikin_status_t {
-            MANIKIN_STATUS_OK
-            MANIKIN_STATUS_ERR_NULL_PARAM
-            MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL
-            MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL
-            MANIKIN_STATUS_ERR_WRITE_FAIL
-            MANIKIN_STATUS_ERR_READ_FAIL
-            ...
-        }
-
-        class manikin_sensor_ctx_t {
-            -manikin_i2c_inst_t i2c
-            -uint8_t i2c_addr
-            -uint8_t needs_reinit
-        }
-
-        class manikin_sensor_reg_t {
-            -uint16_t reg
-            -uint16_t val
-            -manikin_sensor_reg_type_t opcode
-        }
-
-        enum manikin_sensor_reg_type_t {
-            WRITE
-            READ
-        }
-    }
-
-    "<sensor_name>" --> manikin_sensor_ctx_t : uses
-    "<sensor_name>" --> manikin_sensor_reg_t : uses
-    "<sensor_name>" --> manikin_status_t : returns
-    manikin_sensor_reg_t --> manikin_sensor_reg_type_t : uses
-
     @enduml
