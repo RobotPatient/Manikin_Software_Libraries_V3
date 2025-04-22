@@ -55,10 +55,10 @@
 #define W25QXX_MAN_ID_IDX           0x00u
 #define W25QXX_RESP_MANUFACTURER_ID 0xEFu // Winbond/
 
-#define W25QXX_MEM_TYPE_IDX            0x01u
+#define W25QXX_MEM_TYPE_IDX  0x01u
 #define W25QXX_RESP_MEM_TYPE 0x70u // NOR
 
-#define W25QXX_MEM_SIZE_IDX               0x02u
+#define W25QXX_MEM_SIZE_IDX  0x02u
 #define W25QXX_RESP_MEM_SIZE 0x18u // 128 Mbit = 16 MB
 
 #endif // W25QXX128_REGS_H

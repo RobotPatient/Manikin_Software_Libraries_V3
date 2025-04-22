@@ -52,8 +52,8 @@ extern "C"
 #define BMM350_FGR_DELAY 18000u
 
 /************************ Length macros ************************/
-#define BMM350_OTP_DATA_LENGTH    32u
-#define BMM350_MAG_TEMP_DATA_LEN  12u
+#define BMM350_OTP_DATA_LENGTH   32u
+#define BMM350_MAG_TEMP_DATA_LEN 12u
 
 /************************ Averaging macros **********************/
 #define BMM350_AVG_SHIFT(x) (x << 4u)
