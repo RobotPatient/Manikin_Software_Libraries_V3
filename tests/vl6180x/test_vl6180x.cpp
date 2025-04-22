@@ -26,21 +26,25 @@
 #include <catch2/catch_session.hpp>
 #include "vl6180x/vl6180x.h"
 #include "fake_i2c_functions.h"
+#include "common/manikin_bit_manipulation.h"
 
-static uint8_t dummy_read_buf[4];
-uint8_t        handle = 1u;
-// Fake sensor context
+// Common mocks and types
+static uint8_t       dummy_read_buf[4];
+static uint8_t       handle = 1;
 manikin_sensor_ctx_t dummy_ctx;
 
+#define VL6180X_I2C_ADDR           0x29u
 #define VL6180X_FRESH_OUT_OF_RESET 0x0016u
+
+// NOTE: Used for simulating sensor detection
 uint16_t cur_reg;
 
 size_t
 custom_write_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, const uint8_t *bytes, size_t len)
 {
-    if (len >= 2u)
+    if (len >= sizeof(uint16_t))
     {
-        cur_reg = (bytes[0] << 8 | bytes[1]);
+        cur_reg = CONSTRUCT_SHORT_FROM_BYTES(bytes[0], bytes[1]);
     }
     return len;
 }
@@ -48,22 +52,16 @@ custom_write_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, const uint8_t *b
 size_t
 custom_read_func (manikin_i2c_inst_t handle, uint8_t i2c_addr, uint8_t *bytes, size_t len)
 {
-    if (len >= 1)
+    if (len >= sizeof(uint8_t) && cur_reg == VL6180X_FRESH_OUT_OF_RESET)
     {
-        switch (cur_reg)
-        {
-            case VL6180X_FRESH_OUT_OF_RESET: {
-                cur_reg = 0;
-                /* Signal that sensor is ready */
-                bytes[0] = 1u;
-                break;
-            }
-            default: {
-                cur_reg  = 0u;
-                bytes[0] = 200u;
-                break;
-            }
-        }
+        cur_reg = 0;
+        // Signal that sensor is ready
+        bytes[0] = 1u;
+    }
+    else
+    {
+        cur_reg  = 0u;
+        bytes[0] = 200u;
     }
     return len;
 }
@@ -78,7 +76,6 @@ reset_mocks ()
     RESET_FAKE(i2c_hal_deinit);
 }
 
-// --- vl6180x_init_sensor ---
 TEST_CASE("vl6180x_init_sensor handles null parameter", "[vl6180x]")
 {
     reset_mocks();
@@ -89,13 +86,12 @@ TEST_CASE("vl6180x_init_sensor succeeds with valid context", "[vl6180x]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
-    dummy_ctx.i2c_addr                   = 0x29u;
+    dummy_ctx.i2c_addr                   = VL6180X_I2C_ADDR;
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
     i2c_hal_read_bytes_fake.custom_fake  = custom_read_func;
     REQUIRE(vl6180x_init_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
-// --- vl6180x_read_sensor ---
 TEST_CASE("vl6180x_read_sensor fails with null context", "[vl6180x]")
 {
     reset_mocks();
@@ -114,7 +110,7 @@ TEST_CASE("vl6180x_read_sensor reads successfully", "[vl6180x]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
-    dummy_ctx.i2c_addr                   = 0x29u;
+    dummy_ctx.i2c_addr                   = VL6180X_I2C_ADDR;
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
     i2c_hal_read_bytes_fake.custom_fake  = custom_read_func;
     uint8_t read_buf[1]                  = { 0 };
@@ -131,7 +127,7 @@ TEST_CASE("vl6180x_deinit_sensor succeeds with valid context", "[vl6180x]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
-    dummy_ctx.i2c_addr                   = 0x29u;
+    dummy_ctx.i2c_addr                   = VL6180X_I2C_ADDR;
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
     i2c_hal_read_bytes_fake.custom_fake  = custom_read_func;
     REQUIRE(vl6180x_deinit_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);

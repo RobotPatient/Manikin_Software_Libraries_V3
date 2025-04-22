@@ -33,11 +33,12 @@
 #include <iostream>
 #include <common/manikin_types.h>
 
+// NOTE: Test buffers used amongst all tests and cleared in reset_mocks function
 std::vector<uint8_t> spi_write_buffer;
 std::vector<uint8_t> spi_read_buffer;
 bool                 busy_reg_called = false;
 
-// Adding a timeout flag and invalid data to simulate errors
+// NOTE: Timeout flag and invalid data to simulate errors
 bool timeout_occurred  = false;
 bool invalid_data_read = false;
 
