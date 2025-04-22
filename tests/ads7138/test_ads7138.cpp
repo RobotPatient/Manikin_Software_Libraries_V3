@@ -27,8 +27,8 @@
 #include "fake_i2c_functions.h"
 
 // Common mocks and types
-static uint8_t dummy_read_buf[4];
-static uint8_t handle = 1;
+static uint8_t       dummy_read_buf[4];
+static uint8_t       handle = 1;
 manikin_sensor_ctx_t dummy_ctx;
 
 #define EMPTY_FILL_BYTE  0xFFu
