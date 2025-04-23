@@ -47,7 +47,7 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_init.iuml" alt="Sensor module init" />
     </td>
   </tr>
 </table>
@@ -57,13 +57,29 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 
 `read_sensor`
 
-Reads raw sensor data by:
-
-- Checking the status register for fault conditions
-
-- Reading the result register
-
-- Writing the data to the read_buf array
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks I2C and sensor status register for faults.<br>
+      • If a fault is detected:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_READ_FAIL</code>.<br>
+      • If no faults are present:<br>
+      &nbsp;&nbsp;&nbsp;– Reads result register.<br>
+      &nbsp;&nbsp;&nbsp;– Writes data to passed-in byte array.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_read.iuml" alt="Sensor module init" />
+    </td>
+  </tr>
+</table>
 
 Note: The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.
 sensor
