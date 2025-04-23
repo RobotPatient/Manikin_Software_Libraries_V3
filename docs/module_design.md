@@ -39,7 +39,7 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
       The function begins by validating input parameters. If the parameters are null or fall outside the valid range, it returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>. If the parameters are valid, the function checks for the presence of the sensor. If the sensor is detected, it initializes it with default settings (continuous mode for the Manikin CPR system) and returns <code>MANIKIN_STATUS_OK</code>. If the sensor is not present or initialization fails, the function returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
     </td>
     <td>
-      <img width="400" src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
+      <img width="1024" src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
     </td>
   </tr>
 </table>
