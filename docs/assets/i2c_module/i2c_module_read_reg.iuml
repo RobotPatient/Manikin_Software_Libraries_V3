@@ -1,0 +1,15 @@
+@startuml
+start
+
+:Check parameters;
+
+if (i2c_inst is null?) then (Yes)
+  :Return MANIKIN_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Read value from device register;
+  :Store in provided data pointer;
+  :Return MANIKIN_STATUS_OK;
+endif
+
+stop
+@enduml
