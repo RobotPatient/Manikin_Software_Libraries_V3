@@ -31,7 +31,7 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 
 <table>
   <tr>
-    <th style="width:30%">Description</th>
+    <th style="width:70%">Description</th>
     <th>Diagram</th>
   </tr>
   <tr>
