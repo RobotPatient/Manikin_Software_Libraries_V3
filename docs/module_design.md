@@ -78,7 +78,8 @@ Every sensor module implements the following functions:
   </tr>
 </table>
 
-> [!NOTE]   The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.
+> [!NOTE]   
+> The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.
 
 
 `deinit_sensor`
@@ -138,7 +139,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MEMORY_CHIP_STATUS_ERR_READ_FAIL</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_init.iuml" alt="Memory chip init" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_init.iuml" alt="Memory chip init" />
     </td>
   </tr>
 </table>
@@ -161,7 +162,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_READ_FAIL</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_status.iuml" alt="Memory module status" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_status.iuml" alt="Memory module status" />
     </td>
   </tr>
 </table>
@@ -191,7 +192,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_write.iuml" alt="Memory chip write" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_write.iuml" alt="Memory chip write" />
     </td>
   </tr>
 </table>
@@ -220,7 +221,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_read.iuml" alt="Memory chip read" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_read.iuml" alt="Memory chip read" />
     </td>
   </tr>
 </table>
@@ -251,7 +252,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_erase.iuml" alt="Memory chip erase" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_erase.iuml" alt="Memory chip erase" />
     </td>
   </tr>
 </table>
@@ -279,7 +280,7 @@ This module provides a driver interface for memory chips. The driver exposes a c
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_WRITE_FAIL</code>.
     </td>
     <td>
-      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module/memory_module_deinit.iuml" alt="Memory chip deinit" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_deinit.iuml" alt="Memory chip deinit" />
     </td>
   </tr>
 </table>
