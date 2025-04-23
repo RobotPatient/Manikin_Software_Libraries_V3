@@ -31,13 +31,14 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 
 <table>
   <tr>
-    <th >Description</th>
-    <th >Diagram</th>
+    <th>Description</th>
+    <th>Diagram</th>
   </tr>
   <tr>
     <td>
       • Validates input parameters.<br>
-      • Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code> if parameters are null or out of range.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
       • If valid, checks for sensor presence.<br>
       • If the sensor is present:<br>
       &nbsp;&nbsp;&nbsp;– Initializes with default settings (continuous mode).<br>
@@ -46,10 +47,11 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
       &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
     </td>
     <td>
-      <img width="400" src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
     </td>
   </tr>
 </table>
+
 
 
 
