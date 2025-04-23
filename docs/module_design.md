@@ -28,8 +28,10 @@ manikin_status_t <sensor_name>_read_sensor(manikin_sensor_ctx_t * sensor_ctx, ui
 manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 ```
 > [!NOTE]  
-> This api design is based on the requirement that setting up and reading an sensor should not be a hassle. But the simplicity means that there was a concession on configurability. There was at the time within the Manikin project no need for the additional sensor configurability. If requirements change (which will surely happen), it is possible to add an uint32_t param to the sensor_ctx struct e.g. with specific configuration options.
+> This api design is based on the requirement that setting up and reading an sensor should not be a hassle. But the simplicity means that there was a concession on configurability. There was at the time within the Manikin project no need for the additional sensor configurability. If requirements change (which will surely happen), it is possible to add an enum param to the sensor_ctx struct e.g. with specific configuration options for each sensor.
 
+> [!NOTE]
+> It’s also important to note that these modules only provide raw sensor data without performing any processing. This design choice was driven by the need for functional decomposition and the goal of keeping the library as generic as possible. Since requirements frequently change, embedding logic directly into the sensor modules would make them harder to maintain, as any update would require changes to the entire module, something we aim to avoid.
 
 #### `init_sensor`
 
