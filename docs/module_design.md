@@ -27,7 +27,11 @@ manikin_status_t <sensor_name>_init_sensor(manikin_sensor_ctx_t * sensor_ctx);
 manikin_status_t <sensor_name>_read_sensor(manikin_sensor_ctx_t * sensor_ctx, uint8_t * read_buf);
 manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 ```
-`init_sensor`
+> [!NOTE]  
+> This api design is based on the requirement that setting up and reading an sensor should not be a hassle. But the simplicity means that there was a concession on configurability. There was at the time within the Manikin project no need for the additional sensor configurability. If requirements change (which will surely happen), it is possible to add an uint32_t param to the sensor_ctx struct e.g. with specific configuration options.
+
+
+#### `init_sensor`
 
 <table>
   <tr>
@@ -53,9 +57,7 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 </table>
 
 
-
-
-`read_sensor`
+#### `read_sensor`
 
 <table>
   <tr>
@@ -81,14 +83,33 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
   </tr>
 </table>
 
-Note: The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.
-sensor
+> [!NOTE]   The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.
+
 
 `deinit_sensor`
 
-Resets the sensor to a deinitialized state. This typically involves setting a reset or stop-sampling bit, depending on the specific sensor.
-
-![Sensor module call sequence](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_call_sequence.iuml)
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks for sensor presence.<br>
+      • If the sensor is present:<br>
+      &nbsp;&nbsp;&nbsp;– Deinitializes sensor to idle/sleep mode.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If sensor is not present:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_deinit.iuml" alt="Sensor module deinit" />
+    </td>
+  </tr>
+</table>
 
 ### Reasoning for this design choice
 This API is implemented in plain C without further abstraction layers to maximize reliability and maintain deterministic behavior.

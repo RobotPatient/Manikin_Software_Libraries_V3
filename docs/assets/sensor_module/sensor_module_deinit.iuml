@@ -1,0 +1,19 @@
+@startuml
+start
+
+:Check parameters valid;
+
+if (Parameters are null or out of range?) then (Yes)
+  :Return MANIKIN_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Check for sensor presence;
+  if (Sensor present?) then (Yes)
+    :Deinitialize sensor to idle/sleep mode;
+    :Return MANIKIN_STATUS_OK;
+  else (No)
+    :Return \nMANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL;
+  endif
+endif
+
+stop
+@enduml
