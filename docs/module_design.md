@@ -31,18 +31,26 @@ manikin_status_t <sensor_name>_deinit_sensor(manikin_sensor_ctx_t * sensor_ctx);
 
 <table>
   <tr>
-    <th style="width:70%">Description</th>
-    <th>Diagram</th>
+    <th >Description</th>
+    <th >Diagram</th>
   </tr>
   <tr>
     <td>
-      The function begins by validating input parameters. If the parameters are null or fall outside the valid range, it returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>. If the parameters are valid, the function checks for the presence of the sensor. If the sensor is detected, it initializes it with default settings (continuous mode for the Manikin CPR system) and returns <code>MANIKIN_STATUS_OK</code>. If the sensor is not present or initialization fails, the function returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
+      • Validates input parameters.<br>
+      • Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code> if parameters are null or out of range.<br>
+      • If valid, checks for sensor presence.<br>
+      • If the sensor is present:<br>
+      &nbsp;&nbsp;&nbsp;– Initializes with default settings (continuous mode).<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If sensor is not present or init fails:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
     </td>
     <td>
-      <img width="1024" src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
+      <img width="400" src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_design.iuml" alt="Sensor module design" />
     </td>
   </tr>
 </table>
+
 
 
 `read_sensor`
