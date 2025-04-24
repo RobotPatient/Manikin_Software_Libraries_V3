@@ -26,4 +26,11 @@ jobs:
         # Build your program with the given configuration
         run: cmake --build ${{github.workspace}}/build
       - name: Test
-        run: cd ${{github.workspace}}/build && ctest --rerun-failed --output-on-failure
+        run: cd ${{github.workspace}}/build && ctest --rerun-failed --output-on-failure --output-junit results.xml
+      
+      - name: Report tests
+        uses: dorny/test-reporter@v1
+        with:
+          name: JUnit Tests
+          path: ${{github.workspace}}/build/results.xml
+          reporter: java-junit

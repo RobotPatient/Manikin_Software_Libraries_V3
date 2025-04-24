@@ -1,3 +1,27 @@
+/**
+ * @file            manikin_types.h
+ * @brief           Header file with common type definitions (such as return types) for the modules
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #ifndef MANIKIN_TYPES_H
 #define MANIKIN_TYPES_H
 #ifdef __cplusplus
@@ -21,7 +45,25 @@ extern "C"
         MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL,
         MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL,
         MANIKIN_STATUS_ERR_PERIPHERAL_FAULT_FLAG,
+        MANIKIN_STATUS_ERR_INVALID_SPI_BAUD,
     } manikin_status_t;
+
+    typedef enum
+    {
+        MANIKIN_MEMORY_RESULT_OK = 0, /* 0: Successful */
+        MANIKIN_MEMORY_RESULT_ERROR,  /* 1: R/W Error */
+        MANIKIN_MEMORY_RESULT_WRPRT,  /* 2: Write Protected */
+        MANIKIN_MEMORY_RESULT_NOTRDY, /* 3: Not Ready */
+        MANIKIN_MEMORY_RESULT_PARERR  /* 4: Invalid Parameter */
+    } manikin_memory_result_t;
+
+    typedef enum
+    {
+        MANIKIN_MEMORY_STATE_OK     = 0,
+        MANIKIN_MEMORY_STATE_NOINIT = 1,
+        MANIKIN_MEMORY_STATE_NOMEM  = 2,
+        MANIKIN_MEMORY_STATE_WP     = 4,
+    } manikin_memory_status_t;
 
     typedef enum
     {
@@ -35,7 +77,16 @@ extern "C"
     {
         manikin_i2c_inst_t i2c;
         uint8_t            i2c_addr;
+        uint8_t            needs_reinit;
     } manikin_sensor_ctx_t;
+
+    typedef struct
+    {
+        manikin_spi_inst_t spi;
+        manikin_spi_cs_t   spi_cs;
+        size_t             mem_size;
+        uint8_t            fault_cnt;
+    } manikin_spi_memory_ctx_t;
 
     typedef enum
     {
@@ -56,34 +107,7 @@ extern "C"
         uint8_t                     len;
     } manikin_sensor_reg_seq_t;
 
-    typedef union
-    {
-        struct
-        {
-            float    pressure;
-            uint16_t temperature;
-        } sdp810;
-
-        struct
-        {
-            uint8_t distance;
-        } vl6180;
-
-        struct
-        {
-            uint16_t right_up;
-            uint16_t left_up;
-            uint16_t left_down;
-            uint16_t mid_mid;
-            uint16_t mid_left;
-            uint16_t mid_right;
-            uint16_t lower;
-            uint16_t right_down;
-        } ads7138;
-        uint8_t bytes[16];
-    } manikin_sensor_sample_t;
-
 #ifdef __cplusplus
 }
 #endif
-#endif /* MANIKIN_TYPES_H */
+#endif // MANIKIN_TYPES_H

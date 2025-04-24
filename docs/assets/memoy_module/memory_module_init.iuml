@@ -1,0 +1,19 @@
+@startuml
+start
+
+:Check parameters valid;
+
+if (Parameters are null or out of range?) then (Yes)
+  :Return \nMEMORY_CHIP_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Read JEDEC ID;
+  if (Chip present & JEDEC ID is valdi?) then (Yes)
+      :Reset device to known state;
+      :Return \nMEMORY_CHIP_STATUS_OK;
+  else (No)
+    :Return \nMEMORY_CHIP_STATUS_ERR_READ_FAIL;
+  endif
+endif
+
+stop
+@enduml

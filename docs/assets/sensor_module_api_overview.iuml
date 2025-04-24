@@ -1,0 +1,12 @@
+    @startuml
+    title Sensor Module - UML API Overview
+
+    package "Sensor Module" {
+       class "<sensor_name>" {
+          + <sensor_name>_init_sensor(sensor_ctx: manikin_sensor_ctx_t*): manikin_status_t
+          + <sensor_name>_read_sensor(sensor_ctx: manikin_sensor_ctx_t*, read_buf: uint8_t*): manikin_status_t
+          + <sensor_name>_sensor(sensor_ctx: manikin_sensor_ctx_t*): manikin_status_t
+        }
+    }
+
+    @enduml

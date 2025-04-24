@@ -1,12 +1,42 @@
+/**
+ * @file            i2c.c
+ * @brief           Implementation of platform-agnostic i2c wrapper implementation
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #include "i2c.h"
 #include "manikin_platform.h"
 #include "error_handler/error_handler.h"
 #include "common/manikin_bit_manipulation.h"
 
-#define HASH_I2C 0xA0DF31CA
+#define HASH_I2C 0xA0DF31CAu
 
-manikin_status_t
-validate_baud (const manikin_i2c_speed_t baud)
+/**
+ * @brief Internal function to check the baud parameter
+ * @param baud The baud-rate to check
+ * @return - MANIKIN_STATUS_OK if all parameters are valid
+ *         - MANIKIN_STATUS_ERR_INVALID_I2C_BAUD if invalid
+ */
+static manikin_status_t
+manikin_i2c_validate_baud (const manikin_i2c_speed_t baud)
 {
     manikin_status_t status;
     switch (baud)
@@ -29,13 +59,10 @@ manikin_i2c_init (manikin_i2c_inst_t i2c_inst, const manikin_i2c_speed_t i2c_bau
 {
 
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    manikin_status_t status = validate_baud(i2c_baud);
+    manikin_status_t status = manikin_i2c_validate_baud(i2c_baud);
     MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     status = MANIKIN_I2C_HAL_INIT(i2c_inst, i2c_baud);
-    MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
-
-    status = MANIKIN_I2C_HAL_ERROR_FLAG_CHECK(i2c_inst);
     MANIKIN_NON_CRIT_ASSERT(HASH_I2C, (status == MANIKIN_STATUS_OK), status);
 
     return MANIKIN_STATUS_OK;
@@ -87,42 +114,40 @@ manikin_i2c_write_reg16 (manikin_i2c_inst_t i2c_inst,
     return MANIKIN_STATUS_OK;
 }
 
-uint8_t
-manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
+manikin_status_t
+manikin_i2c_read_reg (manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data)
 {
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
-    uint8_t res;
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
     if (MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, bytes, sizeof(bytes)) != sizeof(bytes))
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, &res, sizeof(res)) != sizeof(res))
+    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, data, 1) != 1)
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    return res;
+    return MANIKIN_STATUS_OK;
 }
 
-uint16_t
-manikin_i2c_read_reg16 (manikin_i2c_inst_t i2c_inst, const uint8_t i2c_addr, const uint16_t reg)
+manikin_status_t
+manikin_i2c_read_reg16 (manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg, uint8_t *data)
 {
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     uint8_t bytes[2];
-    uint8_t res[2];
     bytes[0] = GET_UPPER_8_BITS_OF_SHORT(reg);
     bytes[1] = GET_LOWER_8_BITS_OF_SHORT(reg);
     if (MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, bytes, sizeof(bytes)) != sizeof(bytes))
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, res, sizeof(res)) != sizeof(res))
+    if (MANIKIN_I2C_HAL_READ_BYTES(i2c_inst, i2c_addr << 1, data, 2) != 2)
     {
-        return 0;
+        return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    return CONSTRUCT_SHORT_FROM_BYTES(res[0], res[1]);
+    return MANIKIN_STATUS_OK;
 }
 
 size_t

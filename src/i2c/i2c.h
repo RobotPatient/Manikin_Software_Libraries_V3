@@ -1,3 +1,27 @@
+/**
+ * @file            i2c.h
+ * @brief           A platform-agnostic i2c wrapper module
+ *
+ * @par
+ * Copyright 2025 (C) RobotPatient Simulators
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * This file is part of the Manikin Software Libraries V3 project
+ *
+ * Author:          Victor Hogeweij
+ */
+
 #ifndef MANIKIN_I2C_H
 #define MANIKIN_I2C_H
 #ifdef __cplusplus
@@ -62,7 +86,10 @@ extern "C"
      * @param reg      The register address to write
      * @return The data which was read from the register. (Register value)
      */
-    uint8_t manikin_i2c_read_reg(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg);
+    manikin_status_t manikin_i2c_read_reg(manikin_i2c_inst_t i2c_inst,
+                                          uint8_t            i2c_addr,
+                                          uint16_t           reg,
+                                          uint8_t           *data);
 
     /**
      * @brief Reads a short (16-bit) from a register of i2c-device
@@ -71,13 +98,16 @@ extern "C"
      * @param reg      The register address to write
      * @return The data which was read from the register. (Register value)
      */
-    uint16_t manikin_i2c_read_reg16(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr, uint16_t reg);
+    manikin_status_t manikin_i2c_read_reg16(manikin_i2c_inst_t i2c_inst,
+                                            uint8_t            i2c_addr,
+                                            uint16_t           reg,
+                                            uint8_t           *data);
 
     /**
      * @brief Reads multiple bytes from an i2c-device
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @param i2c_addr The address of the I2C device
-     * @param data     An pointer to the buffer to save the data to
+     * @param data     A pointer to the buffer to save the data to
      * @param len      The number of bytes to read from i2c-device
      * @return The number of bytes read from the i2c-device
      */
@@ -90,7 +120,7 @@ extern "C"
      * @brief Write multiple bytes to an i2c-device
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @param i2c_addr The address of the I2C device
-     * @param data     An pointer to the buffer to read the data from
+     * @param data     A pointer to the buffer to read the data from
      * @param len      The number of bytes to send to the i2c-device
      * @return The number of bytes written to the i2c-device
      */
@@ -100,7 +130,7 @@ extern "C"
                                    size_t             len);
 
     /**
-     * @brief Denitializes the I2C peripheral of the Manikin System
+     * @brief Deinitializes the I2C peripheral of the Manikin System
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @return    MANIKIN_STATUS_OK: No error occurred while configuring peripheral
      *            MANIKIN_STATUS_ERR_NULL_PARAM: I2C_inst is null
@@ -110,4 +140,4 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif /* MANIKIN_I2C_H */
+#endif // MANIKIN_I2C_H

@@ -1,0 +1,8 @@
+@startuml
+start
+
+:Write len bytes from buffer to I2C device;
+:Return number of bytes written;
+
+stop
+@enduml

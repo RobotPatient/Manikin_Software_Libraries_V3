@@ -1,0 +1,17 @@
+@startuml
+title I2C Module - Public API Overview
+
+class manikin_i2c {
+  +manikin_status_t manikin_i2c_init(i2c_inst, i2c_baud)
+  +uint8_t manikin_i2c_check_device_address(i2c_inst, i2c_addr)
+  +manikin_status_t manikin_i2c_write_reg(i2c_inst, i2c_addr, reg, data)
+  +manikin_status_t manikin_i2c_write_reg16(i2c_inst, i2c_addr, reg, data)
+  +manikin_status_t manikin_i2c_read_reg(i2c_inst, i2c_addr, reg, *data)
+  +manikin_status_t manikin_i2c_read_reg16(i2c_inst, i2c_addr, reg, *data)
+  +size_t manikin_i2c_read_bytes(i2c_inst, i2c_addr, *data, len)
+  +size_t manikin_i2c_write_bytes(i2c_inst, i2c_addr, *data, len)
+  +manikin_status_t manikin_i2c_deinit(i2c_inst)
+}
+
+
+@enduml

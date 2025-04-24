@@ -1,0 +1,19 @@
+@startuml
+start
+
+:Check parameters valid;
+
+if (Parameters are null or out of range?) then (Yes)
+  :Return \nMANIKIN_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Check for chip presence;
+
+  if (Chip present and JEDEC ID is valid?) then (Yes)
+    :Return \nMANIKIN_STATUS_OK;
+  else (No)
+    :Return \nMANIKIN_STATUS_ERR_READ_FAIL;
+  endif
+endif
+
+stop
+@enduml
