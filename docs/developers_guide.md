@@ -33,7 +33,7 @@ The `conf.h` contains typedef links, such as peripheral handle definitions:
 typedef I2C_TypeDef *manikin_i2c_inst_t;
 ```
 
-All software modules and drivers are written to be platform-agnostic. The code follows ISO C99 and avoids platform-specific dependencies. For hardware access, a Hardware Abstraction Layer (HAL) wrapper is used, which the user connects to the target MCU HAL.
+All software modules and drivers are written to be platform-agnostic. The code follows ISO C99 and avoids platform-specific dependencies. For hardware access, a Hardware Abstraction Layer (HAL) wrapper is used, which the user connects to the target MCU HAL. With the `manikin_platform.h` and `manikin_software_conf.h` file.
 
 > While this abstraction layer may appear complex, it's essential for effective testing.  
 > Without it, each individual MCU HAL would need its own mocks and tests—massively increasing complexity.  
@@ -80,9 +80,34 @@ This project follows the [Barr-C coding standard](https://barrgroup.com/sites/de
 ## Exceptions to Barr-C
 
 - **Line length:** Uses a 100-character limit instead of 80 for better readability.
-- **End-of-file comments:** Skips `/*** end of file ***/`; only a blank line at the end is required.
+
+- **No End-of-file comments:** Skips `/*** end of file ***/`; only a blank line at the end is required.
+
+```c
+...
+/*** end of file ***/
+```
+
 - **Yoda conditionals:** Not used. Modern compilers catch assignment-instead-of-comparison errors.
-- **End-function comments:** Avoided; modern IDEs and compilers make these unnecessary.
+
+```c
+Yoda:
+
+if(2 != x)
+
+Normal:
+
+if(x != 2)
+```
+
+- **No end-function comments:** Avoided; modern IDEs and compilers make these unnecessary.
+
+```c
+void test() {
+
+}/*** test() ***/
+
+```
 
 ## Toolchain Settings
 
@@ -126,3 +151,5 @@ This project follows the [Barr-C coding standard](https://barrgroup.com/sites/de
  > - Dangerous casts  
  > - Format string vulnerabilities
  > These flags help ensure portable, maintainable, and safe code.
+
+

@@ -57,13 +57,13 @@ reset_mocks ()
     RESET_FAKE(i2c_hal_deinit);
 }
 
-TEST_CASE("ads7138_init_sensor handles null parameter", "[ads7138]")
+TEST_CASE("ads7138_init_sensor handles null parameter", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     REQUIRE(ads7138_init_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("ads7138_init_sensor succeeds with valid context", "[ads7138]")
+TEST_CASE("ads7138_init_sensor succeeds with valid context", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -73,13 +73,13 @@ TEST_CASE("ads7138_init_sensor succeeds with valid context", "[ads7138]")
     REQUIRE(ads7138_init_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
-TEST_CASE("ads7138_read_sensor fails with null context", "[ads7138]")
+TEST_CASE("ads7138_read_sensor fails with null context", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     REQUIRE(ads7138_read_sensor(NULL, dummy_read_buf) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("ads7138_read_sensor fails with null read buffer", "[ads7138]")
+TEST_CASE("ads7138_read_sensor fails with null read buffer", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
@@ -87,7 +87,7 @@ TEST_CASE("ads7138_read_sensor fails with null read buffer", "[ads7138]")
     REQUIRE(ads7138_read_sensor(&dummy_ctx, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("ads7138_read_sensor reads successfully", "[ads7138]")
+TEST_CASE("ads7138_read_sensor reads successfully", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -98,13 +98,13 @@ TEST_CASE("ads7138_read_sensor reads successfully", "[ads7138]")
     REQUIRE(ads7138_read_sensor(&dummy_ctx, read_buf) == MANIKIN_STATUS_OK);
 }
 
-TEST_CASE("ads7138_deinit_sensor handles null context", "[ads7138]")
+TEST_CASE("ads7138_deinit_sensor handles null context", "[ads7138][REQ-F3]")
 {
     reset_mocks();
     REQUIRE(ads7138_deinit_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("ads7138_deinit_sensor succeeds with valid context", "[ads7138]")
+TEST_CASE("ads7138_deinit_sensor succeeds with valid context [REQ-F3]", "[ads7138]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;

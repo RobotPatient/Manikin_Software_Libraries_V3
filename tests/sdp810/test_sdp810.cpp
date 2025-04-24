@@ -59,13 +59,13 @@ reset_mocks ()
 }
 
 // --- sdp810_init_sensor ---
-TEST_CASE("sdp810_init_sensor handles null parameter", "[sdp810]")
+TEST_CASE("sdp810_init_sensor handles null parameter", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     REQUIRE(sdp810_init_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("sdp810_init_sensor succeeds with valid context", "[sdp810]")
+TEST_CASE("sdp810_init_sensor succeeds with valid context", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -76,13 +76,13 @@ TEST_CASE("sdp810_init_sensor succeeds with valid context", "[sdp810]")
 }
 
 // --- sdp810_read_sensor ---
-TEST_CASE("sdp810_read_sensor fails with null context", "[sdp810]")
+TEST_CASE("sdp810_read_sensor fails with null context", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     REQUIRE(sdp810_read_sensor(NULL, dummy_read_buf) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("sdp810_read_sensor fails with null read buffer", "[sdp810]")
+TEST_CASE("sdp810_read_sensor fails with null read buffer", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
@@ -90,7 +90,7 @@ TEST_CASE("sdp810_read_sensor fails with null read buffer", "[sdp810]")
     REQUIRE(sdp810_read_sensor(&dummy_ctx, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("sdp810_read_sensor reads successfully", "[sdp810]")
+TEST_CASE("sdp810_read_sensor reads successfully", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -102,13 +102,13 @@ TEST_CASE("sdp810_read_sensor reads successfully", "[sdp810]")
 }
 
 // --- sdp810_deinit_sensor ---
-TEST_CASE("sdp810_deinit_sensor handles null context", "[sdp810]")
+TEST_CASE("sdp810_deinit_sensor handles null context", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     REQUIRE(sdp810_deinit_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("sdp810_deinit_sensor succeeds with valid context", "[sdp810]")
+TEST_CASE("sdp810_deinit_sensor succeeds with valid context", "[sdp810][REQ-F2]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;

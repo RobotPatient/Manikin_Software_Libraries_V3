@@ -59,14 +59,14 @@ reset_mocks ()
     memset(read_buffer, 0x00, sizeof(read_buffer));
 }
 
-TEST_CASE("manikin_i2c_init returns error on NULL handle", "[init]")
+TEST_CASE("manikin_i2c_init returns error on NULL handle", "[init][REQ-F9]")
 {
     reset_mocks();
     manikin_status_t status = manikin_i2c_init(NULL, MANIKIN_I2C_SPEED_100KHz);
     REQUIRE(status == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("manikin_i2c_init returns error on invalid baudrate", "[init]")
+TEST_CASE("manikin_i2c_init returns error on invalid baudrate", "[init][REQ-F9]")
 {
     reset_mocks();
     // Assume this value is not defined in manikin_i2c_speed_t enum
@@ -84,7 +84,7 @@ TEST_CASE("manikin_i2c_init returns error on invalid baudrate", "[init]")
     REQUIRE(i2c_hal_error_flag_check_fake.call_count == 0);
 }
 
-TEST_CASE("manikin_i2c_init returns error when HAL init fails", "[init]")
+TEST_CASE("manikin_i2c_init returns error when HAL init fails", "[init][REQ-F9]")
 {
     reset_mocks();
     i2c_hal_init_fake.return_val             = MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL;
@@ -98,7 +98,7 @@ TEST_CASE("manikin_i2c_init returns error when HAL init fails", "[init]")
     REQUIRE(i2c_hal_error_flag_check_fake.call_count == 0);
 }
 
-TEST_CASE("manikin_i2c_init succeeds on valid input", "[init]")
+TEST_CASE("manikin_i2c_init succeeds on valid input", "[init][REQ-F9]")
 {
     reset_mocks();
     i2c_hal_init_fake.return_val             = MANIKIN_STATUS_OK;
@@ -111,7 +111,7 @@ TEST_CASE("manikin_i2c_init succeeds on valid input", "[init]")
     REQUIRE(i2c_hal_init_fake.call_count == 1);
 }
 
-TEST_CASE("manikin_i2c_read_reg reads register correctly", "[read_reg]")
+TEST_CASE("manikin_i2c_read_reg reads register correctly", "[read_reg][REQ-F9]")
 {
     reset_mocks();
     i2c_hal_error_flag_check_fake.return_val = MANIKIN_STATUS_OK;
@@ -136,7 +136,7 @@ TEST_CASE("manikin_i2c_read_reg reads register correctly", "[read_reg]")
     memset(write_buffer, 0x00, sizeof(write_buffer));
 }
 
-TEST_CASE("manikin_i2c_write_reg returns error on NULL handle", "[write_reg]")
+TEST_CASE("manikin_i2c_write_reg returns error on NULL handle", "[write_reg][REQ-F9]")
 {
     reset_mocks();
     const uint8_t  i2c_addr = 0x42;
@@ -147,7 +147,7 @@ TEST_CASE("manikin_i2c_write_reg returns error on NULL handle", "[write_reg]")
     REQUIRE(status == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("manikin_i2c_write_reg sends correct bytes to I2C", "[write_reg]")
+TEST_CASE("manikin_i2c_write_reg sends correct bytes to I2C", "[write_reg][REQ-F9]")
 {
     reset_mocks();
     // Set up fake function behavior
@@ -170,7 +170,7 @@ TEST_CASE("manikin_i2c_write_reg sends correct bytes to I2C", "[write_reg]")
     REQUIRE(write_buffer[2] == data);
 }
 
-TEST_CASE("manikin_i2c_write_reg16 returns error on NULL handle", "[write_reg16]")
+TEST_CASE("manikin_i2c_write_reg16 returns error on NULL handle", "[write_reg16][REQ-F9]")
 {
     reset_mocks();
     const uint8_t  i2c_addr = 0x42;
@@ -181,7 +181,7 @@ TEST_CASE("manikin_i2c_write_reg16 returns error on NULL handle", "[write_reg16]
     REQUIRE(status == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("manikin_i2c_write_reg16 sends correct bytes to I2C", "[write_reg16]")
+TEST_CASE("manikin_i2c_write_reg16 sends correct bytes to I2C", "[write_reg16][REQ-F9]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake     = custom_write_func;
@@ -203,7 +203,7 @@ TEST_CASE("manikin_i2c_write_reg16 sends correct bytes to I2C", "[write_reg16]")
     REQUIRE(write_buffer[3] == GET_LOWER_8_BITS_OF_SHORT(data));
 }
 
-TEST_CASE("manikin_i2c_read_reg16 returns correct value from I2C", "[read_reg16]")
+TEST_CASE("manikin_i2c_read_reg16 returns correct value from I2C", "[read_reg16][REQ-F9]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake     = custom_write_func;

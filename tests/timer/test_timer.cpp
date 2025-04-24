@@ -60,7 +60,7 @@ sample_timer_ctx_init_with_valid_param ()
     return ctx;
 }
 
-TEST_CASE("sample_timer_init", "[init]")
+TEST_CASE("sample_timer_init", "[init][REQ-F9]")
 {
     RESET_ALL_FAKES();
 
@@ -81,7 +81,7 @@ TEST_CASE("sample_timer_init", "[init]")
     }
 }
 
-TEST_CASE("sample_timer_start", "[start]")
+TEST_CASE("sample_timer_start", "[start][REQ-F9]")
 {
     RESET_ALL_FAKES();
 
@@ -100,7 +100,7 @@ TEST_CASE("sample_timer_start", "[start]")
     }
 }
 
-TEST_CASE("sample_timer_stop", "[stop]")
+TEST_CASE("sample_timer_stop", "[stop][REQ-F9]")
 {
     RESET_ALL_FAKES();
 
@@ -120,7 +120,7 @@ TEST_CASE("sample_timer_stop", "[stop]")
     }
 }
 
-TEST_CASE("sample_timer_deinit", "[deinit]")
+TEST_CASE("sample_timer_deinit", "[deinit][REQ-F9]")
 {
     RESET_ALL_FAKES();
 
@@ -142,7 +142,7 @@ TEST_CASE("sample_timer_deinit", "[deinit]")
     }
 }
 
-TEST_CASE("sample_timer_start_cb_handler", "[cb_start]")
+TEST_CASE("sample_timer_start_cb_handler", "[cb_start][REQ-F9][REQ-F7]")
 {
     RESET_ALL_FAKES();
 
@@ -161,7 +161,7 @@ TEST_CASE("sample_timer_start_cb_handler", "[cb_start]")
     }
 }
 
-TEST_CASE("sample_timer_end_cb_handler", "[cb_end]")
+TEST_CASE("sample_timer_end_cb_handler", "[cb_end][REQ-F9][REQ-F7]")
 {
     RESET_ALL_FAKES();
 

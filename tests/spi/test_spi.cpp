@@ -59,7 +59,7 @@ reset_spi_mocks ()
     memset(spi_read_buffer, 0, sizeof(spi_read_buffer));
 }
 
-TEST_CASE("spi_init returns error on HAL failure", "[init]")
+TEST_CASE("spi_init returns error on HAL failure", "[init][REQ-F9]")
 {
     reset_spi_mocks();
     spi_hal_init_fake.return_val = MANIKIN_STATUS_ERR_PERIPHERAL_INIT_FAIL;
@@ -71,7 +71,7 @@ TEST_CASE("spi_init returns error on HAL failure", "[init]")
     REQUIRE(spi_hal_init_fake.call_count == 1u);
 }
 
-TEST_CASE("spi_init succeeds", "[init]")
+TEST_CASE("spi_init succeeds", "[init][REQ-F9]")
 {
     reset_spi_mocks();
     spi_hal_init_fake.return_val = MANIKIN_STATUS_OK;
@@ -82,7 +82,7 @@ TEST_CASE("spi_init succeeds", "[init]")
     REQUIRE(spi_hal_init_fake.call_count == 1u);
 }
 
-TEST_CASE("spi_write writes correct data", "[write]")
+TEST_CASE("spi_write writes correct data", "[write][REQ-F9]")
 {
     reset_spi_mocks();
 
@@ -99,7 +99,7 @@ TEST_CASE("spi_write writes correct data", "[write]")
     REQUIRE(spi_write_buffer[2] == 0xCC);
 }
 
-TEST_CASE("spi_read reads correct data", "[read]")
+TEST_CASE("spi_read reads correct data", "[read][REQ-F9]")
 {
     reset_spi_mocks();
 
@@ -120,7 +120,7 @@ TEST_CASE("spi_read reads correct data", "[read]")
     REQUIRE(output[2] == 0x33);
 }
 
-TEST_CASE("spi_start_transaction sets CS low", "[cs]")
+TEST_CASE("spi_start_transaction sets CS low", "[cs][REQ-F9]")
 {
     reset_spi_mocks();
     spi_hal_set_cs_fake.return_val = MANIKIN_STATUS_OK;
@@ -132,7 +132,7 @@ TEST_CASE("spi_start_transaction sets CS low", "[cs]")
     REQUIRE(spi_hal_set_cs_fake.arg1_val == 0); // CS LOW
 }
 
-TEST_CASE("spi_end_transaction sets CS high", "[cs]")
+TEST_CASE("spi_end_transaction sets CS high", "[cs][REQ-F9]")
 {
     reset_spi_mocks();
     spi_hal_set_cs_fake.return_val = MANIKIN_STATUS_OK;
@@ -143,7 +143,7 @@ TEST_CASE("spi_end_transaction sets CS high", "[cs]")
     REQUIRE(spi_hal_set_cs_fake.arg1_val == 1); // CS HIGH
 }
 
-TEST_CASE("spi_deinit returns correct status", "[deinit]")
+TEST_CASE("spi_deinit returns correct status", "[deinit][REQ-F9]")
 {
     reset_spi_mocks();
     spi_hal_deinit_fake.return_val = MANIKIN_STATUS_OK;

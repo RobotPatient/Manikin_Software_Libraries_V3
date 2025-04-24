@@ -59,13 +59,13 @@ reset_mocks ()
 }
 
 // --- bmm350_init_sensor ---
-TEST_CASE("bmm350_init_sensor handles null parameter", "[bmm350]")
+TEST_CASE("bmm350_init_sensor handles null parameter", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     REQUIRE(bmm350_init_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("bmm350_init_sensor succeeds with valid context", "[bmm350]")
+TEST_CASE("bmm350_init_sensor succeeds with valid context", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -76,13 +76,13 @@ TEST_CASE("bmm350_init_sensor succeeds with valid context", "[bmm350]")
 }
 
 // --- bmm350_read_sensor ---
-TEST_CASE("bmm350_read_sensor fails with null context", "[bmm350]")
+TEST_CASE("bmm350_read_sensor fails with null context", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     REQUIRE(bmm350_read_sensor(NULL, dummy_read_buf) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("bmm350_read_sensor fails with null read buffer", "[bmm350]")
+TEST_CASE("bmm350_read_sensor fails with null read buffer", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
@@ -90,7 +90,7 @@ TEST_CASE("bmm350_read_sensor fails with null read buffer", "[bmm350]")
     REQUIRE(bmm350_read_sensor(&dummy_ctx, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("bmm350_read_sensor reads successfully", "[bmm350]")
+TEST_CASE("bmm350_read_sensor reads successfully", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -102,13 +102,13 @@ TEST_CASE("bmm350_read_sensor reads successfully", "[bmm350]")
 }
 
 // --- bmm350_deinit_sensor ---
-TEST_CASE("bmm350_deinit_sensor handles null context", "[bmm350]")
+TEST_CASE("bmm350_deinit_sensor handles null context", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     REQUIRE(bmm350_deinit_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("bmm350_deinit_sensor succeeds with valid context", "[bmm350]")
+TEST_CASE("bmm350_deinit_sensor succeeds with valid context", "[bmm350][REQ-F4]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;

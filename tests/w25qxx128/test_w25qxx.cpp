@@ -140,7 +140,7 @@ TEST_CASE("w25qxx_init returns correct status", "[init]")
     CHECK(spi_write_buffer.at(2) == 0x99);
 }
 
-TEST_CASE("w25qxx_status correctly checks for chip presence", "[status]")
+TEST_CASE("w25qxx_status correctly checks for chip presence", "[status][REQ-F6]")
 {
     reset_spi_mocks();
 
@@ -168,7 +168,7 @@ TEST_CASE("w25qxx_status correctly checks for chip presence", "[status]")
     CHECK(spi_write_buffer.at(0) == 0x9F);
 }
 
-TEST_CASE("w25qxx_write writes data to the memory chip", "[write]")
+TEST_CASE("w25qxx_write writes data to the memory chip", "[write][REQ-F6]")
 {
     reset_spi_mocks();
 
@@ -200,7 +200,7 @@ TEST_CASE("w25qxx_write writes data to the memory chip", "[write]")
     CHECK(spi_write_buffer.at(8) == 4);    // Data byte 4
 }
 
-TEST_CASE("w25qxx_read reads data from the memory chip", "[read]")
+TEST_CASE("w25qxx_read reads data from the memory chip", "[read][REQ-F6]")
 {
     reset_spi_mocks();
 
@@ -247,7 +247,7 @@ TEST_CASE("w25qxx_read reads data from the memory chip", "[read]")
     REQUIRE(test_data[3] == 4);
 }
 
-TEST_CASE("w25qxx_init handles SPI timeout correctly", "[init][timeout]")
+TEST_CASE("w25qxx_init handles SPI timeout correctly", "[init][timeout][REQ-F6][REQ-F7]")
 {
     reset_spi_mocks();
 
@@ -270,7 +270,7 @@ TEST_CASE("w25qxx_init handles SPI timeout correctly", "[init][timeout]")
     CHECK(spi_hal_read_bytes_fake.call_count == 1);
     CHECK(spi_hal_write_bytes_fake.call_count == 1);
 }
-TEST_CASE("w25qxx_status handles invalid JEDEC ID correctly", "[status][invalid]")
+TEST_CASE("w25qxx_status handles invalid JEDEC ID correctly", "[status][invalid][REQ-F6]")
 {
     reset_spi_mocks();
 
@@ -295,7 +295,7 @@ TEST_CASE("w25qxx_status handles invalid JEDEC ID correctly", "[status][invalid]
     CHECK(spi_hal_write_bytes_fake.call_count == 1u);
 }
 
-TEST_CASE("w25qxx_write handles SPI write timeout", "[write][timeout]")
+TEST_CASE("w25qxx_write handles SPI write timeout", "[write][timeout][REQ-F6][REQ-F7]")
 {
     reset_spi_mocks();
 
@@ -320,7 +320,7 @@ TEST_CASE("w25qxx_write handles SPI write timeout", "[write][timeout]")
     CHECK(spi_hal_write_bytes_fake.call_count == 2); // Expecting 2 write calls
 }
 
-TEST_CASE("w25qxx_write handles invalid data during write", "[write][invalid_data]")
+TEST_CASE("w25qxx_write handles invalid data during write", "[write][invalid_data][REQ-F6]")
 {
     reset_spi_mocks();
 

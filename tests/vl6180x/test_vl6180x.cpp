@@ -76,13 +76,13 @@ reset_mocks ()
     RESET_FAKE(i2c_hal_deinit);
 }
 
-TEST_CASE("vl6180x_init_sensor handles null parameter", "[vl6180x]")
+TEST_CASE("vl6180x_init_sensor handles null parameter", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     REQUIRE(vl6180x_init_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("vl6180x_init_sensor succeeds with valid context", "[vl6180x]")
+TEST_CASE("vl6180x_init_sensor succeeds with valid context", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -92,13 +92,13 @@ TEST_CASE("vl6180x_init_sensor succeeds with valid context", "[vl6180x]")
     REQUIRE(vl6180x_init_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
-TEST_CASE("vl6180x_read_sensor fails with null context", "[vl6180x]")
+TEST_CASE("vl6180x_read_sensor fails with null context", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     REQUIRE(vl6180x_read_sensor(NULL, dummy_read_buf) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("vl6180x_read_sensor fails with null read buffer", "[vl6180x]")
+TEST_CASE("vl6180x_read_sensor fails with null read buffer", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
@@ -106,7 +106,7 @@ TEST_CASE("vl6180x_read_sensor fails with null read buffer", "[vl6180x]")
     REQUIRE(vl6180x_read_sensor(&dummy_ctx, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("vl6180x_read_sensor reads successfully", "[vl6180x]")
+TEST_CASE("vl6180x_read_sensor reads successfully", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
@@ -117,13 +117,13 @@ TEST_CASE("vl6180x_read_sensor reads successfully", "[vl6180x]")
     REQUIRE(vl6180x_read_sensor(&dummy_ctx, read_buf) == MANIKIN_STATUS_OK);
 }
 
-TEST_CASE("vl6180x_deinit_sensor handles null context", "[vl6180x]")
+TEST_CASE("vl6180x_deinit_sensor handles null context", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     REQUIRE(vl6180x_deinit_sensor(NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 }
 
-TEST_CASE("vl6180x_deinit_sensor succeeds with valid context", "[vl6180x]")
+TEST_CASE("vl6180x_deinit_sensor succeeds with valid context", "[vl6180x][REQ-F1]")
 {
     reset_mocks();
     dummy_ctx.i2c                        = &handle;
