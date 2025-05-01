@@ -8,11 +8,12 @@ add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/w25qxx128/w25qxx128.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sample_timer/sample_timer.c
         ${CMAKE_CURRENT_LIST_DIR}/src/vl6180x/vl6180x.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/error_handler/error_handler.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/vl53l4cd/vl53l4cd.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sdp810/sdp810.c
         ${CMAKE_CURRENT_LIST_DIR}/src/ads7138/ads7138.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/bmm350.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c)
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/error_handler/error_handler.c)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 
@@ -52,3 +53,10 @@ if (MANIKIN_SOFTWARE_BUILD_TESTS)
 else ()
 
 endif ()
+
+# --------------------------------------------------------------------
+# Print configuration summary
+# --------------------------------------------------------------------
+message(STATUS "Configuration Summary:")
+message(STATUS "  Project: ${PROJECT_NAME}")
+message(STATUS "  Build Tests: ${MANIKIN_SOFTWARE_BUILD_TESTS}")
