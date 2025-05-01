@@ -33,10 +33,10 @@ extern "C"
 #include "fff.h"
 #include "manikin_software_conf.h"
 
-    DECLARE_FAKE_VALUE_FUNC2(int, timer_hal_init, manikin_timer_inst_t, uint32_t)
-    DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_start, manikin_timer_inst_t)
-    DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_stop, manikin_timer_inst_t)
-    DECLARE_FAKE_VALUE_FUNC1(int, timer_hal_deinit, manikin_timer_inst_t)
+    DECLARE_FAKE_VALUE_FUNC2(uint32_t, timer_hal_init, manikin_timer_inst_t, uint32_t)
+    DECLARE_FAKE_VALUE_FUNC1(uint32_t, timer_hal_start, manikin_timer_inst_t)
+    DECLARE_FAKE_VALUE_FUNC1(uint32_t, timer_hal_stop, manikin_timer_inst_t)
+    DECLARE_FAKE_VALUE_FUNC1(uint32_t, timer_hal_deinit, manikin_timer_inst_t)
     DECLARE_FAKE_VALUE_FUNC0(size_t, timer_hal_get_tick)
 #ifdef __cplusplus
 }
