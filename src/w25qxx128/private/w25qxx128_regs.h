@@ -61,4 +61,8 @@
 #define W25QXX_MEM_SIZE_IDX  0x02u
 #define W25QXX_RESP_MEM_SIZE 0x18u // 128 Mbit = 16 MB
 
+/* Power management commands */
+#define W25QXX_REG_POWER_DOWN      0xB9u
+#define W25QXX_REG_POWER_DOWN_SIZE 0x01u
+
 #endif // W25QXX128_REGS_H

@@ -285,7 +285,21 @@ w25qxx_erase_sector (manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number)
 manikin_status_t
 w25qxx_deinit (manikin_spi_memory_ctx_t *mem_ctx)
 {
-    // TODO: Maybe implement an deinit sequence?
-    (void)mem_ctx;
+    MANIKIN_ASSERT(W25QXX_HASH, mem_ctx != NULL, MANIKIN_STATUS_ERR_NULL_PARAM);
+    
+    /* Put the device in power-down mode to reduce power consumption */
+    w25qxx_reg_write_buf[0] = W25QXX_REG_POWER_DOWN;
+    
+    manikin_status_t status = manikin_spi_start_transaction(mem_ctx->spi_cs);
+    size_t bytes_written = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_POWER_DOWN_SIZE);
+    status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
+    
+    MANIKIN_NON_CRIT_ASSERT(W25QXX_HASH, 
+                           (status == MANIKIN_STATUS_OK && bytes_written == W25QXX_REG_POWER_DOWN_SIZE), 
+                           MANIKIN_STATUS_ERR_WRITE_FAIL);
+    
+    /* Reset the fault counter */
+    mem_ctx->fault_cnt = 0;
+    
     return MANIKIN_STATUS_OK;
 }
