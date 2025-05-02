@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/w25qxx128/w25qxx128.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sample_timer/sample_timer.c
         ${CMAKE_CURRENT_LIST_DIR}/src/vl6180x/vl6180x.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/vl53l4cd/vl53l4cd.c
         ${CMAKE_CURRENT_LIST_DIR}/src/error_handler/error_handler.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sdp810/sdp810.c
         ${CMAKE_CURRENT_LIST_DIR}/src/ads7138/ads7138.c
