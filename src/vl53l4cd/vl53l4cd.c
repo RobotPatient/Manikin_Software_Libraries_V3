@@ -32,24 +32,23 @@
 #define HASH_VL53L4CD 0xE2B0299Eu
 
 /* Initialize the sensor with these register settings */
-static const manikin_sensor_reg_t vl53l4cd_init_regs[]
-    = {
-        /* System configuration */
-        { VL53L4CD_VHV_CONFIG_TIMEOUT_MACROP_LOOP_BOUND, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        
-        /* Sensor timing configurations */
-        { VL53L4CD_RANGE_CONFIG_A, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        { VL53L4CD_RANGE_CONFIG_B, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        
-        /* Set timing budget to 50ms (default) */
-        { VL53L4CD_INTERMEASUREMENT_MS, 0x32, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        
-        /* Configure sigma threshold (default is 15 mm) */
-        { VL53L4CD_RANGE_CONFIG_SIGMA_THRESH, 0x0F, MANIKIN_SENSOR_REG_TYPE_WRITE },
-        
-        /* Clear any pending interrupts */
-        { VL53L4CD_SYSTEM_INTERRUPT_CLEAR, VL53L4CD_CLEAR_INTERRUPT, MANIKIN_SENSOR_REG_TYPE_WRITE },
-      };
+static const manikin_sensor_reg_t vl53l4cd_init_regs[] = {
+    /* System configuration */
+    { VL53L4CD_VHV_CONFIG_TIMEOUT_MACROP_LOOP_BOUND, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
+
+    /* Sensor timing configurations */
+    { VL53L4CD_RANGE_CONFIG_A, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
+    { VL53L4CD_RANGE_CONFIG_B, 0x09, MANIKIN_SENSOR_REG_TYPE_WRITE },
+
+    /* Set timing budget to 50ms (default) */
+    { VL53L4CD_INTERMEASUREMENT_MS, 0x32, MANIKIN_SENSOR_REG_TYPE_WRITE },
+
+    /* Configure sigma threshold (default is 15 mm) */
+    { VL53L4CD_RANGE_CONFIG_SIGMA_THRESH, 0x0F, MANIKIN_SENSOR_REG_TYPE_WRITE },
+
+    /* Clear any pending interrupts */
+    { VL53L4CD_SYSTEM_INTERRUPT_CLEAR, VL53L4CD_CLEAR_INTERRUPT, MANIKIN_SENSOR_REG_TYPE_WRITE },
+};
 
 /**
  * @brief Internal function to check the parameters entered into function
@@ -70,48 +69,43 @@ vl53l4cd_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = vl53l4cd_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     sensor_ctx->needs_reinit = 0;
-    uint8_t data[2]          = {0};
+    uint8_t  data[2]         = { 0 };
     uint16_t model_id        = 0;
-    
+
     /* Check sensor fresh-out-of-reset bit, similar to VL6180X approach */
-    status = manikin_i2c_read_reg(sensor_ctx->i2c, 
-                                sensor_ctx->i2c_addr, 
-                                VL53L4CD_SYSTEM_FRESH_OUT_OF_RESET, 
-                                &data[0]);
+    status = manikin_i2c_read_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_SYSTEM_FRESH_OUT_OF_RESET, &data[0]);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Check if sensor is responding by reading the model ID */
-    status = manikin_i2c_read_reg16(sensor_ctx->i2c, 
-                                   sensor_ctx->i2c_addr, 
-                                   VL53L4CD_IDENTIFICATION_MODEL_ID, 
-                                   data);
+    status = manikin_i2c_read_reg16(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_IDENTIFICATION_MODEL_ID, data);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Check model ID is correct (0xEACC) */
     model_id = (uint16_t)((data[0] << 8) | data[1]);
-    MANIKIN_NON_CRIT_ASSERT(HASH_VL53L4CD, 
-                           (model_id == VL53L4CD_MODEL_ID_VALUE), 
-                           MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
+    MANIKIN_NON_CRIT_ASSERT(
+        HASH_VL53L4CD, (model_id == VL53L4CD_MODEL_ID_VALUE), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
 
     /* Write configuration registers */
     for (size_t i = 0; i < sizeof(vl53l4cd_init_regs) / sizeof(manikin_sensor_reg_t); i++)
     {
         status = manikin_i2c_write_reg(sensor_ctx->i2c,
-                                     sensor_ctx->i2c_addr,
-                                     vl53l4cd_init_regs[i].reg,
-                                     GET_LOWER_8_BITS_OF_SHORT(vl53l4cd_init_regs[i].val));
-        MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
+                                       sensor_ctx->i2c_addr,
+                                       vl53l4cd_init_regs[i].reg,
+                                       GET_LOWER_8_BITS_OF_SHORT(vl53l4cd_init_regs[i].val));
+        MANIKIN_ASSERT(
+            HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
     }
-    
+
     /* Start ranging in continuous mode */
-    status = manikin_i2c_write_reg(sensor_ctx->i2c, 
-                                 sensor_ctx->i2c_addr, 
-                                 VL53L4CD_SYSTEM_START, 
-                                 VL53L4CD_RANGING_START);
-    MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
-    
+    status = manikin_i2c_write_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_SYSTEM_START, VL53L4CD_RANGING_START);
+    MANIKIN_ASSERT(
+        HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL);
+
     return MANIKIN_STATUS_OK;
 }
 
@@ -120,41 +114,37 @@ vl53l4cd_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
 {
     manikin_status_t status = vl53l4cd_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Reinitialize if needed */
     if (sensor_ctx->needs_reinit == 1)
     {
         status = vl53l4cd_init_sensor(sensor_ctx);
         MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
     }
-    
+
     MANIKIN_ASSERT(HASH_VL53L4CD, (read_buf != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    
+
     /* Check for data ready */
     uint8_t data_ready = 0;
-    status = manikin_i2c_read_reg(sensor_ctx->i2c, 
-                                sensor_ctx->i2c_addr, 
-                                VL53L4CD_SYSTEM_INTERRUPT_CLEAR, 
-                                &data_ready);
+    status             = manikin_i2c_read_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_SYSTEM_INTERRUPT_CLEAR, &data_ready);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Check if data is ready (bit 0) */
     if (!(data_ready & 0x01))
     {
         return MANIKIN_STATUS_ERR_READ_FAIL;
     }
-    
+
     /* Read distance measurement (16-bit value) */
-    uint8_t distance_data[2] = {0};
-    status = manikin_i2c_read_reg16(sensor_ctx->i2c, 
-                                  sensor_ctx->i2c_addr, 
-                                  VL53L4CD_RESULT_FINAL_RANGE_MM, 
-                                  distance_data);
+    uint8_t distance_data[2] = { 0 };
+    status                   = manikin_i2c_read_reg16(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_RESULT_FINAL_RANGE_MM, distance_data);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Construct 16-bit distance value */
     uint16_t distance = (uint16_t)((distance_data[0] << 8) | distance_data[1]);
-    
+
     /* To match VL6180X behavior, clip the distance to single byte (0-255mm) */
     if (distance > 255)
     {
@@ -164,14 +154,14 @@ vl53l4cd_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     {
         read_buf[0] = (uint8_t)distance;
     }
-    
+
     /* Clear the interrupt for next measurement */
-    status = manikin_i2c_write_reg(sensor_ctx->i2c, 
-                                 sensor_ctx->i2c_addr, 
-                                 VL53L4CD_SYSTEM_INTERRUPT_CLEAR, 
-                                 VL53L4CD_CLEAR_INTERRUPT);
+    status = manikin_i2c_write_reg(sensor_ctx->i2c,
+                                   sensor_ctx->i2c_addr,
+                                   VL53L4CD_SYSTEM_INTERRUPT_CLEAR,
+                                   VL53L4CD_CLEAR_INTERRUPT);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     return MANIKIN_STATUS_OK;
 }
 
@@ -180,15 +170,12 @@ vl53l4cd_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 {
     manikin_status_t status = vl53l4cd_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-    
+
     /* Stop ranging */
-    status = manikin_i2c_write_reg(sensor_ctx->i2c, 
-                                 sensor_ctx->i2c_addr, 
-                                 VL53L4CD_SYSTEM_START, 
-                                 VL53L4CD_RANGING_STOP);
-    MANIKIN_ASSERT(HASH_VL53L4CD, 
-                  (status == MANIKIN_STATUS_OK), 
-                  MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL);
-    
+    status = manikin_i2c_write_reg(
+        sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_SYSTEM_START, VL53L4CD_RANGING_STOP);
+    MANIKIN_ASSERT(
+        HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL);
+
     return MANIKIN_STATUS_OK;
 }
