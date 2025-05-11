@@ -30,54 +30,54 @@ extern "C"
 #endif
 
 /* Device identification */
-#define VL53L4CD_IDENTIFICATION_MODEL_ID       0x010Fu
+#define VL53L4CD_IDENTIFICATION_MODEL_ID 0x010Fu
 
 /* System registers */
-#define VL53L4CD_FIRMWARE_SYSTEM_STATUS        0x00E5u
-#define VL53L4CD_SYSTEM_INTERRUPT_CLEAR        0x0086u
-#define VL53L4CD_SYSTEM_START                  0x0087u
-#define VL53L4CD_SYSTEM_FRESH_OUT_OF_RESET     0x0016u /* Similar to VL6180X */
+#define VL53L4CD_FIRMWARE_SYSTEM_STATUS    0x00E5u
+#define VL53L4CD_SYSTEM_INTERRUPT_CLEAR    0x0086u
+#define VL53L4CD_SYSTEM_START              0x0087u
+#define VL53L4CD_SYSTEM_FRESH_OUT_OF_RESET 0x0016u /* Similar to VL6180X */
 
 /* Ranging configuration registers */
-#define VL53L4CD_RANGE_CONFIG_A                0x005Eu
-#define VL53L4CD_RANGE_CONFIG_B                0x0061u
-#define VL53L4CD_RANGE_CONFIG_SIGMA_THRESH     0x0064u
-#define VL53L4CD_INTERMEASUREMENT_MS           0x006Cu
-#define VL53L4CD_THRESH_HIGH                   0x0072u
-#define VL53L4CD_THRESH_LOW                    0x0074u
+#define VL53L4CD_RANGE_CONFIG_A            0x005Eu
+#define VL53L4CD_RANGE_CONFIG_B            0x0061u
+#define VL53L4CD_RANGE_CONFIG_SIGMA_THRESH 0x0064u
+#define VL53L4CD_INTERMEASUREMENT_MS       0x006Cu
+#define VL53L4CD_THRESH_HIGH               0x0072u
+#define VL53L4CD_THRESH_LOW                0x0074u
 
 /* Result registers */
-#define VL53L4CD_RESULT_RANGE_STATUS           0x0089u
-#define VL53L4CD_RESULT_SPAD_NB                0x008Cu
-#define VL53L4CD_RESULT_SIGNAL_RATE            0x008Eu
-#define VL53L4CD_RESULT_AMBIENT_RATE           0x0090u
-#define VL53L4CD_RESULT_SIGMA                  0x0092u
-#define VL53L4CD_RESULT_FINAL_RANGE_MM         0x0096u
+#define VL53L4CD_RESULT_RANGE_STATUS   0x0089u
+#define VL53L4CD_RESULT_SPAD_NB        0x008Cu
+#define VL53L4CD_RESULT_SIGNAL_RATE    0x008Eu
+#define VL53L4CD_RESULT_AMBIENT_RATE   0x0090u
+#define VL53L4CD_RESULT_SIGMA          0x0092u
+#define VL53L4CD_RESULT_FINAL_RANGE_MM 0x0096u
 
 /* VHV configuration registers */
-#define VL53L4CD_VHV_CONFIG_TIMEOUT_MACROP_LOOP_BOUND  0x0008u
+#define VL53L4CD_VHV_CONFIG_TIMEOUT_MACROP_LOOP_BOUND 0x0008u
 
 /* I2C and configuration registers */
-#define VL53L4CD_I2C_SLAVE_DEVICE_ADDRESS      0x0001u
-#define VL53L4CD_OSC_CALIBRATE_VAL             0x00DEu
+#define VL53L4CD_I2C_SLAVE_DEVICE_ADDRESS 0x0001u
+#define VL53L4CD_OSC_CALIBRATE_VAL        0x00DEu
 
 /* Default I2C addresses */
-#define VL53L4CD_DEFAULT_ADDR                  0x52u /* 7-bit address */
-#define VL53L4CD_DEFAULT_ADDR_ALT              0x29u /* Alternative address */
+#define VL53L4CD_DEFAULT_ADDR     0x52u /* 7-bit address */
+#define VL53L4CD_DEFAULT_ADDR_ALT 0x29u /* Alternative address */
 
 /* Start/stop values */
-#define VL53L4CD_RANGING_START                 0x40u
-#define VL53L4CD_RANGING_STOP                  0x00u
+#define VL53L4CD_RANGING_START 0x40u
+#define VL53L4CD_RANGING_STOP  0x00u
 
 /* Interrupt clear value */
-#define VL53L4CD_CLEAR_INTERRUPT               0x01u
+#define VL53L4CD_CLEAR_INTERRUPT 0x01u
 
 /* Model ID value */
-#define VL53L4CD_MODEL_ID_VALUE                0xEACCu
+#define VL53L4CD_MODEL_ID_VALUE 0xEACCu
 
 /* Status codes */
-#define VL53L4CD_NO_ERROR                      0u
-#define VL53L4CD_ERROR                         1u
+#define VL53L4CD_NO_ERROR 0u
+#define VL53L4CD_ERROR    1u
 
 #ifdef __cplusplus
 }
