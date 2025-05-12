@@ -279,7 +279,6 @@ w25qxx_erase_sector (manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number)
     status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
     if (status != MANIKIN_STATUS_OK)
     {
-        manikin_spi_end_transaction(mem_ctx->spi_cs);
         mem_ctx->fault_cnt++;
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
