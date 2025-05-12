@@ -135,7 +135,6 @@ w25qxx_write (manikin_spi_memory_ctx_t *mem_ctx, uint8_t *data, uint32_t addr, s
     const uint8_t fault_cnt_not_exceeded = mem_ctx->fault_cnt < MANIKIN_FLASH_MAX_RETRIES;
     MANIKIN_ASSERT(W25QXX_HASH, fault_cnt_not_exceeded, MANIKIN_MEMORY_RESULT_NOTRDY);
 
-    addr = addr * W25QXX_PAGE_SIZE;
     // WARNING: Cast in line below
     // Size_t is assumed to be 32-bit, but on 64-bit platform it will be 64-bit.
     // This is not an issue, as the range is limited to 16 MB by assert above. The cast is safe!
@@ -201,7 +200,6 @@ w25qxx_read (manikin_spi_memory_ctx_t *mem_ctx, uint8_t *data, uint32_t addr, si
     manikin_status_t status = w25qxx_check_id(mem_ctx);
     MANIKIN_ASSERT(W25QXX_HASH, status == MANIKIN_STATUS_OK, MANIKIN_MEMORY_RESULT_NOTRDY);
 
-    addr             = addr * W25QXX_PAGE_SIZE;
     size_t remaining = len;
 
     status |= manikin_spi_start_transaction(mem_ctx->spi_cs);
@@ -270,15 +268,26 @@ w25qxx_erase_sector (manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number)
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
 
-    status |= w25qxx_set_address(mem_ctx, W25QXX_REG_SECTOR_ERASE, addr);
-
+    status |= manikin_spi_start_transaction(mem_ctx->spi_cs);
     if (status != MANIKIN_STATUS_OK)
     {
         manikin_spi_end_transaction(mem_ctx->spi_cs);
         mem_ctx->fault_cnt++;
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
-
+    status |= w25qxx_set_address(mem_ctx, W25QXX_REG_SECTOR_ERASE, addr);
+    if ((status != MANIKIN_STATUS_OK) || (w25qxx_wait_while_busy(mem_ctx) != MANIKIN_STATUS_OK))
+    {
+        manikin_spi_end_transaction(mem_ctx->spi_cs);
+        mem_ctx->fault_cnt++;
+        return MANIKIN_MEMORY_RESULT_ERROR;
+    }
+    status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
+    if (status != MANIKIN_STATUS_OK)
+    {
+        mem_ctx->fault_cnt++;
+        return MANIKIN_MEMORY_RESULT_ERROR;
+    }
     return MANIKIN_MEMORY_RESULT_OK;
 }
 

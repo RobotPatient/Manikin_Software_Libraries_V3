@@ -38,6 +38,10 @@ add_executable(test_vl6180 ${CMAKE_CURRENT_LIST_DIR}/vl6180x/test_vl6180x.cpp)
 target_link_libraries(test_vl6180 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_vl6180)
 
+add_executable(test_vl53l4cd ${CMAKE_CURRENT_LIST_DIR}/vl53l4cd/test_vl53l4cd.cpp)
+target_link_libraries(test_vl53l4cd ${PROJECT_NAME} Catch2 fff hal_mock)
+catch_discover_tests(test_vl53l4cd)
+
 add_executable(test_sdp810 ${CMAKE_CURRENT_LIST_DIR}/sdp810/test_sdp810.cpp)
 target_link_libraries(test_sdp810 ${PROJECT_NAME} Catch2 fff hal_mock)
 catch_discover_tests(test_sdp810)
