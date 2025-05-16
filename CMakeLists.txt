@@ -13,7 +13,9 @@ add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sdp810/sdp810.c
         ${CMAKE_CURRENT_LIST_DIR}/src/ads7138/ads7138.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/bmm350.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c)
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/packet_parser/packet_parser.c
+)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 

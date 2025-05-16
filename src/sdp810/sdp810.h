@@ -1,5 +1,5 @@
 /**
- * @file            sdp810.c
+ * @file            sdp810.h
  * @brief          Driver module for the Sensirion SDP810 Differential pressure sensor
  *
  * @par
