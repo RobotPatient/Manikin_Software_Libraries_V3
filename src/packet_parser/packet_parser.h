@@ -32,10 +32,9 @@ extern "C"
 #include "common/manikin_types.h"
     typedef struct
     {
-        uint16_t len;
-        const uint8_t * data;
+        uint16_t       len;
+        const uint8_t *data;
     } packet_parser_cmd_t;
-
 
     /**
      * @brief Parse received packet from byte array to cmd struct
@@ -64,7 +63,6 @@ extern "C"
     manikin_status_t packet_parser_encapsulate(const packet_parser_cmd_t *cmd,
                                                uint8_t                   *out_data,
                                                size_t                     out_max_len);
-
 
 #ifdef __cplusplus
 }

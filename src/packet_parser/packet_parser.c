@@ -1,5 +1,5 @@
 /**
-* @file            packet_parser.c
+ * @file            packet_parser.c
  * @brief          Communication packet encapsulator/parser for communication interfaces
  *
  * @par
@@ -53,7 +53,6 @@ calculate_crc16 (const uint8_t *data, size_t len)
     }
     return crc;
 }
-
 
 manikin_status_t
 packet_parser_parse (const uint8_t *recv_bytes, size_t buf_length, packet_parser_cmd_t *cmd)
