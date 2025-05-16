@@ -27,8 +27,8 @@
 #include "common/manikin_bit_manipulation.h"
 
 // Fake CBOR message: {1: 42} = A1 01 18 2A
-static const uint8_t test_cbor_data[] = { 0xA1, 0x01, 0x18, 0x2A }; // CBOR map
-static const size_t  test_cbor_len    = sizeof(test_cbor_data);
+static constexpr uint8_t test_cbor_data[] = { 0xA1, 0x01, 0x18, 0x2A }; // CBOR map
+static constexpr size_t  test_cbor_len    = sizeof(test_cbor_data);
 
 TEST_CASE("packet_parser_encapsulate produces correct packet", "[packet_parser][REQ-F1]")
 {
@@ -47,9 +47,9 @@ TEST_CASE("packet_parser_encapsulate produces correct packet", "[packet_parser][
 
     // CRC validation
     uint16_t crc_calc = 0xFFFF;
-    for (size_t i = 0; i < test_cbor_len; ++i)
+    for (unsigned char i : test_cbor_data)
     {
-        crc_calc ^= test_cbor_data[i];
+        crc_calc ^= i;
         for (uint8_t j = 0; j < 8; ++j)
         {
             if (crc_calc & 1)
@@ -78,9 +78,9 @@ TEST_CASE("packet_parser_parse returns correct cmd from valid packet", "[packet_
     memcpy(&valid_packet[3], test_cbor_data, test_cbor_len);
 
     uint16_t crc = 0xFFFF;
-    for (size_t i = 0; i < test_cbor_len; ++i)
+    for (unsigned char i : test_cbor_data)
     {
-        crc ^= test_cbor_data[i];
+        crc ^= i;
         for (uint8_t j = 0; j < 8; ++j)
         {
             if (crc & 1)
