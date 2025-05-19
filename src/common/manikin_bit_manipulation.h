@@ -70,10 +70,10 @@ extern "C"
 
 // WARNING: Cast in line below
 // NOTE: Combine three signed 8-bit values to form one 24-bit short; cast ensures result is 24-bit
-#define CONSTRUCT_SIGNED_24BIT(upper, mid, lower)                               \
-    (((((uint32_t)((uint8_t)(upper)) << 16) | ((uint32_t)((uint8_t)(mid)) << 8) \
-       | ((uint32_t)((uint8_t)(lower))))                                        \
-      << 8)                                                                     \
+#define CONSTRUCT_SIGNED_24BIT(upper, mid, lower)                                        \
+    ((int32_t)((((uint32_t)((uint8_t)(upper)) << 16) | ((uint32_t)((uint8_t)(mid)) << 8) \
+                | ((uint32_t)((uint8_t)(lower))))                                        \
+               << 8)                                                                     \
      >> 8)
 
 // WARNING: Cast in line below

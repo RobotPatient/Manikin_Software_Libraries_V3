@@ -31,17 +31,18 @@ extern "C"
 #include "common/manikin_types.h"
 
     /**
-     * @brief This struct contains the structure of samples for bmm350 magnetometer
-     *        Which consists of 3-axis 16-bit integers.
-     *        The unit is microtesla and degrees Celsius and ms.
+     * @brief Sample data from BMM350 magnetometer.
+     * - Magnetometer axes in microtesla (µT)
+     * - Temperature in milli-degrees Celsius (m°C)
+     * - Sensor time in microseconds (µs)
      */
     typedef struct
     {
-        uint32_t magneto_x_ut;
-        uint32_t magneto_y_ut;
-        uint32_t magneto_z_ut;
-        uint32_t temperature_ut;
-        uint32_t sensor_time_ut;
+        int32_t magneto_x_ut;     ///< Magnetic field X in microtesla
+        int32_t magneto_y_ut;     ///< Magnetic field Y in microtesla
+        int32_t magneto_z_ut;     ///< Magnetic field Z in microtesla
+        int32_t temperature_mdeg; ///< Temperature in milli-degrees Celsius
+        int32_t sensor_time_us;   ///< Sensor timestamp in microseconds
     } bmm350_sample_data_t;
 
     /**

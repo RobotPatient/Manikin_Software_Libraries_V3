@@ -118,6 +118,46 @@ TEST_CASE("bmm350_deinit_sensor succeeds with valid context", "[bmm350][REQ-F4]"
     REQUIRE(bmm350_deinit_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
+TEST_CASE("bmm350_parse_raw_data handles null raw_data", "[bmm350][REQ-F3]")
+{
+    REQUIRE(bmm350_parse_raw_data(NULL, (bmm350_sample_data_t *)0x1234)
+            == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("bmm350_parse_raw_data handles null data pointer", "[bmm350][REQ-F3]")
+{
+    uint8_t dummy_raw[15] = { 0 }; // Minimum length for 5 x 3-byte fields
+    REQUIRE(bmm350_parse_raw_data(dummy_raw, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("bmm350_parse_raw_data successfully parses valid 24-bit signed data", "[bmm350][REQ-F3]")
+{
+    // Example values:
+    // magneto_x = 0x001234 → 4660
+    // magneto_y = 0xFFEEDD → -4369 (signed 24-bit)
+    // magneto_z = 0x000001 → 1
+    // temperature = 0xFFFFFF → -1 (signed 24-bit)
+    // sensor_time = 0x800000 → -8388608 (lowest signed 24-bit)
+
+    uint8_t raw_data[15] = {
+        0x34, 0x12, 0x00, // magneto_x
+        0xDD, 0xEE, 0xFF, // magneto_y
+        0x01, 0x00, 0x00, // magneto_z
+        0xFF, 0xFF, 0xFF, // temperature
+        0x00, 0x00, 0x80  // sensor_time
+    };
+
+    bmm350_sample_data_t parsed_data;
+
+    REQUIRE(bmm350_parse_raw_data(raw_data, &parsed_data) == MANIKIN_STATUS_OK);
+
+    REQUIRE(parsed_data.magneto_x_ut == 0x001234); // 4660
+    REQUIRE(parsed_data.magneto_y_ut == -4387);    // 0xFFEEDD
+    REQUIRE(parsed_data.magneto_z_ut == 1);
+    REQUIRE(parsed_data.temperature_mdeg == -1);     // 0xFFFFFF
+    REQUIRE(parsed_data.sensor_time_us == -8388608); // 0x800000
+}
+
 int
 main (int argc, char *argv[])
 {

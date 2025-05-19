@@ -251,6 +251,27 @@ TEST_CASE("vl53l4cd_read_sensor reinitializes when needed", "[vl53l4cd][REQ-F1]"
     REQUIRE(dummy_ctx.needs_reinit == 0); // Flag should be cleared
 }
 
+TEST_CASE("vl53l4cd_parse_raw_data handles null raw_data", "[vl53l4cd][REQ-F3]")
+{
+    REQUIRE(vl53l4cd_parse_raw_data(NULL, (vl53l4cd_sample_data_t *)0x1234)
+            == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("vl53l4cd_parse_raw_data handles null data pointer", "[vl53l4cd][REQ-F3]")
+{
+    uint8_t dummy_raw[1] = { 0x00 }; // Dummy distance data
+    REQUIRE(vl53l4cd_parse_raw_data(dummy_raw, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("vl53l4cd_parse_raw_data successfully converts valid raw data", "[vl53l4cd][REQ-F3]")
+{
+    uint8_t                raw_data[1] = { 0x5A }; // Example: 90 mm
+    vl53l4cd_sample_data_t parsed_data;
+
+    REQUIRE(vl53l4cd_parse_raw_data(raw_data, &parsed_data) == MANIKIN_STATUS_OK);
+    REQUIRE(parsed_data.distance_mm == 0x5A);
+}
+
 int
 main (int argc, char *argv[])
 {
