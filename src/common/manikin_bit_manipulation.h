@@ -69,6 +69,14 @@ extern "C"
 #define CONSTRUCT_SHORT_FROM_BYTES(upper, lower) ((uint16_t)((upper) << (8)) | (lower))
 
 // WARNING: Cast in line below
+// NOTE: Combine three signed 8-bit values to form one 24-bit short; cast ensures result is 24-bit
+#define CONSTRUCT_SIGNED_24BIT(upper, mid, lower)                               \
+    (((((uint32_t)((uint8_t)(upper)) << 16) | ((uint32_t)((uint8_t)(mid)) << 8) \
+       | ((uint32_t)((uint8_t)(lower))))                                        \
+      << 8)                                                                     \
+     >> 8)
+
+// WARNING: Cast in line below
 // NOTE: Truncate 16-bit value to 12-bit; cast ensures result is within 16-bits
 #define TRUNCATE_TO_12B_VAL(byte0, byte1) ((uint16_t)(byte0) << 4) | ((byte1) >> 4)
 

@@ -30,6 +30,15 @@ extern "C"
 #endif
 
 #include "common/manikin_types.h"
+    /**
+     * @brief This struct contains the structure of samples for sdp810 differential pressure sensor
+     *        The units are mBar and degrees Celsius
+     */
+    typedef struct
+    {
+        float air_pressure_mbar;
+        float air_temp_mbar;
+    } sdp810_sample_data_t;
 
     /**
      * @brief Initialize the sensor, which disables continuous sampling mode.
@@ -64,6 +73,15 @@ extern "C"
      */
     manikin_status_t sdp810_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
+    /**
+     * @brief Parse the raw sensor data to formatted output-data with correct unit (mbar)
+     * @param raw_data Ptr to read-buffer which contains the raw samples
+     * @param data     Ptr to struct to save the processed samples to
+     * @return         MANIKIN_STATUS_OK on Successful conversion
+     *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
+     *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
+     */
+    manikin_status_t sdp810_parse_raw_data(const uint8_t *raw_data, sdp810_sample_data_t *data);
 #ifdef __cplusplus
 }
 #endif

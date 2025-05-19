@@ -31,6 +31,20 @@ extern "C"
 #include "common/manikin_types.h"
 
     /**
+     * @brief This struct contains the structure of samples for bmm350 magnetometer
+     *        Which consists of 3-axis 16-bit integers.
+     *        The unit is microtesla and degrees Celsius and ms.
+     */
+    typedef struct
+    {
+        uint32_t magneto_x_ut;
+        uint32_t magneto_y_ut;
+        uint32_t magneto_z_ut;
+        uint32_t temperature_ut;
+        uint32_t sensor_time_ut;
+    } bmm350_sample_data_t;
+
+    /**
      * @brief Initialize the sensor, which disables continuous sampling mode.
      * @param sensor_ctx Ptr to struct containing all settings for sensor, such as i2c instance &
      * address
@@ -62,6 +76,15 @@ extern "C"
      */
     manikin_status_t bmm350_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
+    /**
+     * @brief Parse the raw sensor data to formatted output-data with correct unit (microtesla)
+     * @param raw_data Ptr to read-buffer which contains the raw samples
+     * @param data     Ptr to struct to save the processed samples to
+     * @return         MANIKIN_STATUS_OK on Successful conversion
+     *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
+     *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
+     */
+    manikin_status_t bmm350_parse_raw_data(const uint8_t *raw_data, bmm350_sample_data_t *data);
 #ifdef __cplusplus
 }
 #endif

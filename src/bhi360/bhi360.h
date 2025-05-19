@@ -31,6 +31,20 @@ extern "C"
 #include "common/manikin_types.h"
 
     /**
+     * @brief This struct contains the structure of samples for bhi360 IMU
+     *        Which consists of 3-axis 16-bit integers. The unit is g for acc and dps for gyro.
+     */
+    typedef struct
+    {
+        uint16_t acc_x;
+        uint16_t acc_y;
+        uint16_t acc_z;
+        uint16_t gyro_x;
+        uint16_t gyro_y;
+        uint16_t gyro_z;
+    } bhi360_sample_data_t;
+
+    /**
      * @brief Initialize the sensor, which disables continuous sampling mode.
      * @param sensor_ctx Ptr to struct containing all settings for sensor, such as i2c instance &
      * address
@@ -62,6 +76,15 @@ extern "C"
      */
     manikin_status_t bhi360_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
+    /**
+     * @brief Parse the raw sensor data to formatted output-data with correct unit (g and dps)
+     * @param raw_data Ptr to read-buffer which contains the raw samples
+     * @param data     Ptr to struct to save the processed samples to
+     * @return         MANIKIN_STATUS_OK on Successful conversion
+     *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
+     *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
+     */
+    manikin_status_t bhi360_parse_raw_data(const uint8_t *raw_data, bhi360_sample_data_t *data);
 #ifdef __cplusplus
 }
 #endif

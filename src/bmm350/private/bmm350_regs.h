@@ -142,7 +142,7 @@ extern "C"
 #define BMM350_I2C_ADSEL_SET_HIGH 0x15u
 
 #define BMM350_DUMMY_BYTES        2u
-#define BMM350_READ_BUFFER_LENGTH 14u
+#define BMM350_READ_BUFFER_LENGTH 15u
 
     /********************** Register Addresses ************************/
 #define BMM350_REG_SEL 0x00u

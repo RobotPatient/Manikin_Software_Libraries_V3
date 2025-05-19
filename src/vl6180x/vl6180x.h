@@ -30,6 +30,14 @@ extern "C"
 #endif
 
 #include "common/manikin_types.h"
+    /**
+     * @brief This struct contains the structure of samples for vl6180x ToF sensor
+     *        The units are millimeters
+     */
+    typedef struct
+    {
+        uint32_t distance_mm;
+    } vl6180x_sample_data_t;
 
     /**
      * @brief Initialize the sensor, which disables continuous sampling mode.
@@ -63,6 +71,15 @@ extern "C"
      */
     manikin_status_t vl6180x_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
 
+    /**
+     * @brief Parse the raw sensor data to formatted output-data with correct unit (mm)
+     * @param raw_data Ptr to read-buffer which contains the raw samples
+     * @param data     Ptr to struct to save the processed samples to
+     * @return         MANIKIN_STATUS_OK on Successful conversion
+     *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
+     *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
+     */
+    manikin_status_t vl6180x_parse_raw_data(const uint8_t *raw_data, vl6180x_sample_data_t *data);
 #ifdef __cplusplus
 }
 #endif
