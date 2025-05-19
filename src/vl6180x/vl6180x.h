@@ -36,7 +36,7 @@ extern "C"
      */
     typedef struct
     {
-        uint32_t distance_mm;
+        uint8_t distance_mm;
     } vl6180x_sample_data_t;
 
     /**

@@ -179,3 +179,12 @@ vl53l4cd_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
 
     return MANIKIN_STATUS_OK;
 }
+
+manikin_status_t
+vl54l4cd_parse_raw_data (const uint8_t *raw_data, vl53l4cd_sample_data_t *data)
+{
+    MANIKIN_ASSERT(HASH_VL53L4CD, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    MANIKIN_ASSERT(HASH_VL53L4CD, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    data->distance_mm = raw_data[0];
+    return MANIKIN_STATUS_OK;
+}

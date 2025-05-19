@@ -36,12 +36,12 @@ extern "C"
      */
     typedef struct
     {
-        uint16_t acc_x;
-        uint16_t acc_y;
-        uint16_t acc_z;
-        uint16_t gyro_x;
-        uint16_t gyro_y;
-        uint16_t gyro_z;
+        uint16_t acc_x_g;
+        uint16_t acc_y_g;
+        uint16_t acc_z_g;
+        uint16_t gyro_x_dps;
+        uint16_t gyro_y_dps;
+        uint16_t gyro_z_dps;
     } bhi360_sample_data_t;
 
     /**
