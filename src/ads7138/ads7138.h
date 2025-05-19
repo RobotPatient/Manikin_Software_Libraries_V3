@@ -31,6 +31,22 @@ extern "C"
 #include "common/manikin_types.h"
 
     /**
+     * @brief This struct contains the structure of samples for ADS7138 ADC
+     *        Which consists of 8-channels with the value in millivolt
+     */
+    typedef struct
+    {
+        uint16_t ch1_mv;
+        uint16_t ch2_mv;
+        uint16_t ch3_mv;
+        uint16_t ch4_mv;
+        uint16_t ch5_mv;
+        uint16_t ch6_mv;
+        uint16_t ch7_mv;
+        uint16_t ch8_mv;
+    } ads7138_sample_data_t;
+
+    /**
      * @brief Initialize the sensor, which disables continuous sampling mode.
      * @param sensor_ctx Ptr to struct containing all settings for sensor, such as i2c instance &
      * address
@@ -56,11 +72,21 @@ extern "C"
      * @brief Deinitialize the sensor, which disables continuous sampling mode.
      * @param sensor_ctx Ptr to struct containing all settings for sensor, such as i2c instance &
      * address
-     * @return MANIKIN_STATUS_OK on Succesful initialization,
+     * @return MANIKIN_STATUS_OK on Successful initialization,
      *         MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL on unable to set registers (due to lost
      * connection, e.g.) MANIKIN_STATUS_ERR_NULL_PARAM on invalid i2c handle
      */
     manikin_status_t ads7138_deinit_sensor(manikin_sensor_ctx_t *sensor_ctx);
+
+    /**
+     * @brief Parse the raw sensor data to formatted output-data with correct unit (millivolt)
+     * @param raw_data Ptr to read-buffer which contains the raw samples
+     * @param data     Ptr to struct to save the processed samples to
+     * @return         MANIKIN_STATUS_OK on Successful conversion
+     *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
+     *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
+     */
+    manikin_status_t ads7138_parse_raw_data(const uint8_t *raw_data, ads7138_sample_data_t *data);
 
 #ifdef __cplusplus
 }

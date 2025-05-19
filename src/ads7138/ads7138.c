@@ -145,3 +145,19 @@ ads7138_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
         HASH_ADS7138, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL);
     return MANIKIN_STATUS_OK;
 }
+
+manikin_status_t
+ads7138_parse_raw_data (const uint8_t *raw_data, ads7138_sample_data_t *data)
+{
+    MANIKIN_ASSERT(HASH_ADS7138, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    MANIKIN_ASSERT(HASH_ADS7138, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    data->ch1_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[0], raw_data[1]);
+    data->ch2_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[2], raw_data[3]);
+    data->ch3_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[4], raw_data[5]);
+    data->ch4_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[6], raw_data[7]);
+    data->ch5_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[8], raw_data[9]);
+    data->ch6_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[10], raw_data[11]);
+    data->ch7_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[12], raw_data[13]);
+    data->ch8_mv = CONSTRUCT_SHORT_FROM_BYTES(raw_data[14], raw_data[15]);
+    return MANIKIN_STATUS_OK;
+}

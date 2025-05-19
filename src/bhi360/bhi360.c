@@ -86,3 +86,11 @@ bhi360_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
     MANIKIN_ASSERT(HASH_BHI360, (status == MANIKIN_STATUS_OK), status);
     return MANIKIN_STATUS_OK;
 }
+
+manikin_status_t
+bhi360_parse_raw_data (const uint8_t *raw_data, bhi360_sample_data_t *data)
+{
+    MANIKIN_ASSERT(HASH_BHI360, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    MANIKIN_ASSERT(HASH_BHI360, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    return MANIKIN_STATUS_OK;
+}

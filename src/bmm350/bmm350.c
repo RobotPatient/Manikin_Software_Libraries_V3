@@ -118,3 +118,24 @@ bmm350_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
         HASH_BMM350, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL);
     return MANIKIN_STATUS_OK;
 }
+
+manikin_status_t
+bmm350_parse_raw_data (const uint8_t *raw_data, bmm350_sample_data_t *data)
+{
+    MANIKIN_ASSERT(HASH_BMM350, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    MANIKIN_ASSERT(HASH_BMM350, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    /**
+     * Expected layout:
+     * [0-2]   - magneto_x (LSB first)
+     * [3-5]   - magneto_y
+     * [6-8]   - magneto_z
+     * [9-11]  - temperature
+     * [12-14] - sensor_time
+     */
+    data->magneto_x_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[2], raw_data[1], raw_data[0]);
+    data->magneto_y_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[5], raw_data[4], raw_data[3]);
+    data->magneto_z_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[8], raw_data[7], raw_data[6]);
+    data->temperature_mdeg = CONSTRUCT_SIGNED_24BIT(raw_data[11], raw_data[10], raw_data[9]);
+    data->sensor_time_us   = CONSTRUCT_SIGNED_24BIT(raw_data[14], raw_data[13], raw_data[12]);
+    return MANIKIN_STATUS_OK;
+}

@@ -145,3 +145,12 @@ vl6180x_deinit_sensor (manikin_sensor_ctx_t *sensor_ctx)
         HASH_VL6180X, (status == MANIKIN_STATUS_OK), MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL);
     return MANIKIN_STATUS_OK;
 }
+
+manikin_status_t
+vl6180x_parse_raw_data (const uint8_t *raw_data, vl6180x_sample_data_t *data)
+{
+    MANIKIN_ASSERT(HASH_VL6180X, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    MANIKIN_ASSERT(HASH_VL6180X, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    data->distance_mm = raw_data[0];
+    return MANIKIN_STATUS_OK;
+}

@@ -133,6 +133,27 @@ TEST_CASE("vl6180x_deinit_sensor succeeds with valid context", "[vl6180x][REQ-F1
     REQUIRE(vl6180x_deinit_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
+TEST_CASE("vl6180x_parse_raw_data handles null raw_data", "[vl6180x][REQ-F3]")
+{
+    REQUIRE(vl6180x_parse_raw_data(NULL, (vl6180x_sample_data_t *)0x1234)
+            == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("vl6180x_parse_raw_data handles null data pointer", "[vl6180x][REQ-F3]")
+{
+    uint8_t dummy_raw[1] = { 0x00 }; // One-byte dummy data
+    REQUIRE(vl6180x_parse_raw_data(dummy_raw, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("vl6180x_parse_raw_data successfully converts valid raw data", "[vl6180x][REQ-F3]")
+{
+    uint8_t               raw_data[1] = { 0x3A }; // Example distance: 58 mm
+    vl6180x_sample_data_t parsed_data;
+
+    REQUIRE(vl6180x_parse_raw_data(raw_data, &parsed_data) == MANIKIN_STATUS_OK);
+    REQUIRE(parsed_data.distance_mm == 0x3A);
+}
+
 int
 main (int argc, char *argv[])
 {

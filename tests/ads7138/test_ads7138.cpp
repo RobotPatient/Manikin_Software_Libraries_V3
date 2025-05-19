@@ -114,6 +114,36 @@ TEST_CASE("ads7138_deinit_sensor succeeds with valid context [REQ-F3]", "[ads713
     REQUIRE(ads7138_deinit_sensor(&dummy_ctx) == MANIKIN_STATUS_OK);
 }
 
+TEST_CASE("ads7138_parse_raw_data handles null raw_data", "[ads7138][REQ-F3]")
+{
+    REQUIRE(ads7138_parse_raw_data(NULL, (ads7138_sample_data_t *)0x1234)
+            == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("ads7138_parse_raw_data handles null data pointer", "[ads7138][REQ-F3]")
+{
+    uint8_t dummy_raw[16] = { 0xFF, 0xFF }; // Dummy raw data
+    REQUIRE(ads7138_parse_raw_data(dummy_raw, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
+}
+
+TEST_CASE("ads7138_parse_raw_data successfully converts valid raw data", "[ads7138][REQ-F3]")
+{
+    // Example raw data: 2 channels of 16-bit data (big endian format)
+    uint8_t raw_data[16];
+    raw_data[0] = 0x12;
+    raw_data[1] = 0x34;
+    raw_data[2] = 0xAB;
+    raw_data[3] = 0xCD;
+    ads7138_sample_data_t parsed_data;
+
+    REQUIRE(ads7138_parse_raw_data(raw_data, &parsed_data) == MANIKIN_STATUS_OK);
+
+    // Validate expected conversion (depends on your implementation logic)
+    // Here's a generic example assuming values are just combined MSB/LSB:
+    REQUIRE(parsed_data.ch1_mv == 0x1234);
+    REQUIRE(parsed_data.ch2_mv == 0xABCD);
+}
+
 int
 main (int argc, char *argv[])
 {
