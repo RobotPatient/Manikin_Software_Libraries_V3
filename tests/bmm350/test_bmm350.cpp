@@ -130,7 +130,8 @@ TEST_CASE("bmm350_init_sensor handles null parameter", "[bmm350][REQ-F4]")
 //     REQUIRE(bmm350_parse_raw_data(dummy_raw, NULL) == MANIKIN_STATUS_ERR_NULL_PARAM);
 // }
 //
-// TEST_CASE("bmm350_parse_raw_data successfully parses valid 24-bit signed data", "[bmm350][REQ-F3]")
+// TEST_CASE("bmm350_parse_raw_data successfully parses valid 24-bit signed data",
+// "[bmm350][REQ-F3]")
 // {
 //     // Example values:
 //     // magneto_x = 0x001234 → 4660
