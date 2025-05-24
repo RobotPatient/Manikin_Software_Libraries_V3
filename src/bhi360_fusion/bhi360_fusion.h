@@ -81,7 +81,8 @@ extern "C"
      *                 MANIKIN_STATUS_ERR_NULL_PARAM on invalid raw_data or data param
      *                 MANIKIN_STATUS_ERR_CONVERSION_FAILED on error while converting samples
      */
-    manikin_status_t bhi360_fusion_parse_raw_data(const uint8_t *raw_data, bhi360_fusion_sample_data_t *data);
+    manikin_status_t bhi360_fusion_parse_raw_data(const uint8_t               *raw_data,
+                                                  bhi360_fusion_sample_data_t *data);
 #ifdef __cplusplus
 }
 #endif
