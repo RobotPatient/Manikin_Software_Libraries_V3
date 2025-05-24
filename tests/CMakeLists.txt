@@ -22,6 +22,8 @@ add_library(hal_mock ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_i2c_functio
         ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_timer_functions.c
         ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_watchdog_functions.c
         ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_spi_functions.c
+        ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_timing_functions.c
+        ${CMAKE_CURRENT_LIST_DIR}/test_stubs/mocks/fake_timing_functions.h
 )
 target_include_directories(hal_mock PUBLIC test_stubs/mocks
         test_stubs/conf)

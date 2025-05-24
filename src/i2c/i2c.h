@@ -52,6 +52,19 @@ extern "C"
     uint8_t manikin_i2c_check_device_address(manikin_i2c_inst_t i2c_inst, uint8_t i2c_addr);
 
     /**
+     * @brief Writes a byte to a (8-bit addressed) register of i2c-device
+     * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
+     * @param i2c_addr The address of the I2C device
+     * @param reg      The 8-bit register address to write
+     * @param data     The data to write to the register
+     * @return  MANIKIN_STATUS_OK: No error occurred while writing the register
+     *          MANIKIN_STATUS_ERR_NULL_PARAM: I2C_inst is null
+     */
+    manikin_status_t manikin_i2c_write_8b_reg(manikin_i2c_inst_t i2c_inst,
+                                              const uint8_t      i2c_addr,
+                                              const uint8_t      reg,
+                                              const uint8_t      data);
+    /**
      * @brief Writes a byte to a register of i2c-device
      * @param i2c_inst The direct (ptr) handle to the i2c peripheral used for the device
      * @param i2c_addr The address of the I2C device

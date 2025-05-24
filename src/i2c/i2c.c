@@ -171,6 +171,24 @@ manikin_i2c_write_bytes (manikin_i2c_inst_t i2c_inst,
 }
 
 manikin_status_t
+manikin_i2c_write_8b_reg (manikin_i2c_inst_t i2c_inst,
+                          const uint8_t      i2c_addr,
+                          const uint8_t      reg,
+                          const uint8_t      data)
+{
+
+    MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    uint8_t bytes[2];
+    bytes[0] = GET_LOWER_8_BITS_OF_SHORT(reg);
+    bytes[1] = data;
+    if (MANIKIN_I2C_HAL_WRITE_BYTES(i2c_inst, i2c_addr << 1, bytes, sizeof(bytes)) != sizeof(bytes))
+    {
+        return MANIKIN_STATUS_ERR_WRITE_FAIL;
+    }
+    return MANIKIN_STATUS_OK;
+}
+
+manikin_status_t
 manikin_i2c_deinit (manikin_i2c_inst_t i2c_inst)
 {
     MANIKIN_ASSERT(HASH_I2C, (i2c_inst != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);

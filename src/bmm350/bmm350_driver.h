@@ -22,8 +22,8 @@
  * Author:          Victor Hogeweij
  */
 
-#ifndef BMM350_H
-#define BMM350_H
+#ifndef BMM350_DRIVER_H
+#define BMM350_DRIVER_H
 #ifdef __cplusplus
 extern "C"
 {
@@ -89,4 +89,4 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif // BMM350_H
+#endif // BMM350_DRIVER_H

@@ -35,6 +35,10 @@ extern "C"
 #include "fake_spi_functions.h"
 
 /**
+ * @brief Manikin Delay uS
+ */
+#define MANIKIN_DELAY_US(us) manikin_hal_delay_us(us)
+/**
  * @brief Manikin I2C HAL init binding
  * @param i2c_inst Platform specific typedef ptr to your memory mapped i2c peripheral (e.g. handle)
  * @param baud The i2c-bus frequency on which the bus shall run
