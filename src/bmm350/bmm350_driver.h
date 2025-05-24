@@ -38,10 +38,10 @@ extern "C"
      */
     typedef struct
     {
-        int32_t magneto_x_ut;     ///< Magnetic field X in microtesla
-        int32_t magneto_y_ut;     ///< Magnetic field Y in microtesla
-        int32_t magneto_z_ut;     ///< Magnetic field Z in microtesla
-        int32_t temperature_mdeg; ///< Temperature in milli-degrees Celsius
+        float   magneto_x_ut;     ///< Magnetic field X in microtesla
+        float   magneto_y_ut;     ///< Magnetic field Y in microtesla
+        float   magneto_z_ut;     ///< Magnetic field Z in microtesla
+        float   temperature_mdeg; ///< Temperature in milli-degrees Celsius
         int32_t sensor_time_us;   ///< Sensor timestamp in microseconds
     } bmm350_sample_data_t;
 

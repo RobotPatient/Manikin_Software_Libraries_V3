@@ -28,7 +28,6 @@
 #include <bmm350.h>
 #include "i2c/i2c.h"
 #include "bmm350_defs.h"
-#include "fake_timing_functions.h"
 #include "manikin_platform.h"
 #include "error_handler/error_handler.h"
 
@@ -60,11 +59,12 @@ bmm350_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf
 {
     manikin_sensor_ctx_t *sensor_ctx = (manikin_sensor_ctx_t *)intf_ptr;
 
-    manikin_status_t status
-        = manikin_i2c_write_8b_reg(sensor_ctx->i2c, sensor_ctx->i2c_addr, reg_addr, 0x00);
-    size_t res = manikin_i2c_read_bytes(sensor_ctx->i2c, sensor_ctx->i2c_addr, reg_data, length);
+    size_t status
+        = MANIKIN_I2C_HAL_WRITE_BYTES(sensor_ctx->i2c, sensor_ctx->i2c_addr, &reg_addr, 1);
+    size_t res
+        = MANIKIN_I2C_HAL_READ_BYTES(sensor_ctx->i2c, sensor_ctx->i2c_addr, reg_data, length);
 
-    return res == length && status == MANIKIN_STATUS_OK ? 0 : -1;
+    return res == length && status == 1 ? 0 : -1;
 }
 uint8_t write_buf[50];
 /*!
@@ -76,7 +76,7 @@ bmm350_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, voi
     manikin_sensor_ctx_t *sensor_ctx = (manikin_sensor_ctx_t *)intf_ptr;
     write_buf[0]                     = reg_addr;
     memcpy(write_buf + 1, reg_data, length);
-    size_t res = manikin_i2c_write_bytes(
+    size_t res = MANIKIN_I2C_HAL_WRITE_BYTES(
         sensor_ctx->i2c, sensor_ctx->i2c_addr, write_buf, (uint16_t)length + 1);
     return res == length + 1 ? 0 : -1;
 }
@@ -94,7 +94,7 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     manikin_status_t status = bmm350_check_params(sensor_ctx);
     MANIKIN_ASSERT(HASH_BMM350, (status == MANIKIN_STATUS_OK), status);
     uint8_t  int_status, int_ctrl = 0;
-    uint8_t  loop = 10, set_int_ctrl;
+    uint8_t  loop = 10;
     uint32_t secs, nano_secs = 0;
 
     // NOTE: needs_reinit is internal variable, which might be uninitialized when entered as param.
@@ -120,11 +120,9 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     {
         return MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL;
     }
-    set_int_ctrl
-        = ((BMM350_INT_POL_ACTIVE_HIGH << 1) | (BMM350_INT_OD_PUSHPULL << 2) | BMM350_ENABLE << 7);
 
-    printf("Expected : 0x2E : Interrupt control : 0x%X\n", set_int_ctrl);
-    printf("Read : 0x2E : Interrupt control : 0x%X\n", int_ctrl);
+    // printf("Expected : 0x2E : Interrupt control : 0x%X\n", set_int_ctrl);
+    // printf("Read : 0x2E : Interrupt control : 0x%X\n", int_ctrl);
 
     if (int_ctrl & BMM350_DRDY_DATA_REG_EN_MSK)
     {
@@ -167,14 +165,6 @@ bmm350_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
                 {
                     return MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL;
                 }
-                printf("%ld, %ld, %ld, %ld, %lu.%09lu\n",
-                       (long int)raw_data.raw_xdata,
-                       (long int)raw_data.raw_ydata,
-                       (long int)raw_data.raw_zdata,
-                       (long int)raw_data.raw_data_t,
-                       (long unsigned int)secs,
-                       (long unsigned int)nano_secs);
-
                 loop--;
             }
         }
@@ -193,8 +183,21 @@ bmm350_read_sensor (manikin_sensor_ctx_t *sensor_ctx, uint8_t *read_buf)
     {
         bmm350_init_sensor(sensor_ctx);
     }
+    struct bmm350_mag_temp_data mag_temp_data;
 
-    return MANIKIN_STATUS_OK;
+    uint8_t int_status = 0;
+
+    /* Get data ready interrupt status */
+    int8_t rslt = bmm350_get_regs(BMM350_REG_INT_STATUS, &int_status, 1, &dev);
+
+    /* Check if data ready interrupt occurred */
+    if (int_status & BMM350_DRDY_DATA_REG_MSK)
+    {
+        rslt = bmm350_get_compensated_mag_xyz_temp_data(&mag_temp_data, &dev);
+        memcpy(read_buf, &mag_temp_data, sizeof(mag_temp_data));
+    }
+
+    return rslt == 0 ? MANIKIN_STATUS_OK : MANIKIN_STATUS_ERR_READ_FAIL;
 }
 
 manikin_status_t
@@ -210,6 +213,8 @@ bmm350_parse_raw_data (const uint8_t *raw_data, bmm350_sample_data_t *data)
 {
     MANIKIN_ASSERT(HASH_BMM350, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_BMM350, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
+    struct bmm350_mag_temp_data raw_mag_data;
+    memcpy(&raw_mag_data, raw_data, sizeof(struct bmm350_mag_temp_data));
     /**
      * Expected layout:
      * [0-2]   - magneto_x (LSB first)
@@ -218,10 +223,10 @@ bmm350_parse_raw_data (const uint8_t *raw_data, bmm350_sample_data_t *data)
      * [9-11]  - temperature
      * [12-14] - sensor_time
      */
-    data->magneto_x_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[2], raw_data[1], raw_data[0]);
-    data->magneto_y_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[5], raw_data[4], raw_data[3]);
-    data->magneto_z_ut     = CONSTRUCT_SIGNED_24BIT(raw_data[8], raw_data[7], raw_data[6]);
-    data->temperature_mdeg = CONSTRUCT_SIGNED_24BIT(raw_data[11], raw_data[10], raw_data[9]);
-    data->sensor_time_us   = CONSTRUCT_SIGNED_24BIT(raw_data[14], raw_data[13], raw_data[12]);
+    data->magneto_x_ut     = raw_mag_data.x;
+    data->magneto_y_ut     = raw_mag_data.y;
+    data->magneto_z_ut     = raw_mag_data.z;
+    data->temperature_mdeg = raw_mag_data.temperature;
+    data->sensor_time_us   = 0;
     return MANIKIN_STATUS_OK;
 }

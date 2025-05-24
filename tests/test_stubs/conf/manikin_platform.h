@@ -33,6 +33,7 @@ extern "C"
 #include "fake_timer_functions.h"
 #include "fake_watchdog_functions.h"
 #include "fake_spi_functions.h"
+#include "fake_timing_functions.h"
 
 /**
  * @brief Manikin Delay uS
@@ -170,7 +171,7 @@ extern "C"
  * @brief Attempt to recover the I2C bus from a stuck state
  * @return Integer value 0 on success, 1 on fail
  */
-#define MANIKIN_I2C_BUS_RECOVER() i2c_hal_bus_recover()
+#define MANIKIN_I2C_BUS_RECOVER(i2c_inst) i2c_hal_bus_recover(i2c_inst)
 
 /**
  * @brief Get the current baud rate of the I2C peripheral

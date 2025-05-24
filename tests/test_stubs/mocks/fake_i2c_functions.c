@@ -35,5 +35,5 @@ DEFINE_FAKE_VALUE_FUNC1(uint32_t, i2c_hal_error_flag_check, manikin_i2c_inst_t);
 DEFINE_FAKE_VALUE_FUNC1(int, i2c_hal_deinit, manikin_i2c_inst_t);
 
 DEFINE_FAKE_VALUE_FUNC1(int, i2c_hal_bus_reset, manikin_i2c_inst_t);
-DEFINE_FAKE_VALUE_FUNC0(int, i2c_hal_bus_recover);
+DEFINE_FAKE_VALUE_FUNC1(int, i2c_hal_bus_recover, manikin_i2c_inst_t);
 DEFINE_FAKE_VALUE_FUNC1(uint32_t, i2c_hal_get_baud, manikin_i2c_inst_t);
