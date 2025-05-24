@@ -101,7 +101,7 @@ sdp810_parse_raw_data (const uint8_t *raw_data, sdp810_sample_data_t *data)
 {
     MANIKIN_ASSERT(HASH_SDP810, (raw_data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
     MANIKIN_ASSERT(HASH_SDP810, (data != NULL), MANIKIN_STATUS_ERR_NULL_PARAM);
-    const uint16_t unscaled_data = (CONSTRUCT_SHORT_FROM_BYTES(raw_data[0], raw_data[1]));
+    const int16_t  unscaled_data = (int16_t)(CONSTRUCT_SHORT_FROM_BYTES(raw_data[0], raw_data[1]));
     const uint16_t temp          = (CONSTRUCT_SHORT_FROM_BYTES(raw_data[3], raw_data[4]));
     const uint16_t scale_factor  = (CONSTRUCT_SHORT_FROM_BYTES(raw_data[6], raw_data[7]));
     data->air_pressure_mbar      = (float)unscaled_data / (float)scale_factor;
