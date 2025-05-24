@@ -17,8 +17,16 @@ add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external/bmm350.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c
         ${CMAKE_CURRENT_LIST_DIR}/src/packet_parser/packet_parser.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/bhi360_fusion.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_hif.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_info_param.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_conf_param.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_system_param.c
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_event_data.c
 )
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external
+                                                    ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 

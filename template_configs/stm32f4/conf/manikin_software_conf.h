@@ -1,5 +1,5 @@
 /**
-* @file            manikin_software_conf.h
+ * @file            manikin_software_conf.h
  * @brief           Platform typedef configuration for Manikin Libraries V3 library
  *
  * @par
