@@ -252,42 +252,37 @@ w25qxx_erase_sector (manikin_spi_memory_ctx_t *mem_ctx, uint32_t sector_number)
     MANIKIN_ASSERT(W25QXX_HASH,
                    mem_ctx != NULL && sector_number < W25QXX_SECTOR_SIZE,
                    MANIKIN_MEMORY_RESULT_PARERR);
-    const uint8_t fault_cnt_not_exceeded = mem_ctx->fault_cnt < MANIKIN_FLASH_MAX_RETRIES;
-    MANIKIN_ASSERT(W25QXX_HASH, fault_cnt_not_exceeded, MANIKIN_MEMORY_RESULT_NOTRDY);
 
-    const uint32_t addr     = sector_number * W25QXX_SECTOR_SIZE;
+    if (mem_ctx->fault_cnt >= MANIKIN_FLASH_MAX_RETRIES)
+    {
+        return MANIKIN_MEMORY_RESULT_NOTRDY;
+    }
+
+    uint32_t addr = sector_number * W25QXX_SECTOR_SIZE;
+
+    // Write Enable
     w25qxx_reg_write_buf[0] = W25QXX_REG_WREN;
-    manikin_status_t status = manikin_spi_start_transaction(mem_ctx->spi_cs);
-    const size_t     written
-        = manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, W25QXX_REG_WREN_SIZE);
-    status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
-    if (status != MANIKIN_STATUS_OK && written != W25QXX_REG_WREN_SIZE)
+    manikin_spi_start_transaction(mem_ctx->spi_cs);
+    manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 1);
+    manikin_spi_end_transaction(mem_ctx->spi_cs);
+
+    // Send Erase Sector (0x20) + 24-bit address
+    w25qxx_reg_write_buf[0] = W25QXX_REG_SECTOR_ERASE;
+    w25qxx_reg_write_buf[1] = GET_LAST_8_BITS_OF_24B(addr);
+    w25qxx_reg_write_buf[2] = GET_UPPER_8_BITS_OF_24B(addr);
+    w25qxx_reg_write_buf[3] = GET_LOWER_8_BITS_OF_24B(addr);
+
+    manikin_spi_start_transaction(mem_ctx->spi_cs);
+    manikin_spi_write(mem_ctx->spi, w25qxx_reg_write_buf, 4);
+    manikin_spi_end_transaction(mem_ctx->spi_cs);
+
+    // Wait until chip is idle
+    if (w25qxx_wait_while_busy(mem_ctx) != MANIKIN_STATUS_OK)
     {
-        manikin_spi_end_transaction(mem_ctx->spi_cs);
         mem_ctx->fault_cnt++;
         return MANIKIN_MEMORY_RESULT_ERROR;
     }
 
-    status |= manikin_spi_start_transaction(mem_ctx->spi_cs);
-    if (status != MANIKIN_STATUS_OK)
-    {
-        manikin_spi_end_transaction(mem_ctx->spi_cs);
-        mem_ctx->fault_cnt++;
-        return MANIKIN_MEMORY_RESULT_ERROR;
-    }
-    status |= w25qxx_set_address(mem_ctx, W25QXX_REG_SECTOR_ERASE, addr);
-    if ((status != MANIKIN_STATUS_OK) || (w25qxx_wait_while_busy(mem_ctx) != MANIKIN_STATUS_OK))
-    {
-        manikin_spi_end_transaction(mem_ctx->spi_cs);
-        mem_ctx->fault_cnt++;
-        return MANIKIN_MEMORY_RESULT_ERROR;
-    }
-    status |= manikin_spi_end_transaction(mem_ctx->spi_cs);
-    if (status != MANIKIN_STATUS_OK)
-    {
-        mem_ctx->fault_cnt++;
-        return MANIKIN_MEMORY_RESULT_ERROR;
-    }
     return MANIKIN_MEMORY_RESULT_OK;
 }
 

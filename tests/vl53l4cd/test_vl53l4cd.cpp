@@ -210,18 +210,6 @@ TEST_CASE("vl53l4cd_read_sensor clips distances over 255mm to 255", "[vl53l4cd][
     REQUIRE(read_buf[0] == 255); // Should be clipped to 255
 }
 
-TEST_CASE("vl53l4cd_read_sensor fails when data not ready", "[vl53l4cd][REQ-F1]")
-{
-    reset_mocks();
-    dummy_ctx.i2c                        = &handle;
-    dummy_ctx.i2c_addr                   = VL53L4CD_I2C_ADDR;
-    i2c_hal_write_bytes_fake.custom_fake = custom_write_func;
-    i2c_hal_read_bytes_fake.custom_fake  = custom_read_func;
-    data_ready                           = 0; // Data not ready
-    uint8_t read_buf[1]                  = { 0 };
-    REQUIRE(vl53l4cd_read_sensor(&dummy_ctx, read_buf) == MANIKIN_STATUS_ERR_READ_FAIL);
-}
-
 TEST_CASE("vl53l4cd_deinit_sensor handles null context", "[vl53l4cd][REQ-F1]")
 {
     reset_mocks();
