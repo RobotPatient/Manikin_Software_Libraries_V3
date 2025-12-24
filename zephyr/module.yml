@@ -1,0 +1,4 @@
+name: Manikin-Software-Libraries-V3
+build:
+  cmake: .
+  kconfig: Kconfig

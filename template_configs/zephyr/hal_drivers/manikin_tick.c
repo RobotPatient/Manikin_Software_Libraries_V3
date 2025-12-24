@@ -1,4 +1,5 @@
 #include "manikin_tick.h"
+#include <zephyr/kernel.h>
 #include <zephyr/sys/clock.h>
 
 size_t
