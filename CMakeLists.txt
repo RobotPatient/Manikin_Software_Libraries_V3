@@ -2,43 +2,44 @@ cmake_minimum_required(VERSION 3.21)
 project(manikin_software_libraries C CXX)
 
 option(MANIKIN_SOFTWARE_BUILD_TESTS "Enable building tests" OFF)
-if (ZEPHYR_BASE)
-zephyr_library()
-add_compile_definitions(_DEFAULT_SOURCE)
-zephyr_include_directories(
-    ${CMAKE_CURRENT_LIST_DIR}/src
-    ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external
-    ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external
-    ${CMAKE_CURRENT_LIST_DIR}/template_configs/zephyr/conf
-    ${CMAKE_CURRENT_LIST_DIR}/template_configs/zephyr/hal_drivers
-)
+if(ZEPHYR_BASE)
+    zephyr_library()
+    add_compile_definitions(_DEFAULT_SOURCE)
+    zephyr_include_directories(
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bmm350/external
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external
+        ${ZEPHYR_CURRENT_MODULE_DIR}/template_configs/zephyr/conf
+        ${ZEPHYR_CURRENT_MODULE_DIR}/template_configs/zephyr/hal_drivers
+    )
 
-zephyr_library_sources(${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/vl6180x/vl6180x.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/vl53l4cd/vl53l4cd.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/error_handler/error_handler.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/sdp810/sdp810.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/ads7138/ads7138.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/bmm350_driver.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external/bmm350_oor.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external/bmm350.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360/bhi360.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/packet_parser/packet_parser.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/bhi360_fusion.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_hif.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_info_param.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_conf_param.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_system_param.c
-        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_event_data.c
-        ${CMAKE_CURRENT_LIST_DIR}/template_configs/zephyr/hal_drivers/manikin_error_functions.c
-        ${CMAKE_CURRENT_LIST_DIR}/template_configs/zephyr/hal_drivers/manikin_i2c_functions.c
-        ${CMAKE_CURRENT_LIST_DIR}/template_configs/zephyr/hal_drivers/manikin_tick.c
-)
-
+    zephyr_library_sources(
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/i2c/i2c.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/vl6180x/vl6180x.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/vl53l4cd/vl53l4cd.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/error_handler/error_handler.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/sdp810/sdp810.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/ads7138/ads7138.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bmm350/bmm350_driver.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bmm350/external/bmm350_oor.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bmm350/external/bmm350.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360/bhi360.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/packet_parser/packet_parser.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/bhi360_fusion.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy_hif.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_info_param.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_conf_param.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy_system_param.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/src/bhi360_fusion/external/bhy_event_data.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/template_configs/zephyr/hal_drivers/manikin_error_functions.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/template_configs/zephyr/hal_drivers/manikin_i2c_functions.c
+        ${ZEPHYR_CURRENT_MODULE_DIR}/template_configs/zephyr/hal_drivers/manikin_tick.c
+    )
 
 else()
-add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
+
+    add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/spi/spi.c
         ${CMAKE_CURRENT_LIST_DIR}/src/w25qxx128/w25qxx128.c
         ${CMAKE_CURRENT_LIST_DIR}/src/sample_timer/sample_timer.c
@@ -59,48 +60,48 @@ add_library(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/src/i2c/i2c.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_virtual_sensor_conf_param.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_system_param.c
         ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external/bhy_event_data.c
-)
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external
-                                                    ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external)
+    )
+    target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src/bmm350/external
+        ${CMAKE_CURRENT_LIST_DIR}/src/bhi360_fusion/external)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
+    target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_LIST_DIR}/src)
 endif()
 
 
-if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
     set(CMAKE_C_STANDARD 99)
     set(CMAKE_C_STANDARD_REQUIRED True)
     set(CMAKE_CXX_STANDARD 17)
     set(CMAKE_CXX_STANDARD_REQUIRED True)
     set(MANIKIN_SOFTWARE_BUILD_TESTS ON)
-endif ()
+endif()
 
-if (WIN32)
+if(WIN32)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /permissive- /WX)
-elseif (ZEPHYR_BASE)
+elseif(ZEPHYR_BASE)
 
-else ()
+else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall
-            -Wextra
-            -Wpedantic
-            -Wshadow
-            -Wundef
-            -Wconversion
-            -Wsign-conversion
-            -Wcast-align
-            -Wcast-qual
-            -Wstrict-prototypes
-            -Wdouble-promotion
-            -Wformat=2
-            -Wformat-security
-            -fno-common
-            -fstack-protector-strong)
-endif ()
+        -Wextra
+        -Wpedantic
+        -Wshadow
+        -Wundef
+        -Wconversion
+        -Wsign-conversion
+        -Wcast-align
+        -Wcast-qual
+        -Wstrict-prototypes
+        -Wdouble-promotion
+        -Wformat=2
+        -Wformat-security
+        -fno-common
+        -fstack-protector-strong)
+endif()
 
-if (MANIKIN_SOFTWARE_BUILD_TESTS)
+if(MANIKIN_SOFTWARE_BUILD_TESTS)
     target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
     enable_testing()
     add_subdirectory(tests)
-else ()
+else()
 
-endif ()
+endif()

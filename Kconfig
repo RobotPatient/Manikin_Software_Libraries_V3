@@ -1,0 +1,9 @@
+menu "Manikin Software Libraries"
+
+config MANIKIN_SOFTWARE_LIBRARIES
+    bool "Enable Manikin Software Libraries"
+    default y
+    help
+      Enable Manikin software drivers and utilities.
+
+endmenu
