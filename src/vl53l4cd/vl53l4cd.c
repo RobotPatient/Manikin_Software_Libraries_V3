@@ -141,15 +141,14 @@ VL53L4CD_SetRangeTiming (manikin_sensor_ctx_t *ctx,
         uint32_t reg_value = (uint32_t)(inter_measurement_factor + 0.5f);
 
         // Clamp to 16-bit range, in case PLL or ms are big
-        if (reg_value > 0xFFFF) {
+        if (reg_value > 0xFFFF)
+        {
             reg_value = 0xFFFF;
         }
 
         // Write lower 16 bits
-        status |= manikin_i2c_write_reg16(ctx->i2c,
-                                          ctx->i2c_addr,
-                                          VL53L4CD_INTERMEASUREMENT_MS,
-                                          (uint16_t)reg_value);
+        status |= manikin_i2c_write_reg16(
+            ctx->i2c, ctx->i2c_addr, VL53L4CD_INTERMEASUREMENT_MS, (uint16_t)reg_value);
         timing_budget_us -= (uint32_t)4300;
         timing_budget_us /= (uint32_t)2;
     }
@@ -210,7 +209,6 @@ vl53l4cd_init_sensor (manikin_sensor_ctx_t *sensor_ctx)
     status = manikin_i2c_read_reg16(
         sensor_ctx->i2c, sensor_ctx->i2c_addr, VL53L4CD_IDENTIFICATION_MODEL_ID, data);
     MANIKIN_ASSERT(HASH_VL53L4CD, (status == MANIKIN_STATUS_OK), status);
-
 
     /* Write configuration registers */
     for (size_t i = 0; i < sizeof(vl53l4cd_init_regs) / sizeof(manikin_sensor_reg_t); i++)
