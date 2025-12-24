@@ -42,7 +42,6 @@
 
 // Timestamp conversion (15625 ns per unit)
 #define TIMESTAMP_UNIT_NS 15625ULL
-#define NSEC_PER_SEC      1000000000ULL
 
 // Default sample rate for sensor configuration
 #define DEFAULT_SAMPLE_RATE_HZ 50.0f
