@@ -22,22 +22,22 @@
  * Author:          Victor Hogeweij
  */
 
- #ifndef MANIKIN_CONF_H
- #define MANIKIN_CONF_H
- #ifdef __cplusplus
- extern "C"
- {
- #endif
- #include <zephyr/device.h>
- #include <zephyr/kernel.h>
- #include <stdint.h>
- 
- #define MANIKIN_SOFTWARE_MAX_TIMEOUT   1u
- 
-     typedef const struct device *manikin_i2c_inst_t;
-     typedef const struct device *manikin_spi_inst_t;
-     typedef const struct device *manikin_spi_cs_t;
- #ifdef __cplusplus
- }
- #endif
- #endif /* MANIKIN_CONF_H */
+#ifndef MANIKIN_CONF_H
+#define MANIKIN_CONF_H
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <zephyr/device.h>
+#include <zephyr/kernel.h>
+#include <stdint.h>
+
+#define MANIKIN_SOFTWARE_MAX_TIMEOUT 1u
+
+    typedef const struct device *manikin_i2c_inst_t;
+    typedef const struct device *manikin_spi_inst_t;
+    typedef const struct device *manikin_spi_cs_t;
+#ifdef __cplusplus
+}
+#endif
+#endif /* MANIKIN_CONF_H */
