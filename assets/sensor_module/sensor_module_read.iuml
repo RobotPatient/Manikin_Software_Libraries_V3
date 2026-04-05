@@ -1,0 +1,21 @@
+@startuml
+start
+
+if (Parameters are null or out of range?) then (Yes)
+  :Return MANIKIN_STATUS_ERR_NULL_PARAM;
+else (No)
+:Check I2C & sensor status register\nfor fault conditions;
+if (Fault detected?) then (Yes)
+  :return MANIKIN_STATUS_ERR_READ_FAIL;
+  stop
+else (No)
+  :Read result register;
+
+  :Write data to\npassed in byte array;
+
+  :Return MANIKIN_STATUS_OK;
+endif
+endif
+
+stop
+@enduml

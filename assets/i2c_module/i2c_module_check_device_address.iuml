@@ -1,0 +1,13 @@
+@startuml
+start
+
+:Send ping to I2C address;
+
+if (Device responds?) then (Yes)
+  :Return 1;
+else (No)
+  :Return 0;
+endif
+
+stop
+@enduml

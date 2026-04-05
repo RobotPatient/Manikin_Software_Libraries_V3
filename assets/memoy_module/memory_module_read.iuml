@@ -1,0 +1,26 @@
+@startuml
+start
+
+:Check parameters valid;
+
+if (Parameters are null, len is 0, or addr invalid?) then (Yes)
+  :Return MANIKIN_MEMORY_RESULT_PARERR;
+else (No)
+  :Check if chip is responsive;
+
+  if (Chip not responding?) then (Yes)
+    :Return MANIKIN_MEMORY_RESULT_NOTRDY;
+  else (No)
+    :Check if flash is write-protected;
+
+    if (Write protection enabled?) then (Yes)
+      :Return MANIKIN_MEMORY_RESULT_WRPRT;
+    else (No)
+      :Read data from memory at given address;
+      :Return MANIKIN_MEMORY_RESULT_OK;
+    endif
+  endif
+endif
+
+stop
+@enduml

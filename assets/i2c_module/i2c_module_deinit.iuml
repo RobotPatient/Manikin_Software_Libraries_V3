@@ -1,0 +1,14 @@
+@startuml
+start
+
+:Check i2c_inst parameter;
+
+if (i2c_inst is null?) then (Yes)
+  :Return MANIKIN_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Deinitialize I2C peripheral;
+  :Return MANIKIN_STATUS_OK;
+endif
+
+stop
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+start
+
+:Read len bytes from I2C device;
+:Store to data buffer;
+:Return number of bytes read;
+
+stop
+@enduml

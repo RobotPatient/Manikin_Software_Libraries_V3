@@ -1,0 +1,1698 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../requirements/">
+      
+      
+        <link rel="next" href="../developers_guide/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+    
+    
+      
+        <title>Module Design - Manikin_Software_Libraries_V3</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Avenir+Next+Condensed:300,300i,400,400i,700,700i%7CAvenir+Next+Condensed:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Avenir Next Condensed";--md-code-font:"Avenir Next Condensed"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#module-design" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Manikin_Software_Libraries_V3" class="md-header__button md-logo" aria-label="Manikin_Software_Libraries_V3" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Manikin_Software_Libraries_V3
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Module Design
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Manikin Software Libraries V3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../requirements/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Design
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../developers_guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Manikin_Software_Libraries_V3" class="md-nav__button md-logo" aria-label="Manikin_Software_Libraries_V3" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    Manikin_Software_Libraries_V3
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manikin Software Libraries V3
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Software requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Design
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Module Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Modules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sensor Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#init_sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        init_sensor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_sensor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flashmemory-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📄 Flash/Memory Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📄 Flash/Memory Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-design_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_init()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_status()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_write()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_read()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_erase_sector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_erase_sector()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_deinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_deinit()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-peripheral-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📄 I2C Peripheral Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📄 I2C Peripheral Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Descriptions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Descriptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_init()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_check_device_address" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_check_device_address()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_write_reg-write_reg16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_write_reg() / write_reg16()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_read_reg-read_reg16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_read_reg() / read_reg16()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_read_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_read_bytes()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_write_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_write_bytes()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_deinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_deinit()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Rationale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developers_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developers Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sensor-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sensor Modules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sensor Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#init_sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        init_sensor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_sensor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flashmemory-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📄 Flash/Memory Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📄 Flash/Memory Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-design_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Design
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Design">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_init()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_status()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_write" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_write()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_read()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_erase_sector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_erase_sector()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#memory_chip_deinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        &lt;memory_chip&gt;_deinit()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-peripheral-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📄 I2C Peripheral Module
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="📄 I2C Peripheral Module">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#function-descriptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Function Descriptions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Function Descriptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_init" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_init()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_check_device_address" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_check_device_address()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_write_reg-write_reg16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_write_reg() / write_reg16()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_read_reg-read_reg16" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_read_reg() / read_reg16()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_read_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_read_bytes()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_write_bytes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_write_bytes()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manikin_i2c_deinit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        manikin_i2c_deinit()
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design-rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Rationale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="module-design">Module Design</h1>
+<p>This document describes in detail how each of the software modules works.</p>
+<p>The following software module types are present in this collection of libraries:</p>
+<ul>
+<li>Sensor Modules</li>
+<li>Flash/Memory Modules</li>
+<li>Communication wrappers</li>
+</ul>
+<h2 id="sensor-modules">Sensor Modules</h2>
+<p>Sensor modules are the most commonly used type of software module in the Manikin CPR system. Each module follows a consistent structure and exposes a standardized public API.</p>
+<h3 id="api-design">API design</h3>
+<p>The diagram below illustrates the common structure and API of a sensor module:</p>
+<p>Every sensor module implements the following functions:</p>
+<p><img alt="Sensor module public api" src="http://www.plantuml.com/plantuml/proxy?cache=no&amp;src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module_api_overview.iuml" /></p>
+<blockquote>
+<p>[!NOTE]<br />
+This api design is based on the requirement that setting up and reading an sensor should not be a hassle. But the simplicity means that there was a concession on configurability. At this time within the Manikin project, there is no need for the additional sensor configurability. If requirements change (which will surely happen), it is possible to add an enum param to the sensor_ctx struct e.g. with specific configuration options for each sensor.</p>
+<p>[!NOTE]
+It’s also important to note that these modules only provide raw sensor data without performing any processing. This design choice was driven by the need for functional decomposition and the goal of keeping the library as generic as possible. Since requirements frequently change, embedding logic directly into the sensor modules would make them harder to maintain, as any update would require changes to the entire module, something we aim to avoid.</p>
+</blockquote>
+<h4 id="init_sensor"><code>init_sensor</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks for sensor presence.<br>
+      • If the sensor is present:<br>
+      &nbsp;&nbsp;&nbsp;– Initializes with default settings (continuous mode).<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If sensor is not present or init fails:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_INIT_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_init.iuml" alt="Sensor module init" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="read_sensor"><code>read_sensor</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks I2C and sensor status register for faults.<br>
+      • If a fault is detected:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_READ_FAIL</code>.<br>
+      • If no faults are present:<br>
+      &nbsp;&nbsp;&nbsp;– Reads result register.<br>
+      &nbsp;&nbsp;&nbsp;– Writes data to passed-in byte array.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_read.iuml" alt="Sensor module init" />
+    </td>
+  </tr>
+</table>
+
+<blockquote>
+<p>[!NOTE] <br />
+The format and minimum required length of read_buf depend on the specific sensor. Refer to the sensor’s header file for detailed information.</p>
+</blockquote>
+<p><code>deinit_sensor</code></p>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks for sensor presence.<br>
+      • If the sensor is present:<br>
+      &nbsp;&nbsp;&nbsp;– Deinitializes sensor to idle/sleep mode.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If sensor is not present:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_SENSOR_DEINIT_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/sensor_module/sensor_module_deinit.iuml" alt="Sensor module deinit" />
+    </td>
+  </tr>
+</table>
+
+<h2 id="flashmemory-module">📄 <strong>Flash/Memory Module</strong></h2>
+<p>This module provides a driver interface for memory chips. The driver exposes a consistent API for initialization, status checking, reading, writing, sector erasing, and deinitialization.</p>
+<h3 id="api-design_1">API Design</h3>
+<p><img alt="Memory module public API" src="http://www.plantuml.com/plantuml/proxy?cache=no&amp;src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memory_module_api_overview.iuml" /></p>
+<h4 id="memory_chip_init"><code>&lt;memory_chip&gt;_init()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MEMORY_CHIP_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, read JEDEC ID.<br>
+      • If the chip present & JEDEC ID is valid:<br>
+      &nbsp;&nbsp;&nbsp;– Resets device to known state.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MEMORY_CHIP_STATUS_OK</code>.<br>
+      • If JEDEC ID is invalid or chip not present:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MEMORY_CHIP_STATUS_ERR_READ_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_init.iuml" alt="Memory chip init" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="memory_chip_status"><code>&lt;memory_chip&gt;_status()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MEMORY_CHIP_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid, checks for chip presence using JEDEC ID (no reset).<br>
+      • If chip is detected and JEDEC ID is valid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If chip is not present or ID is invalid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_READ_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_status.iuml" alt="Memory module status" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="memory_chip_write"><code>&lt;memory_chip&gt;_write()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters (<code>data</code>, <code>addr</code>, <code>len</code>).<br>
+      • If any parameter is invalid (e.g., null or zero length):<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_PARERR</code>.<br>
+      • If parameters are valid, checks if chip is responsive.<br>
+      • If chip is not responding:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_NOTRDY</code>.<br>
+      • If chip is responsive, checks for write protection.<br>
+      • If write protection is enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_WRPRT</code>.<br>
+      • If write protection is not enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Writes data to the specified address.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_write.iuml" alt="Memory chip write" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="memory_chip_read"><code>&lt;memory_chip&gt;_read()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters (<code>data</code>, <code>addr</code>, <code>len</code>).<br>
+      • If any parameter is invalid (e.g., null or zero length):<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_PARERR</code>.<br>
+      • If parameters are valid, checks if chip is responsive.<br>
+      • If chip is not responding:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_NOTRDY</code>.<br>
+      • If chip is responsive, checks for write protection.<br>
+      • If write protection is enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_WRPRT</code>.<br>
+      • If write protection is not enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Reads data from the specified address.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_read.iuml" alt="Memory chip read" />
+    </td>
+  </tr>
+</table>
+
+<hr />
+<h4 id="memory_chip_erase_sector"><code>&lt;memory_chip&gt;_erase_sector()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates the <code>sector_number</code> parameter.<br>
+      • If parameter is invalid or out of range:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_PARERR</code>.<br>
+      • If parameter is valid, checks if chip is responsive.<br>
+      • If chip is not responding:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_NOTRDY</code>.<br>
+      • If chip is responsive, checks for write protection.<br>
+      • If write protection is enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_WRPRT</code>.<br>
+      • If write protection is not enabled:<br>
+      &nbsp;&nbsp;&nbsp;– Erases the specified 4KB sector.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_MEMORY_RESULT_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_erase.iuml" alt="Memory chip erase" />
+    </td>
+  </tr>
+</table>
+
+<hr />
+<h4 id="memory_chip_deinit"><code>&lt;memory_chip&gt;_deinit()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates input parameters.<br>
+      • If parameters are null or out of range:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_CHIP_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If parameters are valid, checks for chip presence.<br>
+      • If the chip is present:<br>
+      &nbsp;&nbsp;&nbsp;– Resets device and clears internal state.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.<br>
+      • If chip is not present:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_WRITE_FAIL</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/memoy_module/memory_module_deinit.iuml" alt="Memory chip deinit" />
+    </td>
+  </tr>
+</table>
+
+<h2 id="i2c-peripheral-module">📄 <strong>I2C Peripheral Module</strong></h2>
+<p>This module provides a platform-agnostic driver interface for I2C communication. It wraps low-level hardware access in a consistent API used throughout the Manikin CPR system.</p>
+<hr />
+<h3 id="public-api">Public API</h3>
+<p><img alt="I2C module public API" src="http://www.plantuml.com/plantuml/proxy?cache=no&amp;src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module_api_overview.iuml" /></p>
+<h3 id="function-descriptions">Function Descriptions</h3>
+<h4 id="manikin_i2c_init"><code>manikin_i2c_init()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates I2C instance and baud-rate parameters.<br>
+      • If parameters are invalid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code> or <code>MANIKIN_STATUS_ERR_INVALID_I2C_BAUD</code>.<br>
+      • If valid:<br>
+      &nbsp;&nbsp;&nbsp;– Initializes I2C with 7-bit addressing and 1 stop-bit.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_init.iuml" alt="I2C module init" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_check_device_address"><code>manikin_i2c_check_device_address()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Checks the presence of an I2C device at a given address.<br>
+      • Sends an I2C ping.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>1</code> if device responds.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>0</code> if no device is found.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_check_device_address.iuml" alt="I2C module check_device_address" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_write_reg-write_reg16"><code>manikin_i2c_write_reg()</code> / <code>write_reg16()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates parameters.<br>
+      • If invalid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • Writes 8-bit or 16-bit data to I2C register.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code> on success.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_write_reg.iuml" alt="I2C module write reg" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_read_reg-read_reg16"><code>manikin_i2c_read_reg()</code> / <code>read_reg16()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates parameters.<br>
+      • If invalid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • Reads 8-bit or 16-bit data from I2C register.<br>
+      &nbsp;&nbsp;&nbsp;– Stores data to provided pointer.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_read_reg.iuml" alt="I2C module read reg" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_read_bytes"><code>manikin_i2c_read_bytes()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Reads multiple bytes from an I2C device.<br>
+      • Saves data to provided buffer.<br>
+      &nbsp;&nbsp;&nbsp;– Returns number of bytes successfully read.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_read_bytes.iuml" alt="I2C module read bytes" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_write_bytes"><code>manikin_i2c_write_bytes()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Writes multiple bytes from a buffer to I2C device.<br>
+      &nbsp;&nbsp;&nbsp;– Returns number of bytes successfully written.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_write_bytes.iuml" alt="I2C module write bytes" />
+    </td>
+  </tr>
+</table>
+
+<h4 id="manikin_i2c_deinit"><code>manikin_i2c_deinit()</code></h4>
+<table>
+  <tr>
+    <th>Description</th>
+    <th>Diagram</th>
+  </tr>
+  <tr>
+    <td>
+      • Validates I2C instance pointer.<br>
+      • If invalid:<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_ERR_NULL_PARAM</code>.<br>
+      • If valid:<br>
+      &nbsp;&nbsp;&nbsp;– Deinitializes I2C peripheral.<br>
+      &nbsp;&nbsp;&nbsp;– Returns <code>MANIKIN_STATUS_OK</code>.
+    </td>
+    <td>
+      <img src="http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/RobotPatient/Manikin_Software_Libraries_V3/refs/heads/dev/docs/assets/i2c_module/i2c_module_deinit.iuml" alt="I2C module deinit" />
+    </td>
+  </tr>
+</table>
+
+<h3 id="design-rationale">Design Rationale</h3>
+<p>This driver avoids unnecessary abstraction and complexity to preserve deterministic timing, hardware safety, and MISRA compliance.</p>
+<p>As with other modules in the Manikin Software Library:
+- No dynamic allocation
+- No function pointers or runtime interfaces
+- No object-oriented abstractions</p>
+<p>The design keeps the code minimal, traceable, and suitable for high-reliability systems.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../requirements/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Software requirements">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Software requirements
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../developers_guide/" class="md-footer__link md-footer__link--next" aria-label="Next: Developers Guide">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Developers Guide
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["announce.dismiss", "content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

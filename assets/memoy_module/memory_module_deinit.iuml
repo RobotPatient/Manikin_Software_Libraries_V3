@@ -1,0 +1,20 @@
+@startuml
+start
+
+:Check parameters valid;
+
+if (Parameters are null or out of range?) then (Yes)
+  :Return MEMORY_STATUS_ERR_NULL_PARAM;
+else (No)
+  :Check for chip presence;
+
+  if (Chip present?) then (Yes)
+    :Reset device and clear internal state;
+    :Return MEMORY_STATUS_OK;
+  else (No)
+    :Return MEMORY_STATUS_WRITE_ERROR;
+  endif
+endif
+
+stop
+@enduml
